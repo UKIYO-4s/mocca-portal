@@ -70,7 +70,7 @@ export default function Login({
                             fill="#EA4335"
                         />
                     </svg>
-                    Googleでログイン
+                    グーグルでログイン
                 </a>
             </div>
 

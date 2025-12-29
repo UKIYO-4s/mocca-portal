@@ -141,7 +141,7 @@ export default function Show({
                             />
                         </svg>
                         <span className="font-medium text-gray-900 dark:text-white">
-                            Googleで口コミを書く
+                            グーグルで口コミを書く
                         </span>
                     </button>
                     {reviewError && (
@@ -159,7 +159,7 @@ export default function Show({
                         rel="noopener noreferrer"
                         className="flex items-center justify-center rounded-lg bg-green-500 px-4 py-3 text-white hover:bg-green-600"
                     >
-                        <span className="font-medium">LINE</span>
+                        <span className="font-medium">ライン</span>
                     </a>
                     <a
                         href={`tel:${contactPhone}`}

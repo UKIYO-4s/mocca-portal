@@ -38,10 +38,10 @@ export default function Wallet({ wallet }: WalletProps) {
                     <div className="bg-white p-6 shadow sm:rounded-lg dark:bg-gray-800">
                         <div className="max-w-xl">
                             <h3 className="text-lg font-medium text-gray-900 dark:text-gray-100">
-                                Ethereumウォレットアドレス
+                                イーサリアムウォレットアドレス
                             </h3>
                             <p className="mt-1 text-sm text-gray-600 dark:text-gray-400">
-                                投げ銭を受け取るためのPolygon（MATIC）ネットワーク対応ウォレットアドレスを登録してください。
+                                投げ銭を受け取るためのポリゴン（マティック）ネットワーク対応ウォレットアドレスを登録してください。
                             </p>
 
                             <form onSubmit={submit} className="mt-6">
