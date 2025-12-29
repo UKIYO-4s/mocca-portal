@@ -17,7 +17,7 @@ class TemplateController extends Controller
     public function __construct(
         protected ActivityLogService $activityLog
     ) {
-        $this->middleware(['auth', 'role:admin,manager']);
+        // Middleware is defined in routes (ChecklistModule.php)
     }
 
     /**
