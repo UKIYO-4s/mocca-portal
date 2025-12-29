@@ -33,6 +33,12 @@ export default function Authenticated({
                                 >
                                     ダッシュボード
                                 </NavLink>
+                                <NavLink
+                                    href={route('checklists.index')}
+                                    active={route().current('checklists.*')}
+                                >
+                                    チェックリスト
+                                </NavLink>
                             </div>
                         </div>
 
@@ -136,6 +142,12 @@ export default function Authenticated({
                             active={route().current('dashboard')}
                         >
                             ダッシュボード
+                        </ResponsiveNavLink>
+                        <ResponsiveNavLink
+                            href={route('checklists.index')}
+                            active={route().current('checklists.*')}
+                        >
+                            チェックリスト
                         </ResponsiveNavLink>
                     </div>
 

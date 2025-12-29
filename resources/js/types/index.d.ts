@@ -69,3 +69,56 @@ export interface TipTotals {
     this_month: number;
     this_year: number;
 }
+
+// Checklist Types
+export interface ChecklistTemplate {
+    id: number;
+    name: string;
+    type: 'lunch_prep' | 'dinner_prep' | 'cleaning' | 'other';
+    type_label: string;
+    location_id: number | null;
+    location?: Location;
+    is_active: boolean;
+    sort_order: number;
+    items: ChecklistItem[];
+    items_count?: number;
+    created_at: string;
+    updated_at: string;
+}
+
+export interface ChecklistItem {
+    id: number;
+    template_id: number;
+    description: string;
+    sort_order: number;
+}
+
+export interface DailyChecklist {
+    id: number;
+    template_id: number;
+    template: ChecklistTemplate;
+    date: string;
+    created_by: number;
+    creator?: User;
+    completed_at: string | null;
+    completion_rate: number;
+    is_completed: boolean;
+    entries: DailyChecklistEntry[];
+}
+
+export interface DailyChecklistEntry {
+    id: number;
+    daily_checklist_id: number;
+    checklist_item_id: number;
+    item?: ChecklistItem;
+    completed_at: string | null;
+    completed_by: number | null;
+    completed_by_user?: User;
+    is_completed: boolean;
+}
+
+export interface Location {
+    id: number;
+    name: string;
+    code: string;
+}

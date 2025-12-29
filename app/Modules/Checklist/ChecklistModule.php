@@ -3,6 +3,8 @@
 namespace App\Modules\Checklist;
 
 use App\Core\BaseModule;
+use App\Modules\Checklist\Controllers\DailyChecklistController;
+use App\Modules\Checklist\Controllers\TemplateController;
 use Illuminate\Support\Facades\Route;
 
 class ChecklistModule extends BaseModule
@@ -12,8 +14,7 @@ class ChecklistModule extends BaseModule
 
     public function boot(): void
     {
-        // Controllers not yet implemented - routes will be registered when ready
-        // $this->registerRoutes();
+        $this->registerRoutes();
     }
 
     protected function registerRoutes(): void
@@ -22,23 +23,24 @@ class ChecklistModule extends BaseModule
             ->prefix('checklists')
             ->name('checklists.')
             ->group(function () {
-                // テンプレート管理（Manager以上）
+                // テンプレート管理（Admin/Manager only）
                 Route::middleware('role:admin,manager')
                     ->prefix('templates')
                     ->name('templates.')
                     ->group(function () {
-                        Route::get('/', [\App\Modules\Checklist\Controllers\TemplateController::class, 'index'])->name('index');
-                        Route::get('/create', [\App\Modules\Checklist\Controllers\TemplateController::class, 'create'])->name('create');
-                        Route::post('/', [\App\Modules\Checklist\Controllers\TemplateController::class, 'store'])->name('store');
-                        Route::get('/{template}/edit', [\App\Modules\Checklist\Controllers\TemplateController::class, 'edit'])->name('edit');
-                        Route::put('/{template}', [\App\Modules\Checklist\Controllers\TemplateController::class, 'update'])->name('update');
-                        Route::delete('/{template}', [\App\Modules\Checklist\Controllers\TemplateController::class, 'destroy'])->name('destroy');
+                        Route::get('/', [TemplateController::class, 'index'])->name('index');
+                        Route::get('/create', [TemplateController::class, 'create'])->name('create');
+                        Route::post('/', [TemplateController::class, 'store'])->name('store');
+                        Route::get('/{template}/edit', [TemplateController::class, 'edit'])->name('edit');
+                        Route::put('/{template}', [TemplateController::class, 'update'])->name('update');
+                        Route::delete('/{template}', [TemplateController::class, 'destroy'])->name('destroy');
                     });
 
                 // 日次チェックリスト
-                Route::get('/', [\App\Modules\Checklist\Controllers\DailyChecklistController::class, 'index'])->name('index');
-                Route::get('/{checklist}', [\App\Modules\Checklist\Controllers\DailyChecklistController::class, 'show'])->name('show');
-                Route::post('/{checklist}/entries/{item}', [\App\Modules\Checklist\Controllers\DailyChecklistController::class, 'toggleEntry'])->name('toggle');
+                Route::get('/', [DailyChecklistController::class, 'index'])->name('index');
+                Route::post('/generate', [DailyChecklistController::class, 'generate'])->name('generate');
+                Route::get('/{dailyChecklist}', [DailyChecklistController::class, 'show'])->name('show');
+                Route::post('/{dailyChecklist}/entries/{item}/toggle', [DailyChecklistController::class, 'toggleEntry'])->name('toggle');
             });
     }
 
