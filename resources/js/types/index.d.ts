@@ -122,3 +122,31 @@ export interface Location {
     name: string;
     slug: string;
 }
+
+// Inventory Types
+export interface InventoryItem {
+    id: number;
+    location_id: number;
+    location?: Location;
+    name: string;
+    unit: string;
+    current_stock: number;
+    reorder_point: number;
+    reorder_notified_at: string | null;
+    is_active: boolean;
+    created_at: string;
+    updated_at: string;
+}
+
+export interface InventoryLog {
+    id: number;
+    item_id: number;
+    item?: InventoryItem;
+    type: 'usage' | 'restock' | 'adjustment';
+    type_label: string;
+    quantity_change: number;
+    notes: string | null;
+    user_id: number;
+    user?: User;
+    created_at: string;
+}

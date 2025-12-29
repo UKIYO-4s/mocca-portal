@@ -39,6 +39,12 @@ export default function Authenticated({
                                 >
                                     チェックリスト
                                 </NavLink>
+                                <NavLink
+                                    href={route('inventory.index')}
+                                    active={route().current('inventory.*')}
+                                >
+                                    備品管理
+                                </NavLink>
                             </div>
                         </div>
 
@@ -148,6 +154,12 @@ export default function Authenticated({
                             active={route().current('checklists.*')}
                         >
                             チェックリスト
+                        </ResponsiveNavLink>
+                        <ResponsiveNavLink
+                            href={route('inventory.index')}
+                            active={route().current('inventory.*')}
+                        >
+                            備品管理
                         </ResponsiveNavLink>
                     </div>
 
