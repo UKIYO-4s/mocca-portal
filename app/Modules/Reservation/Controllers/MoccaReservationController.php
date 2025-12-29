@@ -166,7 +166,7 @@ class MoccaReservationController extends Controller
         $name = $reservation->name;
         $reservation->delete();
 
-        $this->activityLog->log('reservation', 'deleted', null, null, "食事予約削除: {$name}様");
+        $this->activityLog->log('reservation', 'deleted', null, "食事予約削除: {$name}様");
 
         return redirect()
             ->route('reservations.mocca.index')

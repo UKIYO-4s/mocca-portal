@@ -162,7 +162,7 @@ class BanshirouReservationController extends Controller
         $name = $reservation->name;
         $reservation->delete();
 
-        $this->activityLog->log('reservation', 'deleted', null, null, "予約削除: {$name}様");
+        $this->activityLog->log('reservation', 'deleted', null, "予約削除: {$name}様");
 
         return redirect()
             ->route('reservations.banshirou.index')

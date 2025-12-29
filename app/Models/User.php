@@ -4,6 +4,8 @@ namespace App\Models;
 
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 
@@ -80,5 +82,56 @@ class User extends Authenticatable
     public function isAtLeastManager(): bool
     {
         return in_array($this->role, ['admin', 'manager']);
+    }
+
+    /**
+     * Get the staff wallet for this user.
+     */
+    public function wallet(): HasOne
+    {
+        return $this->hasOne(StaffWallet::class);
+    }
+
+    /**
+     * Get tips received by this user.
+     */
+    public function tipTransactions(): HasMany
+    {
+        return $this->hasMany(TipTransaction::class, 'staff_id');
+    }
+
+    /**
+     * Get guest page assignments for this user.
+     */
+    public function guestAssignments(): HasMany
+    {
+        return $this->hasMany(GuestStaffAssignment::class, 'staff_id');
+    }
+
+    /**
+     * Check if user has a registered wallet.
+     */
+    public function hasWallet(): bool
+    {
+        return $this->wallet()->exists();
+    }
+
+    /**
+     * Get total tip count for this user.
+     */
+    public function getTotalTipCount(): int
+    {
+        return $this->tipTransactions()->sum('tip_count');
+    }
+
+    /**
+     * Get tip count for current month.
+     */
+    public function getMonthlyTipCount(): int
+    {
+        return $this->tipTransactions()
+            ->whereMonth('tipped_at', now()->month)
+            ->whereYear('tipped_at', now()->year)
+            ->sum('tip_count');
     }
 }

@@ -39,6 +39,22 @@ return [
         'client_id' => env('GOOGLE_CLIENT_ID'),
         'client_secret' => env('GOOGLE_CLIENT_SECRET'),
         'redirect' => env('GOOGLE_REDIRECT_URI', '/auth/google/callback'),
+        'place_id_banshirou' => env('GOOGLE_PLACE_ID_BANSHIROU'),
+        'place_id_mocca' => env('GOOGLE_PLACE_ID_MOCCA'),
+    ],
+
+    'line' => [
+        'official_url' => env('LINE_OFFICIAL_URL'),
+    ],
+
+    'contact' => [
+        'phone' => env('CONTACT_PHONE_NUMBER'),
+    ],
+
+    'polygon' => [
+        'rpc_url' => env('POLYGON_RPC_URL', 'https://polygon-rpc.com'),
+        'chain_id' => env('POLYGON_CHAIN_ID', 137),
+        'jpyc_contract' => env('JPYC_CONTRACT_ADDRESS', '0x6AE7Dfc73E0dDE2aa99ac063DcF7e8A63265108c'),
     ],
 
 ];

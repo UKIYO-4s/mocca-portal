@@ -46,7 +46,6 @@ class GoogleController extends Controller
                 'auth',
                 'login',
                 $user,
-                $user->id,
                 "Google認証でログイン: {$user->email}"
             );
 
@@ -69,7 +68,6 @@ class GoogleController extends Controller
                 'auth',
                 'google_linked',
                 $existingUser,
-                $existingUser->id,
                 "Googleアカウント連携: {$existingUser->email}"
             );
 

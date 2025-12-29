@@ -140,15 +140,15 @@ export default function Create({ auth, banshirouReservations, linkedReservationI
                                 </label>
                                 <div className="grid grid-cols-3 gap-3">
                                     {[
-                                        { value: 'breakfast', label: '朝食', color: 'yellow' },
-                                        { value: 'lunch', label: '昼食', color: 'orange' },
-                                        { value: 'dinner', label: '夕食', color: 'purple' },
+                                        { value: 'breakfast', label: '朝食', selectedClass: 'border-yellow-500 bg-yellow-50' },
+                                        { value: 'lunch', label: '昼食', selectedClass: 'border-orange-500 bg-orange-50' },
+                                        { value: 'dinner', label: '夕食', selectedClass: 'border-purple-500 bg-purple-50' },
                                     ].map((option) => (
                                         <label
                                             key={option.value}
                                             className={`flex cursor-pointer items-center justify-center rounded-lg border-2 p-4 ${
                                                 formData.reservation_type === option.value
-                                                    ? `border-${option.color}-500 bg-${option.color}-50`
+                                                    ? option.selectedClass
                                                     : 'border-gray-200 hover:border-gray-300'
                                             }`}
                                         >

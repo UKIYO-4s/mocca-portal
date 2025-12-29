@@ -47,7 +47,6 @@ class AssignmentController extends Controller
             'reservation',
             'assigned',
             $assignment,
-            $assignment->id,
             "{$typeLabel}担当割り当て: {$user->name} → {$reservation->name}様"
         );
 
@@ -68,7 +67,6 @@ class AssignmentController extends Controller
         $this->activityLog->log(
             'reservation',
             'unassigned',
-            null,
             null,
             "{$typeLabel}担当解除: {$user->name} → {$reservation->name}様"
         );

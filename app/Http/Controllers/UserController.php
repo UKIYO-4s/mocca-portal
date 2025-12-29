@@ -50,7 +50,6 @@ class UserController extends Controller
             'user',
             'role_changed',
             $user,
-            $user->id,
             "権限変更: {$user->name} ({$oldRole} → {$validated['role']})"
         );
 
@@ -75,7 +74,6 @@ class UserController extends Controller
         $this->activityLog->log(
             'user',
             'deleted',
-            null,
             null,
             "ユーザー削除: {$userName} ({$userEmail})"
         );
