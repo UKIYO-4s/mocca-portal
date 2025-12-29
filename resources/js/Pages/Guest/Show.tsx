@@ -2,6 +2,13 @@ import { Head } from '@inertiajs/react';
 import { GuestPageData, GuestStaff } from '@/types';
 import axios from 'axios';
 import { useState } from 'react';
+import {
+    sendJpycTip,
+    isMetaMaskInstalled,
+    getMetaMaskDownloadUrl,
+    getPolygonscanUrl,
+    TIP_AMOUNT,
+} from '@/utils/web3';
 
 interface GuestShowProps {
     guestData: GuestPageData;
@@ -9,6 +16,13 @@ interface GuestShowProps {
     googlePlaceId: string;
     lineOfficialUrl: string;
     contactPhone: string;
+}
+
+interface TipStatus {
+    loading: boolean;
+    success: boolean;
+    txHash?: string;
+    error?: string;
 }
 
 export default function Show({
@@ -19,6 +33,7 @@ export default function Show({
     contactPhone,
 }: GuestShowProps) {
     const [reviewError, setReviewError] = useState<string | null>(null);
+    const [tipStatuses, setTipStatuses] = useState<Record<number, TipStatus>>({});
 
     const roleLabels: Record<string, string> = {
         cooking: '調理',
@@ -32,7 +47,6 @@ export default function Show({
             await axios.post('/api/review/clicked', {
                 guest_page_uuid: guestData.uuid,
             });
-            // Open Google Review page after recording the click
             window.open(
                 `https://search.google.com/local/writereview?placeid=${googlePlaceId}`,
                 '_blank'
@@ -41,13 +55,168 @@ export default function Show({
             if (axios.isAxiosError(error) && error.response?.status === 410) {
                 setReviewError('このページは有効期限が切れています。');
             } else {
-                // Still open the review page even if recording fails
                 window.open(
                     `https://search.google.com/local/writereview?placeid=${googlePlaceId}`,
                     '_blank'
                 );
             }
         }
+    };
+
+    // Map API reason codes to Japanese error messages
+    const getReasonMessage = (reason: string, message?: string, remainingTips?: number): string => {
+        switch (reason) {
+            case 'guest_page_expired':
+                return 'このページは有効期限が切れています。';
+            case 'staff_not_assigned':
+                return 'このスタッフは現在投げ銭を受け付けていません。';
+            case 'no_wallet':
+                return 'このスタッフはまだウォレットを登録していません。';
+            case 'rate_limit':
+                return `このスタッフへの投げ銭は24時間以内に5回まで可能です（残り: ${remainingTips ?? 0}回）`;
+            default:
+                return message || '投げ銭できません。';
+        }
+    };
+
+    const handleTip = async (staff: GuestStaff) => {
+        if (!staff.wallet_address) return;
+
+        // Check MetaMask first
+        if (!isMetaMaskInstalled()) {
+            const downloadUrl = getMetaMaskDownloadUrl();
+            if (confirm('MetaMaskがインストールされていません。ダウンロードページを開きますか？')) {
+                window.open(downloadUrl, '_blank');
+            }
+            return;
+        }
+
+        // Check can-tip first (rate limit, assignment, etc.)
+        try {
+            const canTipResponse = await axios.post('/api/tip/can-tip', {
+                guest_page_uuid: guestData.uuid,
+                staff_id: staff.id,
+            });
+            if (!canTipResponse.data.can_tip) {
+                const errorMessage = getReasonMessage(
+                    canTipResponse.data.reason,
+                    canTipResponse.data.message,
+                    canTipResponse.data.remaining_tips
+                );
+                setTipStatuses((prev) => ({
+                    ...prev,
+                    [staff.id]: {
+                        loading: false,
+                        success: false,
+                        error: errorMessage,
+                    },
+                }));
+                return;
+            }
+        } catch {
+            // If can-tip API fails, do NOT proceed with tip
+            setTipStatuses((prev) => ({
+                ...prev,
+                [staff.id]: {
+                    loading: false,
+                    success: false,
+                    error: '接続エラーが発生しました。時間をおいて再度お試しください。',
+                },
+            }));
+            return;
+        }
+
+        // Set loading state
+        setTipStatuses((prev) => ({
+            ...prev,
+            [staff.id]: { loading: true, success: false },
+        }));
+
+        // Send JPYC tip
+        const result = await sendJpycTip(staff.wallet_address);
+
+        if (result.success && result.txHash) {
+            // Record tip in database
+            try {
+                await axios.post('/api/tip/record', {
+                    guest_page_uuid: guestData.uuid,
+                    staff_id: staff.id,
+                    transaction_hash: result.txHash,
+                    network: 'polygon',
+                });
+            } catch {
+                // Even if recording fails, tip was sent
+                console.error('Failed to record tip');
+            }
+
+            setTipStatuses((prev) => ({
+                ...prev,
+                [staff.id]: {
+                    loading: false,
+                    success: true,
+                    txHash: result.txHash,
+                },
+            }));
+        } else {
+            setTipStatuses((prev) => ({
+                ...prev,
+                [staff.id]: {
+                    loading: false,
+                    success: false,
+                    error: result.errorMessage,
+                },
+            }));
+        }
+    };
+
+    const renderTipButton = (staff: GuestStaff) => {
+        if (!staff.wallet_address) return null;
+
+        const status = tipStatuses[staff.id];
+
+        // Loading state
+        if (status?.loading) {
+            return (
+                <button
+                    disabled
+                    className="rounded-full bg-gray-300 px-4 py-2 text-sm font-medium text-gray-600"
+                >
+                    送信中...
+                </button>
+            );
+        }
+
+        // Success state
+        if (status?.success && status.txHash) {
+            return (
+                <div className="text-right">
+                    <span className="text-sm text-green-600">送信完了</span>
+                    <a
+                        href={getPolygonscanUrl(status.txHash)}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="ml-2 text-xs text-blue-500 underline"
+                    >
+                        確認
+                    </a>
+                </div>
+            );
+        }
+
+        // Default or error state - show button
+        return (
+            <div className="text-right">
+                <button
+                    className="rounded-full bg-gradient-to-r from-purple-500 to-pink-500 px-4 py-2 text-sm font-medium text-white hover:from-purple-600 hover:to-pink-600"
+                    onClick={() => handleTip(staff)}
+                >
+                    投げ銭（{TIP_AMOUNT}円）
+                </button>
+                {status?.error && (
+                    <p className="mt-1 text-xs text-red-500">{status.error}</p>
+                )}
+            </div>
+        );
     };
 
     return (
@@ -75,42 +244,34 @@ export default function Show({
                         {staffList.map((staff) => (
                             <div
                                 key={staff.id}
-                                className="flex items-center justify-between rounded-lg bg-white p-4 shadow-sm dark:bg-gray-800"
+                                className="rounded-lg bg-white p-4 shadow-sm dark:bg-gray-800"
                             >
-                                <div className="flex items-center space-x-3">
-                                    <div className="flex h-12 w-12 items-center justify-center rounded-full bg-blue-100 dark:bg-blue-900">
-                                        {staff.avatar ? (
-                                            <img
-                                                src={staff.avatar}
-                                                alt={staff.name}
-                                                className="h-12 w-12 rounded-full object-cover"
-                                            />
-                                        ) : (
-                                            <span className="text-lg font-bold text-blue-600 dark:text-blue-400">
-                                                {staff.name.charAt(0)}
-                                            </span>
-                                        )}
+                                <div className="flex items-center justify-between">
+                                    <div className="flex items-center space-x-3">
+                                        <div className="flex h-12 w-12 items-center justify-center rounded-full bg-blue-100 dark:bg-blue-900">
+                                            {staff.avatar ? (
+                                                <img
+                                                    src={staff.avatar}
+                                                    alt={staff.name}
+                                                    className="h-12 w-12 rounded-full object-cover"
+                                                />
+                                            ) : (
+                                                <span className="text-lg font-bold text-blue-600 dark:text-blue-400">
+                                                    {staff.name.charAt(0)}
+                                                </span>
+                                            )}
+                                        </div>
+                                        <div>
+                                            <p className="font-medium text-gray-900 dark:text-white">
+                                                {staff.name}
+                                            </p>
+                                            <p className="text-sm text-gray-500 dark:text-gray-400">
+                                                {roleLabels[staff.role] || staff.role}
+                                            </p>
+                                        </div>
                                     </div>
-                                    <div>
-                                        <p className="font-medium text-gray-900 dark:text-white">
-                                            {staff.name}
-                                        </p>
-                                        <p className="text-sm text-gray-500 dark:text-gray-400">
-                                            {roleLabels[staff.role] || staff.role}
-                                        </p>
-                                    </div>
+                                    {renderTipButton(staff)}
                                 </div>
-                                {staff.wallet_address && (
-                                    <button
-                                        className="rounded-full bg-yellow-400 px-4 py-2 text-sm font-medium text-yellow-900 hover:bg-yellow-500"
-                                        onClick={() => {
-                                            // TODO: Web3 tip implementation
-                                            alert('投げ銭機能は準備中です');
-                                        }}
-                                    >
-                                        投げ銭
-                                    </button>
-                                )}
                             </div>
                         ))}
                     </div>
