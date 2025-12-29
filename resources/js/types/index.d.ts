@@ -120,5 +120,5 @@ export interface DailyChecklistEntry {
 export interface Location {
     id: number;
     name: string;
-    code: string;
+    slug: string;
 }

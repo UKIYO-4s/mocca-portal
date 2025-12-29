@@ -42,7 +42,7 @@ class DailyChecklistController extends Controller
             });
         }
 
-        $dailyChecklists = $query->paginate(20)->withQueryString();
+        $dailyChecklists = $query->get();
 
         return Inertia::render('Checklists/Index', [
             'checklists' => $dailyChecklists,

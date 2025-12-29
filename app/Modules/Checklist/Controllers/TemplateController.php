@@ -45,7 +45,7 @@ class TemplateController extends Controller
             $query->where('location_id', $request->location_id);
         }
 
-        $templates = $query->paginate(20)->withQueryString();
+        $templates = $query->get();
 
         return Inertia::render('Checklists/Templates/Index', [
             'templates' => $templates,
