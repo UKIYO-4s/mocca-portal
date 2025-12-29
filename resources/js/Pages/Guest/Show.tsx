@@ -302,7 +302,7 @@ export default function Show({
                             />
                         </svg>
                         <span className="font-medium text-gray-900 dark:text-white">
-                            グーグルで口コミを書く
+                            Googleで口コミを書く
                         </span>
                     </button>
                     {reviewError && (

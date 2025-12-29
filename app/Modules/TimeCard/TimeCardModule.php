@@ -12,8 +12,7 @@ class TimeCardModule extends BaseModule
 
     public function boot(): void
     {
-        // Controllers not yet implemented - routes will be registered when ready
-        // $this->registerRoutes();
+        $this->registerRoutes();
     }
 
     protected function registerRoutes(): void
@@ -26,13 +25,15 @@ class TimeCardModule extends BaseModule
                 Route::get('/', [\App\Modules\TimeCard\Controllers\TimeCardController::class, 'index'])->name('index');
                 Route::post('/clock-in', [\App\Modules\TimeCard\Controllers\TimeCardController::class, 'clockIn'])->name('clock-in');
                 Route::post('/clock-out', [\App\Modules\TimeCard\Controllers\TimeCardController::class, 'clockOut'])->name('clock-out');
+                Route::post('/break-start', [\App\Modules\TimeCard\Controllers\TimeCardController::class, 'breakStart'])->name('break-start');
+                Route::post('/break-end', [\App\Modules\TimeCard\Controllers\TimeCardController::class, 'breakEnd'])->name('break-end');
                 Route::get('/history', [\App\Modules\TimeCard\Controllers\TimeCardController::class, 'history'])->name('history');
 
                 // 管理（Manager以上）
                 Route::middleware('role:admin,manager')->group(function () {
                     Route::get('/manage', [\App\Modules\TimeCard\Controllers\TimeCardController::class, 'manage'])->name('manage');
                     Route::get('/reports', [\App\Modules\TimeCard\Controllers\TimeCardController::class, 'reports'])->name('reports');
-                    Route::put('/records/{record}', [\App\Modules\TimeCard\Controllers\TimeCardController::class, 'update'])->name('update');
+                    Route::put('/records/{timeRecord}', [\App\Modules\TimeCard\Controllers\TimeCardController::class, 'update'])->name('update');
                 });
             });
     }

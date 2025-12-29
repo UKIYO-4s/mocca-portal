@@ -150,3 +150,33 @@ export interface InventoryLog {
     user?: User;
     created_at: string;
 }
+
+// TimeCard Types
+export interface TimeRecord {
+    id: number;
+    user_id: number;
+    user?: User;
+    date: string;
+    clock_in: string | null;
+    clock_out: string | null;
+    break_start: string | null;
+    break_end: string | null;
+    break_minutes: number;
+    notes: string | null;
+    modified_by: number | null;
+    modified_by_user?: User;
+    modified_at: string | null;
+    status: 'not_started' | 'working' | 'on_break' | 'completed';
+    work_minutes?: number;
+    created_at: string;
+    updated_at: string;
+}
+
+export interface MonthlyTimeReport {
+    user_id: number;
+    user: User;
+    total_work_minutes: number;
+    total_break_minutes: number;
+    work_days: number;
+    records: TimeRecord[];
+}
