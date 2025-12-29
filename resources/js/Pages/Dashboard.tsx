@@ -74,6 +74,19 @@ export default function Dashboard({ auth, widgets, navigation }: DashboardProps)
                             </svg>
                             <span className="text-sm font-medium text-gray-900 dark:text-gray-100">プロフィール</span>
                         </Link>
+
+                        {/* Admin only: User Management */}
+                        {auth.user.role === 'admin' && (
+                            <Link
+                                href={route('users.index')}
+                                className="flex flex-col items-center justify-center rounded-lg bg-red-50 p-4 shadow-sm hover:bg-red-100 dark:bg-red-900/20 dark:hover:bg-red-900/30"
+                            >
+                                <svg className="mb-2 h-8 w-8 text-red-600 dark:text-red-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z" />
+                                </svg>
+                                <span className="text-sm font-medium text-red-700 dark:text-red-300">ユーザー管理</span>
+                            </Link>
+                        )}
                     </div>
 
                     {/* ウェルカムメッセージ */}

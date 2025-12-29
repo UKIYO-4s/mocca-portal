@@ -91,9 +91,7 @@ class ReservationModule extends BaseModule
 
     public function getDashboardWidgets(): array
     {
-        return [
-            new Widgets\TodayReservationsWidget(),
-            new Widgets\UpcomingCheckinsWidget(),
-        ];
+        // Widgets will be implemented in Phase 3
+        return [];
     }
 }

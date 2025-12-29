@@ -43,9 +43,11 @@ class AssignmentController extends Controller
         $user = User::find($validated['user_id']);
         $typeLabel = $validated['assignment_type'] === 'cleaning' ? '掃除' : 'セット';
 
-        $this->activityLog->logCreated(
+        $this->activityLog->log(
             'reservation',
+            'assigned',
             $assignment,
+            $assignment->id,
             "{$typeLabel}担当割り当て: {$user->name} → {$reservation->name}様"
         );
 
