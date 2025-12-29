@@ -17,7 +17,7 @@ class DailyChecklist extends Model
     ];
 
     protected $casts = [
-        'date' => 'date',
+        'date' => 'date:Y-m-d',
         'completed_at' => 'datetime',
     ];
 

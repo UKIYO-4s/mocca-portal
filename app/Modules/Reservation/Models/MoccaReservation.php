@@ -26,7 +26,7 @@ class MoccaReservation extends Model
     ];
 
     protected $casts = [
-        'reservation_date' => 'date',
+        'reservation_date' => 'date:Y-m-d',
         'arrival_time' => 'datetime:H:i',
     ];
 

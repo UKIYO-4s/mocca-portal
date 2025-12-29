@@ -28,8 +28,8 @@ class GuestPage extends Model
     protected function casts(): array
     {
         return [
-            'check_in_date' => 'date',
-            'check_out_date' => 'date',
+            'check_in_date' => 'date:Y-m-d',
+            'check_out_date' => 'date:Y-m-d',
             'is_active' => 'boolean',
             'expires_at' => 'datetime',
         ];

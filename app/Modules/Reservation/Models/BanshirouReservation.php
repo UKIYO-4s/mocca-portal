@@ -33,8 +33,8 @@ class BanshirouReservation extends Model
     ];
 
     protected $casts = [
-        'checkin_date' => 'date',
-        'checkout_date' => 'date',
+        'checkin_date' => 'date:Y-m-d',
+        'checkout_date' => 'date:Y-m-d',
         'pickup_required' => 'boolean',
         'options' => 'array',
     ];
