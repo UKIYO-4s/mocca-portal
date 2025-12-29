@@ -48,7 +48,7 @@ export default function Welcome({
                                 ようこそ
                             </h2>
                             <p className="mt-6 text-lg leading-8 text-gray-600 dark:text-gray-400">
-                                施設管理をスマートに。予約管理、スタッフ管理、投げ銭システムを一元管理できるポータルサイトです。
+                                施設管理をスマートに。予約管理、スタッフ管理を一元管理できるポータルサイトです。
                             </p>
                             <div className="mt-10 flex items-center justify-center gap-x-6">
                                 {!auth.user && (
