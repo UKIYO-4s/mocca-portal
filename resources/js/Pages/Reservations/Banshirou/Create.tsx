@@ -3,7 +3,8 @@ import { Head, router } from '@inertiajs/react';
 import { PageProps } from '@/types';
 import { useState, FormEvent } from 'react';
 
-interface FormData {
+interface ReservationFormData {
+    [key: string]: string | number | boolean;
     name: string;
     name_kana: string;
     phone: string;
@@ -19,7 +20,7 @@ interface FormData {
     notes: string;
 }
 
-const initialFormData: FormData = {
+const initialFormData: ReservationFormData = {
     name: '',
     name_kana: '',
     phone: '',
@@ -37,13 +38,13 @@ const initialFormData: FormData = {
 
 export default function Create({ auth }: PageProps) {
     const [step, setStep] = useState(1);
-    const [formData, setFormData] = useState<FormData>(initialFormData);
+    const [formData, setFormData] = useState<ReservationFormData>(initialFormData);
     const [errors, setErrors] = useState<Record<string, string>>({});
     const [processing, setProcessing] = useState(false);
 
     const totalSteps = 5;
 
-    const updateField = <K extends keyof FormData>(field: K, value: FormData[K]) => {
+    const updateField = <K extends keyof ReservationFormData>(field: K, value: ReservationFormData[K]) => {
         setFormData(prev => ({ ...prev, [field]: value }));
         setErrors(prev => ({ ...prev, [field]: '' }));
     };

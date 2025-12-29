@@ -25,7 +25,8 @@ interface Props extends PageProps {
     reservation: Reservation;
 }
 
-interface FormData {
+interface ReservationFormData {
+    [key: string]: string | number | boolean;
     name: string;
     name_kana: string;
     phone: string;
@@ -43,7 +44,7 @@ interface FormData {
 }
 
 export default function Edit({ auth, reservation }: Props) {
-    const [formData, setFormData] = useState<FormData>({
+    const [formData, setFormData] = useState<ReservationFormData>({
         name: reservation.name,
         name_kana: reservation.name_kana,
         phone: reservation.phone,
@@ -62,7 +63,7 @@ export default function Edit({ auth, reservation }: Props) {
     const [errors, setErrors] = useState<Record<string, string>>({});
     const [processing, setProcessing] = useState(false);
 
-    const updateField = <K extends keyof FormData>(field: K, value: FormData[K]) => {
+    const updateField = <K extends keyof ReservationFormData>(field: K, value: ReservationFormData[K]) => {
         setFormData(prev => ({ ...prev, [field]: value }));
         setErrors(prev => ({ ...prev, [field]: '' }));
     };

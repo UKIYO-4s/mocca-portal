@@ -29,7 +29,8 @@ interface Props extends PageProps {
     banshirouReservations: BanshirouReservation[];
 }
 
-interface FormData {
+interface MoccaFormData {
+    [key: string]: string | number;
     reservation_type: string;
     reservation_date: string;
     name: string;
@@ -43,7 +44,7 @@ interface FormData {
 }
 
 export default function Edit({ auth, reservation, banshirouReservations }: Props) {
-    const [formData, setFormData] = useState<FormData>({
+    const [formData, setFormData] = useState<MoccaFormData>({
         reservation_type: reservation.reservation_type,
         reservation_date: reservation.reservation_date,
         name: reservation.name,
@@ -58,7 +59,7 @@ export default function Edit({ auth, reservation, banshirouReservations }: Props
     const [errors, setErrors] = useState<Record<string, string>>({});
     const [processing, setProcessing] = useState(false);
 
-    const updateField = <K extends keyof FormData>(field: K, value: FormData[K]) => {
+    const updateField = <K extends keyof MoccaFormData>(field: K, value: MoccaFormData[K]) => {
         setFormData(prev => ({ ...prev, [field]: value }));
         setErrors(prev => ({ ...prev, [field]: '' }));
     };

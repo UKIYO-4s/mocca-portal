@@ -53,7 +53,6 @@ export default function Show({ auth, reservation }: Props) {
     const handleCancel = () => {
         if (confirm('この予約をキャンセルしてもよろしいですか？')) {
             router.put(route('reservations.mocca.update', reservation.id), {
-                ...reservation,
                 status: 'cancelled',
             });
         }
