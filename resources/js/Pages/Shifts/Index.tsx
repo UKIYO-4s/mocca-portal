@@ -14,14 +14,14 @@ interface Props {
 
 // Color palette for users (cycle through these colors)
 const USER_COLORS = [
-    { bg: 'bg-blue-100 dark:bg-blue-900', text: 'text-blue-800 dark:text-blue-200', border: 'border-blue-300 dark:border-blue-700' },
-    { bg: 'bg-green-100 dark:bg-green-900', text: 'text-green-800 dark:text-green-200', border: 'border-green-300 dark:border-green-700' },
-    { bg: 'bg-purple-100 dark:bg-purple-900', text: 'text-purple-800 dark:text-purple-200', border: 'border-purple-300 dark:border-purple-700' },
-    { bg: 'bg-orange-100 dark:bg-orange-900', text: 'text-orange-800 dark:text-orange-200', border: 'border-orange-300 dark:border-orange-700' },
-    { bg: 'bg-pink-100 dark:bg-pink-900', text: 'text-pink-800 dark:text-pink-200', border: 'border-pink-300 dark:border-pink-700' },
-    { bg: 'bg-teal-100 dark:bg-teal-900', text: 'text-teal-800 dark:text-teal-200', border: 'border-teal-300 dark:border-teal-700' },
-    { bg: 'bg-indigo-100 dark:bg-indigo-900', text: 'text-indigo-800 dark:text-indigo-200', border: 'border-indigo-300 dark:border-indigo-700' },
-    { bg: 'bg-red-100 dark:bg-red-900', text: 'text-red-800 dark:text-red-200', border: 'border-red-300 dark:border-red-700' },
+    { bg: 'bg-blue-100', text: 'text-blue-800', border: 'border-blue-300' },
+    { bg: 'bg-green-100', text: 'text-green-800', border: 'border-green-300' },
+    { bg: 'bg-purple-100', text: 'text-purple-800', border: 'border-purple-300' },
+    { bg: 'bg-orange-100', text: 'text-orange-800', border: 'border-orange-300' },
+    { bg: 'bg-pink-100', text: 'text-pink-800', border: 'border-pink-300' },
+    { bg: 'bg-teal-100', text: 'text-teal-800', border: 'border-teal-300' },
+    { bg: 'bg-indigo-100', text: 'text-indigo-800', border: 'border-indigo-300' },
+    { bg: 'bg-red-100', text: 'text-red-800', border: 'border-red-300' },
 ];
 
 // Japanese day labels (Monday-Sunday)
@@ -146,7 +146,7 @@ export default function Index({ auth, shifts, users, locations, currentWeek, wee
         <AuthenticatedLayout
             header={
                 <div className="flex items-center justify-between">
-                    <h2 className="text-xl font-semibold leading-tight text-gray-800 dark:text-gray-200">
+                    <h2 className="text-xl font-semibold leading-tight text-gray-800">
                         シフト表
                     </h2>
                     {canManage && (
@@ -165,11 +165,11 @@ export default function Index({ auth, shifts, users, locations, currentWeek, wee
             <div className="py-6">
                 <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
                     {/* Week Navigation */}
-                    <div className="mb-6 rounded-lg bg-white p-4 shadow-sm dark:bg-gray-800">
+                    <div className="mb-6 rounded-lg bg-white p-4 shadow-sm">
                         <div className="flex items-center justify-between">
                             <button
                                 onClick={() => navigateWeek('prev')}
-                                className="flex items-center gap-1 rounded-md bg-gray-100 px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-200 dark:bg-gray-700 dark:text-gray-200 dark:hover:bg-gray-600"
+                                className="flex items-center gap-1 rounded-md bg-gray-100 px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-200:bg-gray-600"
                             >
                                 <svg
                                     className="h-4 w-4"
@@ -187,16 +187,16 @@ export default function Index({ auth, shifts, users, locations, currentWeek, wee
                                 前週
                             </button>
                             <div className="text-center">
-                                <h3 className="text-lg font-semibold text-gray-900 dark:text-gray-100">
+                                <h3 className="text-lg font-semibold text-gray-900">
                                     {displayWeek}
                                 </h3>
-                                <p className="text-sm text-gray-500 dark:text-gray-400">
+                                <p className="text-sm text-gray-500">
                                     {weekStart} - {weekEnd}
                                 </p>
                             </div>
                             <button
                                 onClick={() => navigateWeek('next')}
-                                className="flex items-center gap-1 rounded-md bg-gray-100 px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-200 dark:bg-gray-700 dark:text-gray-200 dark:hover:bg-gray-600"
+                                className="flex items-center gap-1 rounded-md bg-gray-100 px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-200:bg-gray-600"
                             >
                                 翌週
                                 <svg
@@ -217,11 +217,11 @@ export default function Index({ auth, shifts, users, locations, currentWeek, wee
                     </div>
 
                     {/* Shift Grid */}
-                    <div className="overflow-x-auto rounded-lg bg-white shadow-sm dark:bg-gray-800">
-                        <table className="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
-                            <thead className="bg-gray-50 dark:bg-gray-900">
+                    <div className="overflow-x-auto rounded-lg bg-white shadow-sm">
+                        <table className="min-w-full divide-y divide-gray-200">
+                            <thead className="bg-gray-50">
                                 <tr>
-                                    <th className="sticky left-0 z-10 bg-gray-50 px-4 py-3 text-left text-sm font-semibold text-gray-900 dark:bg-gray-900 dark:text-gray-100">
+                                    <th className="sticky left-0 z-10 bg-gray-50 px-4 py-3 text-left text-sm font-semibold text-gray-900">
                                         スタッフ
                                     </th>
                                     {weekDates.map((date, index) => (
@@ -229,12 +229,12 @@ export default function Index({ auth, shifts, users, locations, currentWeek, wee
                                             key={index}
                                             className={`min-w-[120px] px-2 py-3 text-center text-sm font-semibold ${
                                                 isToday(date)
-                                                    ? 'bg-blue-50 text-blue-900 dark:bg-blue-900/30 dark:text-blue-200'
+                                                    ? 'bg-blue-50 text-blue-900'
                                                     : isWeekend(index)
                                                     ? index === 5
-                                                        ? 'bg-blue-50/50 text-blue-700 dark:bg-blue-900/20 dark:text-blue-300'
-                                                        : 'bg-red-50/50 text-red-700 dark:bg-red-900/20 dark:text-red-300'
-                                                    : 'text-gray-900 dark:text-gray-100'
+                                                        ? 'bg-blue-50/50 text-blue-700'
+                                                        : 'bg-red-50/50 text-red-700'
+                                                    : 'text-gray-900'
                                             }`}
                                         >
                                             <div className="text-xs">{formatDateShort(date)}</div>
@@ -245,12 +245,12 @@ export default function Index({ auth, shifts, users, locations, currentWeek, wee
                                     ))}
                                 </tr>
                             </thead>
-                            <tbody className="divide-y divide-gray-200 dark:divide-gray-700">
+                            <tbody className="divide-y divide-gray-200">
                                 {users.length === 0 ? (
                                     <tr>
                                         <td
                                             colSpan={8}
-                                            className="px-4 py-8 text-center text-gray-500 dark:text-gray-400"
+                                            className="px-4 py-8 text-center text-gray-500"
                                         >
                                             スタッフが登録されていません
                                         </td>
@@ -262,12 +262,12 @@ export default function Index({ auth, shifts, users, locations, currentWeek, wee
 
                                         return (
                                             <tr key={user.id}>
-                                                <td className="sticky left-0 z-10 whitespace-nowrap bg-white px-4 py-3 dark:bg-gray-800">
+                                                <td className="sticky left-0 z-10 whitespace-nowrap bg-white px-4 py-3">
                                                     <div className="flex items-center gap-2">
                                                         <div
                                                             className={`h-3 w-3 rounded-full ${color.bg} ${color.border} border`}
                                                         ></div>
-                                                        <span className="text-sm font-medium text-gray-900 dark:text-gray-100">
+                                                        <span className="text-sm font-medium text-gray-900">
                                                             {user.name}
                                                         </span>
                                                     </div>
@@ -281,11 +281,11 @@ export default function Index({ auth, shifts, users, locations, currentWeek, wee
                                                             key={dayIndex}
                                                             className={`px-2 py-2 align-top ${
                                                                 isToday(date)
-                                                                    ? 'bg-blue-50/50 dark:bg-blue-900/10'
+                                                                    ? 'bg-blue-50/50'
                                                                     : isWeekend(dayIndex)
                                                                     ? dayIndex === 5
-                                                                        ? 'bg-blue-50/30 dark:bg-blue-900/5'
-                                                                        : 'bg-red-50/30 dark:bg-red-900/5'
+                                                                        ? 'bg-blue-50/30'
+                                                                        : 'bg-red-50/30'
                                                                     : ''
                                                             }`}
                                                         >
@@ -323,15 +323,15 @@ export default function Index({ auth, shifts, users, locations, currentWeek, wee
 
                     {/* Legend */}
                     {locations.length > 0 && (
-                        <div className="mt-4 rounded-lg bg-white p-4 shadow-sm dark:bg-gray-800">
-                            <h4 className="mb-2 text-sm font-medium text-gray-700 dark:text-gray-300">
+                        <div className="mt-4 rounded-lg bg-white p-4 shadow-sm">
+                            <h4 className="mb-2 text-sm font-medium text-gray-700">
                                 店舗
                             </h4>
                             <div className="flex flex-wrap gap-4">
                                 {locations.map((location) => (
                                     <div
                                         key={location.id}
-                                        className="flex items-center gap-2 text-sm text-gray-600 dark:text-gray-400"
+                                        className="flex items-center gap-2 text-sm text-gray-600"
                                     >
                                         <span>{location.name}</span>
                                     </div>
@@ -341,11 +341,11 @@ export default function Index({ auth, shifts, users, locations, currentWeek, wee
                     )}
 
                     {/* Week Summary */}
-                    <div className="mt-4 rounded-lg bg-white p-4 shadow-sm dark:bg-gray-800">
-                        <h4 className="mb-2 text-sm font-medium text-gray-700 dark:text-gray-300">
+                    <div className="mt-4 rounded-lg bg-white p-4 shadow-sm">
+                        <h4 className="mb-2 text-sm font-medium text-gray-700">
                             今週のシフト
                         </h4>
-                        <div className="text-2xl font-bold text-gray-900 dark:text-gray-100">
+                        <div className="text-2xl font-bold text-gray-900">
                             {shifts.length}件
                         </div>
                     </div>

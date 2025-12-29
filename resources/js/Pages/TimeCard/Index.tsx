@@ -136,7 +136,7 @@ export default function Index({ todayRecord }: Props) {
     return (
         <AuthenticatedLayout
             header={
-                <h2 className="text-xl font-semibold leading-tight text-gray-800 dark:text-gray-200">
+                <h2 className="text-xl font-semibold leading-tight text-gray-800">
                     打刻
                 </h2>
             }
@@ -146,42 +146,42 @@ export default function Index({ todayRecord }: Props) {
             <div className="py-6">
                 <div className="mx-auto max-w-3xl px-4 sm:px-6 lg:px-8">
                     {/* Current Time Display */}
-                    <div className="mb-8 rounded-lg bg-white p-8 text-center shadow-sm dark:bg-gray-800">
-                        <p className="text-lg text-gray-600 dark:text-gray-400">
+                    <div className="mb-8 rounded-lg bg-white p-8 text-center shadow-sm">
+                        <p className="text-lg text-gray-600">
                             {formatDate(currentTime)}
                         </p>
-                        <p className="mt-2 font-mono text-6xl font-bold text-gray-900 dark:text-gray-100">
+                        <p className="mt-2 font-mono text-6xl font-bold text-gray-900">
                             {formatTime(currentTime)}
                         </p>
                     </div>
 
                     {/* Today's Status */}
-                    <div className="mb-8 rounded-lg bg-white p-6 shadow-sm dark:bg-gray-800">
-                        <h3 className="mb-4 text-lg font-medium text-gray-900 dark:text-gray-100">
+                    <div className="mb-8 rounded-lg bg-white p-6 shadow-sm">
+                        <h3 className="mb-4 text-lg font-medium text-gray-900">
                             本日の勤務状況
                         </h3>
                         <div className="grid grid-cols-2 gap-4 sm:grid-cols-4">
-                            <div className="rounded-lg bg-gray-50 p-4 text-center dark:bg-gray-700">
-                                <p className="text-sm text-gray-500 dark:text-gray-400">出勤時刻</p>
-                                <p className="mt-1 text-xl font-semibold text-gray-900 dark:text-gray-100">
+                            <div className="rounded-lg bg-gray-50 p-4 text-center">
+                                <p className="text-sm text-gray-500">出勤時刻</p>
+                                <p className="mt-1 text-xl font-semibold text-gray-900">
                                     {formatRecordedTime(todayRecord?.clock_in ?? null)}
                                 </p>
                             </div>
-                            <div className="rounded-lg bg-gray-50 p-4 text-center dark:bg-gray-700">
-                                <p className="text-sm text-gray-500 dark:text-gray-400">休憩開始</p>
-                                <p className="mt-1 text-xl font-semibold text-gray-900 dark:text-gray-100">
+                            <div className="rounded-lg bg-gray-50 p-4 text-center">
+                                <p className="text-sm text-gray-500">休憩開始</p>
+                                <p className="mt-1 text-xl font-semibold text-gray-900">
                                     {formatRecordedTime(todayRecord?.break_start ?? null)}
                                 </p>
                             </div>
-                            <div className="rounded-lg bg-gray-50 p-4 text-center dark:bg-gray-700">
-                                <p className="text-sm text-gray-500 dark:text-gray-400">休憩終了</p>
-                                <p className="mt-1 text-xl font-semibold text-gray-900 dark:text-gray-100">
+                            <div className="rounded-lg bg-gray-50 p-4 text-center">
+                                <p className="text-sm text-gray-500">休憩終了</p>
+                                <p className="mt-1 text-xl font-semibold text-gray-900">
                                     {formatRecordedTime(todayRecord?.break_end ?? null)}
                                 </p>
                             </div>
-                            <div className="rounded-lg bg-gray-50 p-4 text-center dark:bg-gray-700">
-                                <p className="text-sm text-gray-500 dark:text-gray-400">退勤時刻</p>
-                                <p className="mt-1 text-xl font-semibold text-gray-900 dark:text-gray-100">
+                            <div className="rounded-lg bg-gray-50 p-4 text-center">
+                                <p className="text-sm text-gray-500">退勤時刻</p>
+                                <p className="mt-1 text-xl font-semibold text-gray-900">
                                     {formatRecordedTime(todayRecord?.clock_out ?? null)}
                                 </p>
                             </div>
@@ -190,7 +190,7 @@ export default function Index({ todayRecord }: Props) {
 
                     {/* Completed Message */}
                     {isCompleted && (
-                        <div className="mb-8 rounded-lg bg-green-50 p-6 text-center dark:bg-green-900/20">
+                        <div className="mb-8 rounded-lg bg-green-50 p-6 text-center">
                             <svg
                                 className="mx-auto h-12 w-12 text-green-500"
                                 fill="none"
@@ -204,10 +204,10 @@ export default function Index({ todayRecord }: Props) {
                                     d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"
                                 />
                             </svg>
-                            <p className="mt-4 text-lg font-medium text-green-700 dark:text-green-400">
+                            <p className="mt-4 text-lg font-medium text-green-700">
                                 本日の勤務は完了しました
                             </p>
-                            <p className="mt-1 text-sm text-green-600 dark:text-green-500">
+                            <p className="mt-1 text-sm text-green-600">
                                 お疲れ様でした
                             </p>
                         </div>

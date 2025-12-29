@@ -115,7 +115,7 @@ export default function Edit({ auth, reservation }: Props) {
     return (
         <AuthenticatedLayout
             header={
-                <h2 className="text-xl font-semibold leading-tight text-gray-800 dark:text-gray-200">
+                <h2 className="text-xl font-semibold leading-tight text-gray-800">
                     予約編集
                 </h2>
             }
@@ -125,10 +125,10 @@ export default function Edit({ auth, reservation }: Props) {
             <div className="py-6">
                 <div className="mx-auto max-w-2xl px-4 sm:px-6 lg:px-8">
                     <form onSubmit={handleSubmit}>
-                        <div className="rounded-lg bg-white p-6 shadow-sm dark:bg-gray-800 space-y-6">
+                        <div className="rounded-lg bg-white p-6 shadow-sm space-y-6">
                             {/* ステータス */}
                             <div>
-                                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                                <label className="block text-sm font-medium text-gray-700 mb-2">
                                     ステータス
                                 </label>
                                 <div className="grid grid-cols-2 gap-3">
@@ -162,13 +162,13 @@ export default function Edit({ auth, reservation }: Props) {
 
                             {/* お客様情報 */}
                             <div className="border-t border-gray-200 pt-6">
-                                <h3 className="text-lg font-medium text-gray-900 dark:text-gray-100 mb-4">
+                                <h3 className="text-lg font-medium text-gray-900 mb-4">
                                     お客様情報
                                 </h3>
 
                                 <div className="space-y-4">
                                     <div>
-                                        <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">
+                                        <label className="block text-sm font-medium text-gray-700">
                                             お名前 <span className="text-red-500">*</span>
                                         </label>
                                         <input
@@ -182,7 +182,7 @@ export default function Edit({ auth, reservation }: Props) {
                                     </div>
 
                                     <div>
-                                        <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">
+                                        <label className="block text-sm font-medium text-gray-700">
                                             フリガナ <span className="text-red-500">*</span>
                                         </label>
                                         <input
@@ -196,7 +196,7 @@ export default function Edit({ auth, reservation }: Props) {
                                     </div>
 
                                     <div>
-                                        <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">
+                                        <label className="block text-sm font-medium text-gray-700">
                                             電話番号 <span className="text-red-500">*</span>
                                         </label>
                                         <input
@@ -210,7 +210,7 @@ export default function Edit({ auth, reservation }: Props) {
                                     </div>
 
                                     <div>
-                                        <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">
+                                        <label className="block text-sm font-medium text-gray-700">
                                             メールアドレス（任意）
                                         </label>
                                         <input
@@ -223,7 +223,7 @@ export default function Edit({ auth, reservation }: Props) {
                                     </div>
 
                                     <div>
-                                        <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">
+                                        <label className="block text-sm font-medium text-gray-700">
                                             住所 <span className="text-red-500">*</span>
                                         </label>
                                         <textarea
@@ -240,14 +240,14 @@ export default function Edit({ auth, reservation }: Props) {
 
                             {/* 宿泊情報 */}
                             <div className="border-t border-gray-200 pt-6">
-                                <h3 className="text-lg font-medium text-gray-900 dark:text-gray-100 mb-4">
+                                <h3 className="text-lg font-medium text-gray-900 mb-4">
                                     宿泊情報
                                 </h3>
 
                                 <div className="space-y-4">
                                     <div className="grid gap-4 sm:grid-cols-2">
                                         <div>
-                                            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">
+                                            <label className="block text-sm font-medium text-gray-700">
                                                 チェックイン <span className="text-red-500">*</span>
                                             </label>
                                             <input
@@ -260,7 +260,7 @@ export default function Edit({ auth, reservation }: Props) {
                                         </div>
 
                                         <div>
-                                            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">
+                                            <label className="block text-sm font-medium text-gray-700">
                                                 チェックアウト <span className="text-red-500">*</span>
                                             </label>
                                             <input
@@ -275,7 +275,7 @@ export default function Edit({ auth, reservation }: Props) {
 
                                     <div className="grid gap-4 sm:grid-cols-2">
                                         <div>
-                                            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">
+                                            <label className="block text-sm font-medium text-gray-700">
                                                 大人
                                             </label>
                                             <div className="mt-1 flex items-center gap-3">
@@ -301,7 +301,7 @@ export default function Edit({ auth, reservation }: Props) {
                                         </div>
 
                                         <div>
-                                            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">
+                                            <label className="block text-sm font-medium text-gray-700">
                                                 子供
                                             </label>
                                             <div className="mt-1 flex items-center gap-3">
@@ -331,13 +331,13 @@ export default function Edit({ auth, reservation }: Props) {
 
                             {/* お食事・オプション */}
                             <div className="border-t border-gray-200 pt-6">
-                                <h3 className="text-lg font-medium text-gray-900 dark:text-gray-100 mb-4">
+                                <h3 className="text-lg font-medium text-gray-900 mb-4">
                                     お食事・オプション
                                 </h3>
 
                                 <div className="space-y-4">
                                     <div>
-                                        <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                                        <label className="block text-sm font-medium text-gray-700 mb-2">
                                             お食事
                                         </label>
                                         <div className="space-y-2">
@@ -384,13 +384,13 @@ export default function Edit({ auth, reservation }: Props) {
 
                             {/* お支払い・備考 */}
                             <div className="border-t border-gray-200 pt-6">
-                                <h3 className="text-lg font-medium text-gray-900 dark:text-gray-100 mb-4">
+                                <h3 className="text-lg font-medium text-gray-900 mb-4">
                                     お支払い・備考
                                 </h3>
 
                                 <div className="space-y-4">
                                     <div>
-                                        <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                                        <label className="block text-sm font-medium text-gray-700 mb-2">
                                             お支払い方法
                                         </label>
                                         <div className="space-y-2">
@@ -422,7 +422,7 @@ export default function Edit({ auth, reservation }: Props) {
                                     </div>
 
                                     <div>
-                                        <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">
+                                        <label className="block text-sm font-medium text-gray-700">
                                             備考
                                         </label>
                                         <textarea

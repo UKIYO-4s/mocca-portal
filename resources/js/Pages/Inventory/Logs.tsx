@@ -86,7 +86,7 @@ export default function Logs({ auth, logs, items, filters }: Props) {
         <AuthenticatedLayout
             header={
                 <div className="flex items-center justify-between">
-                    <h2 className="text-xl font-semibold leading-tight text-gray-800 dark:text-gray-200">
+                    <h2 className="text-xl font-semibold leading-tight text-gray-800">
                         在庫操作履歴
                     </h2>
                     <Link
@@ -103,16 +103,16 @@ export default function Logs({ auth, logs, items, filters }: Props) {
             <div className="py-6">
                 <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
                     {/* フィルター */}
-                    <div className="mb-6 rounded-lg bg-white p-4 shadow-sm dark:bg-gray-800">
+                    <div className="mb-6 rounded-lg bg-white p-4 shadow-sm">
                         <div className="grid gap-4 sm:grid-cols-5">
                             <div>
-                                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">
+                                <label className="block text-sm font-medium text-gray-700">
                                     品目
                                 </label>
                                 <select
                                     value={itemId}
                                     onChange={(e) => setItemId(e.target.value)}
-                                    className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700"
+                                    className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
                                 >
                                     <option value="">すべて</option>
                                     {items.map((item) => (
@@ -123,13 +123,13 @@ export default function Logs({ auth, logs, items, filters }: Props) {
                                 </select>
                             </div>
                             <div>
-                                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">
+                                <label className="block text-sm font-medium text-gray-700">
                                     操作タイプ
                                 </label>
                                 <select
                                     value={type}
                                     onChange={(e) => setType(e.target.value)}
-                                    className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700"
+                                    className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
                                 >
                                     <option value="">すべて</option>
                                     <option value="usage">使用</option>
@@ -138,25 +138,25 @@ export default function Logs({ auth, logs, items, filters }: Props) {
                                 </select>
                             </div>
                             <div>
-                                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">
+                                <label className="block text-sm font-medium text-gray-700">
                                     開始日
                                 </label>
                                 <input
                                     type="date"
                                     value={dateFrom}
                                     onChange={(e) => setDateFrom(e.target.value)}
-                                    className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700"
+                                    className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
                                 />
                             </div>
                             <div>
-                                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">
+                                <label className="block text-sm font-medium text-gray-700">
                                     終了日
                                 </label>
                                 <input
                                     type="date"
                                     value={dateTo}
                                     onChange={(e) => setDateTo(e.target.value)}
-                                    className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700"
+                                    className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
                                 />
                             </div>
                             <div className="flex items-end gap-2">
@@ -177,43 +177,43 @@ export default function Logs({ auth, logs, items, filters }: Props) {
                     </div>
 
                     {/* 操作履歴テーブル */}
-                    <div className="overflow-hidden rounded-lg bg-white shadow-sm dark:bg-gray-800">
+                    <div className="overflow-hidden rounded-lg bg-white shadow-sm">
                         {logs.length === 0 ? (
                             <div className="p-8 text-center">
-                                <p className="text-gray-500 dark:text-gray-400">操作履歴がありません</p>
+                                <p className="text-gray-500">操作履歴がありません</p>
                             </div>
                         ) : (
                             <div className="overflow-x-auto">
-                                <table className="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
-                                    <thead className="bg-gray-50 dark:bg-gray-700">
+                                <table className="min-w-full divide-y divide-gray-200">
+                                    <thead className="bg-gray-50">
                                         <tr>
-                                            <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500 dark:text-gray-300">
+                                            <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500">
                                                 日時
                                             </th>
-                                            <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500 dark:text-gray-300">
+                                            <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500">
                                                 品目
                                             </th>
-                                            <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500 dark:text-gray-300">
+                                            <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500">
                                                 操作タイプ
                                             </th>
-                                            <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500 dark:text-gray-300">
+                                            <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500">
                                                 数量変動
                                             </th>
-                                            <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500 dark:text-gray-300">
+                                            <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500">
                                                 備考
                                             </th>
-                                            <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500 dark:text-gray-300">
+                                            <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500">
                                                 操作者
                                             </th>
                                         </tr>
                                     </thead>
-                                    <tbody className="divide-y divide-gray-200 bg-white dark:divide-gray-700 dark:bg-gray-800">
+                                    <tbody className="divide-y divide-gray-200 bg-white">
                                         {logs.map((log) => (
-                                            <tr key={log.id} className="hover:bg-gray-50 dark:hover:bg-gray-700">
-                                                <td className="whitespace-nowrap px-6 py-4 text-sm text-gray-900 dark:text-gray-100">
+                                            <tr key={log.id} className="hover:bg-gray-50:bg-gray-700">
+                                                <td className="whitespace-nowrap px-6 py-4 text-sm text-gray-900">
                                                     {formatDateTime(log.created_at)}
                                                 </td>
-                                                <td className="whitespace-nowrap px-6 py-4 text-sm text-gray-900 dark:text-gray-100">
+                                                <td className="whitespace-nowrap px-6 py-4 text-sm text-gray-900">
                                                     {log.item.name}
                                                 </td>
                                                 <td className="whitespace-nowrap px-6 py-4 text-sm">
@@ -226,10 +226,10 @@ export default function Logs({ auth, logs, items, filters }: Props) {
                                                         {formatQuantityChange(log.quantity_change, log.item.unit)}
                                                     </span>
                                                 </td>
-                                                <td className="px-6 py-4 text-sm text-gray-500 dark:text-gray-400">
+                                                <td className="px-6 py-4 text-sm text-gray-500">
                                                     {log.notes || '-'}
                                                 </td>
-                                                <td className="whitespace-nowrap px-6 py-4 text-sm text-gray-900 dark:text-gray-100">
+                                                <td className="whitespace-nowrap px-6 py-4 text-sm text-gray-900">
                                                     {log.user.name}
                                                 </td>
                                             </tr>

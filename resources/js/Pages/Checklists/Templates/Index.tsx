@@ -54,7 +54,7 @@ export default function Index({ auth, templates }: Props) {
         <AuthenticatedLayout
             header={
                 <div className="flex items-center justify-between">
-                    <h2 className="text-xl font-semibold leading-tight text-gray-800 dark:text-gray-200">
+                    <h2 className="text-xl font-semibold leading-tight text-gray-800">
                         チェックリストテンプレート管理
                     </h2>
                     <Link
@@ -74,7 +74,7 @@ export default function Index({ auth, templates }: Props) {
                     <div className="mb-4">
                         <Link
                             href={route('checklists.index')}
-                            className="inline-flex items-center text-sm text-gray-600 hover:text-gray-900 dark:text-gray-400 dark:hover:text-gray-200"
+                            className="inline-flex items-center text-sm text-gray-600 hover:text-gray-900:text-gray-200"
                         >
                             <svg
                                 className="mr-1 h-4 w-4"
@@ -93,7 +93,7 @@ export default function Index({ auth, templates }: Props) {
                         </Link>
                     </div>
 
-                    <div className="overflow-hidden rounded-lg bg-white shadow-sm dark:bg-gray-800">
+                    <div className="overflow-hidden rounded-lg bg-white shadow-sm">
                         <div className="p-6">
                             <div className="mb-4 text-sm text-gray-500">
                                 登録テンプレート: {templates.length}件
@@ -104,15 +104,15 @@ export default function Index({ auth, templates }: Props) {
                                 {templates.map((template) => (
                                     <div
                                         key={template.id}
-                                        className={`flex items-center justify-between rounded-lg border border-gray-200 p-4 dark:border-gray-700 ${
+                                        className={`flex items-center justify-between rounded-lg border border-gray-200 p-4 ${
                                             processingId === template.id ? 'opacity-50' : ''
-                                        } ${!template.is_active ? 'bg-gray-50 dark:bg-gray-900' : ''}`}
+                                        } ${!template.is_active ? 'bg-gray-50' : ''}`}
                                     >
                                         <div className="flex flex-1 items-center gap-4">
                                             {/* Template Info */}
                                             <div className="flex-1">
                                                 <div className="flex flex-wrap items-center gap-2">
-                                                    <span className="font-medium text-gray-900 dark:text-gray-100">
+                                                    <span className="font-medium text-gray-900">
                                                         {template.name}
                                                     </span>
                                                     <span
@@ -128,7 +128,7 @@ export default function Index({ auth, templates }: Props) {
                                                         </span>
                                                     )}
                                                 </div>
-                                                <div className="mt-1 flex flex-wrap items-center gap-4 text-sm text-gray-500 dark:text-gray-400">
+                                                <div className="mt-1 flex flex-wrap items-center gap-4 text-sm text-gray-500">
                                                     <span>
                                                         拠点:{' '}
                                                         {template.location
@@ -170,7 +170,7 @@ export default function Index({ auth, templates }: Props) {
                                         <div className="ml-4 flex items-center gap-2">
                                             <Link
                                                 href={route('checklists.templates.edit', template.id)}
-                                                className="rounded-md bg-gray-100 px-3 py-2 text-sm font-medium text-gray-700 hover:bg-gray-200 dark:bg-gray-700 dark:text-gray-300 dark:hover:bg-gray-600"
+                                                className="rounded-md bg-gray-100 px-3 py-2 text-sm font-medium text-gray-700 hover:bg-gray-200:bg-gray-600"
                                             >
                                                 編集
                                             </Link>
@@ -201,10 +201,10 @@ export default function Index({ auth, templates }: Props) {
                                             d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01"
                                         />
                                     </svg>
-                                    <h3 className="mt-2 text-sm font-medium text-gray-900 dark:text-gray-100">
+                                    <h3 className="mt-2 text-sm font-medium text-gray-900">
                                         テンプレートがありません
                                     </h3>
-                                    <p className="mt-1 text-sm text-gray-500 dark:text-gray-400">
+                                    <p className="mt-1 text-sm text-gray-500">
                                         新しいチェックリストテンプレートを作成してください。
                                     </p>
                                     <div className="mt-6">
@@ -234,7 +234,7 @@ export default function Index({ auth, templates }: Props) {
                     </div>
 
                     {/* Help Text */}
-                    <div className="mt-4 rounded-lg bg-blue-50 p-4 text-sm text-blue-800 dark:bg-blue-900/20 dark:text-blue-300">
+                    <div className="mt-4 rounded-lg bg-blue-50 p-4 text-sm text-blue-800">
                         <p className="font-medium">テンプレートについて:</p>
                         <ul className="mt-2 list-inside list-disc space-y-1">
                             <li>

@@ -145,7 +145,7 @@ export default function Calendar({ auth, shifts, currentMonth }: Props) {
     return (
         <AuthenticatedLayout
             header={
-                <h2 className="text-xl font-semibold leading-tight text-gray-800 dark:text-gray-200">
+                <h2 className="text-xl font-semibold leading-tight text-gray-800">
                     シフトカレンダー
                 </h2>
             }
@@ -155,10 +155,10 @@ export default function Calendar({ auth, shifts, currentMonth }: Props) {
             <div className="py-6">
                 <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
                     {/* Month Navigation */}
-                    <div className="mb-6 flex items-center justify-between rounded-lg bg-white p-4 shadow-sm dark:bg-gray-800">
+                    <div className="mb-6 flex items-center justify-between rounded-lg bg-white p-4 shadow-sm">
                         <button
                             onClick={() => navigateToMonth(getPrevMonth())}
-                            className="inline-flex items-center rounded-md border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-200 dark:hover:bg-gray-600"
+                            className="inline-flex items-center rounded-md border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50:bg-gray-600"
                         >
                             <svg className="mr-2 h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
@@ -166,13 +166,13 @@ export default function Calendar({ auth, shifts, currentMonth }: Props) {
                             前月
                         </button>
 
-                        <h3 className="text-xl font-bold text-gray-900 dark:text-gray-100">
+                        <h3 className="text-xl font-bold text-gray-900">
                             {formatMonthDisplay()}
                         </h3>
 
                         <button
                             onClick={() => navigateToMonth(getNextMonth())}
-                            className="inline-flex items-center rounded-md border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-200 dark:hover:bg-gray-600"
+                            className="inline-flex items-center rounded-md border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50:bg-gray-600"
                         >
                             翌月
                             <svg className="ml-2 h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -182,18 +182,18 @@ export default function Calendar({ auth, shifts, currentMonth }: Props) {
                     </div>
 
                     {/* Calendar Grid */}
-                    <div className="overflow-hidden rounded-lg bg-white shadow-sm dark:bg-gray-800">
+                    <div className="overflow-hidden rounded-lg bg-white shadow-sm">
                         {/* Week Day Headers */}
-                        <div className="grid grid-cols-7 border-b border-gray-200 bg-gray-50 dark:border-gray-700 dark:bg-gray-700">
+                        <div className="grid grid-cols-7 border-b border-gray-200 bg-gray-50">
                             {weekDays.map((day, index) => (
                                 <div
                                     key={day}
                                     className={`py-3 text-center text-sm font-semibold ${
                                         index === 5
-                                            ? 'text-blue-600 dark:text-blue-400' // Saturday
+                                            ? 'text-blue-600' // Saturday
                                             : index === 6
-                                            ? 'text-red-600 dark:text-red-400' // Sunday
-                                            : 'text-gray-700 dark:text-gray-300'
+                                            ? 'text-red-600' // Sunday
+                                            : 'text-gray-700'
                                     }`}
                                 >
                                     {day}
@@ -213,22 +213,22 @@ export default function Calendar({ auth, shifts, currentMonth }: Props) {
                                 return (
                                     <div
                                         key={index}
-                                        className={`min-h-[120px] border-b border-r border-gray-200 p-2 dark:border-gray-700 ${
+                                        className={`min-h-[120px] border-b border-r border-gray-200 p-2 ${
                                             !day.isCurrentMonth
-                                                ? 'bg-gray-50 dark:bg-gray-900'
-                                                : 'bg-white dark:bg-gray-800'
+                                                ? 'bg-gray-50'
+                                                : 'bg-white'
                                         } ${day.isToday ? 'ring-2 ring-inset ring-blue-500' : ''}`}
                                     >
                                         {/* Day Number */}
                                         <div
                                             className={`mb-1 text-sm font-medium ${
                                                 !day.isCurrentMonth
-                                                    ? 'text-gray-400 dark:text-gray-600'
+                                                    ? 'text-gray-400'
                                                     : isSaturday
-                                                    ? 'text-blue-600 dark:text-blue-400'
+                                                    ? 'text-blue-600'
                                                     : isSunday
-                                                    ? 'text-red-600 dark:text-red-400'
-                                                    : 'text-gray-900 dark:text-gray-100'
+                                                    ? 'text-red-600'
+                                                    : 'text-gray-900'
                                             } ${day.isToday ? 'inline-flex h-6 w-6 items-center justify-center rounded-full bg-blue-600 text-white' : ''}`}
                                         >
                                             {day.dayNumber}
@@ -241,8 +241,8 @@ export default function Calendar({ auth, shifts, currentMonth }: Props) {
                                                     key={shift.id}
                                                     className={`truncate rounded px-1.5 py-0.5 text-xs ${
                                                         day.isCurrentMonth
-                                                            ? 'bg-green-100 text-green-800 dark:bg-green-900/50 dark:text-green-300'
-                                                            : 'bg-gray-100 text-gray-500 dark:bg-gray-700 dark:text-gray-500'
+                                                            ? 'bg-green-100 text-green-800'
+                                                            : 'bg-gray-100 text-gray-500'
                                                     }`}
                                                     title={`${shift.user?.name || 'Unknown'}: ${formatShiftTimeRange(shift)}`}
                                                 >
@@ -254,8 +254,8 @@ export default function Calendar({ auth, shifts, currentMonth }: Props) {
                                                 <div
                                                     className={`text-center text-xs ${
                                                         day.isCurrentMonth
-                                                            ? 'text-gray-600 dark:text-gray-400'
-                                                            : 'text-gray-400 dark:text-gray-600'
+                                                            ? 'text-gray-600'
+                                                            : 'text-gray-400'
                                                     }`}
                                                 >
                                                     +{remainingCount}件
@@ -269,9 +269,9 @@ export default function Calendar({ auth, shifts, currentMonth }: Props) {
                     </div>
 
                     {/* Legend */}
-                    <div className="mt-4 flex items-center justify-end space-x-4 text-sm text-gray-600 dark:text-gray-400">
+                    <div className="mt-4 flex items-center justify-end space-x-4 text-sm text-gray-600">
                         <div className="flex items-center">
-                            <div className="mr-2 h-4 w-4 rounded bg-green-100 dark:bg-green-900/50"></div>
+                            <div className="mr-2 h-4 w-4 rounded bg-green-100"></div>
                             <span>シフト</span>
                         </div>
                         <div className="flex items-center">

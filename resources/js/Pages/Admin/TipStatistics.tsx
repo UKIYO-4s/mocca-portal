@@ -23,7 +23,7 @@ export default function TipStatistics({
         <AuthenticatedLayout
             header={
                 <div className="flex items-center justify-between">
-                    <h2 className="text-xl font-semibold leading-tight text-gray-800 dark:text-gray-200">
+                    <h2 className="text-xl font-semibold leading-tight text-gray-800">
                         投げ銭統計
                     </h2>
                     <a
@@ -41,35 +41,35 @@ export default function TipStatistics({
                 <div className="mx-auto max-w-7xl sm:px-6 lg:px-8">
                     {/* Summary Cards */}
                     <div className="mb-6 grid grid-cols-1 gap-6 sm:grid-cols-3">
-                        <div className="overflow-hidden rounded-lg bg-white p-6 shadow-sm dark:bg-gray-800">
-                            <div className="text-sm font-medium text-gray-500 dark:text-gray-400">
+                        <div className="overflow-hidden rounded-lg bg-white p-6 shadow-sm">
+                            <div className="text-sm font-medium text-gray-500">
                                 今月の投げ銭
                             </div>
-                            <div className="mt-2 text-3xl font-bold text-gray-900 dark:text-white">
+                            <div className="mt-2 text-3xl font-bold text-gray-900">
                                 {totals.this_month.toLocaleString()}
                             </div>
                         </div>
-                        <div className="overflow-hidden rounded-lg bg-white p-6 shadow-sm dark:bg-gray-800">
-                            <div className="text-sm font-medium text-gray-500 dark:text-gray-400">
+                        <div className="overflow-hidden rounded-lg bg-white p-6 shadow-sm">
+                            <div className="text-sm font-medium text-gray-500">
                                 今年の投げ銭
                             </div>
-                            <div className="mt-2 text-3xl font-bold text-gray-900 dark:text-white">
+                            <div className="mt-2 text-3xl font-bold text-gray-900">
                                 {totals.this_year.toLocaleString()}
                             </div>
                         </div>
-                        <div className="overflow-hidden rounded-lg bg-white p-6 shadow-sm dark:bg-gray-800">
-                            <div className="text-sm font-medium text-gray-500 dark:text-gray-400">
+                        <div className="overflow-hidden rounded-lg bg-white p-6 shadow-sm">
+                            <div className="text-sm font-medium text-gray-500">
                                 累計投げ銭
                             </div>
-                            <div className="mt-2 text-3xl font-bold text-gray-900 dark:text-white">
+                            <div className="mt-2 text-3xl font-bold text-gray-900">
                                 {totals.all_time.toLocaleString()}
                             </div>
                         </div>
                     </div>
 
                     {/* Monthly Trend */}
-                    <div className="mb-6 overflow-hidden rounded-lg bg-white p-6 shadow-sm dark:bg-gray-800">
-                        <h3 className="mb-4 text-lg font-medium text-gray-900 dark:text-white">
+                    <div className="mb-6 overflow-hidden rounded-lg bg-white p-6 shadow-sm">
+                        <h3 className="mb-4 text-lg font-medium text-gray-900">
                             月別推移（過去12ヶ月）
                         </h3>
                         <div className="flex h-48 items-end space-x-2">
@@ -82,7 +82,7 @@ export default function TipStatistics({
                                             className="w-full rounded-t bg-blue-500"
                                             style={{ height: `${height}%`, minHeight: item.total > 0 ? '4px' : '0' }}
                                         />
-                                        <div className="mt-2 text-xs text-gray-500 dark:text-gray-400">
+                                        <div className="mt-2 text-xs text-gray-500">
                                             {item.label}
                                         </div>
                                     </div>
@@ -92,20 +92,20 @@ export default function TipStatistics({
                     </div>
 
                     {/* Role Stats */}
-                    <div className="mb-6 overflow-hidden rounded-lg bg-white p-6 shadow-sm dark:bg-gray-800">
-                        <h3 className="mb-4 text-lg font-medium text-gray-900 dark:text-white">
+                    <div className="mb-6 overflow-hidden rounded-lg bg-white p-6 shadow-sm">
+                        <h3 className="mb-4 text-lg font-medium text-gray-900">
                             役職別集計
                         </h3>
                         <div className="grid grid-cols-3 gap-4">
                             {roleStats.map((stat) => (
                                 <div
                                     key={stat.role}
-                                    className="rounded-lg bg-gray-50 p-4 text-center dark:bg-gray-700"
+                                    className="rounded-lg bg-gray-50 p-4 text-center"
                                 >
-                                    <div className="text-sm text-gray-500 dark:text-gray-400">
+                                    <div className="text-sm text-gray-500">
                                         {stat.role_label}
                                     </div>
-                                    <div className="mt-1 text-2xl font-bold text-gray-900 dark:text-white">
+                                    <div className="mt-1 text-2xl font-bold text-gray-900">
                                         {stat.total.toLocaleString()}
                                     </div>
                                 </div>
@@ -114,50 +114,50 @@ export default function TipStatistics({
                     </div>
 
                     {/* Staff Rankings */}
-                    <div className="overflow-hidden rounded-lg bg-white shadow-sm dark:bg-gray-800">
+                    <div className="overflow-hidden rounded-lg bg-white shadow-sm">
                         <div className="p-6">
-                            <h3 className="mb-4 text-lg font-medium text-gray-900 dark:text-white">
+                            <h3 className="mb-4 text-lg font-medium text-gray-900">
                                 スタッフ別ランキング
                             </h3>
                             <div className="overflow-x-auto">
-                                <table className="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
-                                    <thead className="bg-gray-50 dark:bg-gray-900">
+                                <table className="min-w-full divide-y divide-gray-200">
+                                    <thead className="bg-gray-50">
                                         <tr>
-                                            <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500 dark:text-gray-400">
+                                            <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500">
                                                 順位
                                             </th>
-                                            <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500 dark:text-gray-400">
+                                            <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500">
                                                 スタッフ
                                             </th>
-                                            <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500 dark:text-gray-400">
+                                            <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500">
                                                 今月
                                             </th>
-                                            <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500 dark:text-gray-400">
+                                            <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500">
                                                 累計
                                             </th>
-                                            <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500 dark:text-gray-400">
+                                            <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500">
                                                 最終受取日
                                             </th>
-                                            <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500 dark:text-gray-400">
+                                            <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500">
                                                 詳細
                                             </th>
                                         </tr>
                                     </thead>
-                                    <tbody className="divide-y divide-gray-200 bg-white dark:divide-gray-700 dark:bg-gray-800">
+                                    <tbody className="divide-y divide-gray-200 bg-white">
                                         {staffStats.map((staff, index) => (
                                             <tr key={staff.id}>
-                                                <td className="whitespace-nowrap px-6 py-4 text-sm font-medium text-gray-900 dark:text-white">
+                                                <td className="whitespace-nowrap px-6 py-4 text-sm font-medium text-gray-900">
                                                     {index + 1}
                                                 </td>
                                                 <td className="whitespace-nowrap px-6 py-4">
                                                     <div className="flex items-center">
                                                         <div>
-                                                            <div className="font-medium text-gray-900 dark:text-white">
+                                                            <div className="font-medium text-gray-900">
                                                                 {staff.name}
                                                             </div>
-                                                            <div className="text-sm text-gray-500 dark:text-gray-400">
+                                                            <div className="text-sm text-gray-500">
                                                                 {staff.has_wallet ? (
-                                                                    <span className="text-green-600 dark:text-green-400">
+                                                                    <span className="text-green-600">
                                                                         ウォレット登録済
                                                                     </span>
                                                                 ) : (
@@ -169,19 +169,19 @@ export default function TipStatistics({
                                                         </div>
                                                     </div>
                                                 </td>
-                                                <td className="whitespace-nowrap px-6 py-4 text-sm text-gray-900 dark:text-white">
+                                                <td className="whitespace-nowrap px-6 py-4 text-sm text-gray-900">
                                                     {staff.monthly_tips.toLocaleString()}
                                                 </td>
-                                                <td className="whitespace-nowrap px-6 py-4 text-sm font-semibold text-gray-900 dark:text-white">
+                                                <td className="whitespace-nowrap px-6 py-4 text-sm font-semibold text-gray-900">
                                                     {staff.total_tips.toLocaleString()}
                                                 </td>
-                                                <td className="whitespace-nowrap px-6 py-4 text-sm text-gray-500 dark:text-gray-400">
+                                                <td className="whitespace-nowrap px-6 py-4 text-sm text-gray-500">
                                                     {staff.last_tip_date || '-'}
                                                 </td>
                                                 <td className="whitespace-nowrap px-6 py-4 text-sm">
                                                     <Link
                                                         href={route('admin.tips.show', staff.id)}
-                                                        className="text-indigo-600 hover:text-indigo-900 dark:text-indigo-400 dark:hover:text-indigo-300"
+                                                        className="text-indigo-600 hover:text-indigo-900:text-indigo-300"
                                                     >
                                                         詳細
                                                     </Link>
@@ -192,7 +192,7 @@ export default function TipStatistics({
                                 </table>
 
                                 {staffStats.length === 0 && (
-                                    <div className="py-12 text-center text-gray-500 dark:text-gray-400">
+                                    <div className="py-12 text-center text-gray-500">
                                         データがありません
                                     </div>
                                 )}

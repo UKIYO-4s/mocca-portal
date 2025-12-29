@@ -220,16 +220,16 @@ export default function Show({
     };
 
     return (
-        <div className="min-h-screen bg-gradient-to-b from-blue-50 to-white dark:from-gray-900 dark:to-gray-800">
+        <div className="min-h-screen bg-gradient-to-b from-blue-50 to-white">
             <Head title={`${guestData.guest_name}様 - ゲストページ`} />
 
             <div className="mx-auto max-w-lg px-4 py-8">
                 {/* Header */}
                 <div className="mb-8 text-center">
-                    <h1 className="text-2xl font-bold text-gray-900 dark:text-white">
+                    <h1 className="text-2xl font-bold text-gray-900">
                         {guestData.guest_name}様
                     </h1>
-                    <p className="mt-2 text-sm text-gray-600 dark:text-gray-400">
+                    <p className="mt-2 text-sm text-gray-600">
                         {guestData.room_number && `お部屋: ${guestData.room_number} | `}
                         {guestData.check_in_date} 〜 {guestData.check_out_date}
                     </p>
@@ -237,18 +237,18 @@ export default function Show({
 
                 {/* Staff List */}
                 <div className="mb-8">
-                    <h2 className="mb-4 text-lg font-semibold text-gray-800 dark:text-gray-200">
+                    <h2 className="mb-4 text-lg font-semibold text-gray-800">
                         担当スタッフ
                     </h2>
                     <div className="space-y-4">
                         {staffList.map((staff) => (
                             <div
                                 key={staff.id}
-                                className="rounded-lg bg-white p-4 shadow-sm dark:bg-gray-800"
+                                className="rounded-lg bg-white p-4 shadow-sm"
                             >
                                 <div className="flex items-center justify-between">
                                     <div className="flex items-center space-x-3">
-                                        <div className="flex h-12 w-12 items-center justify-center rounded-full bg-blue-100 dark:bg-blue-900">
+                                        <div className="flex h-12 w-12 items-center justify-center rounded-full bg-blue-100">
                                             {staff.avatar ? (
                                                 <img
                                                     src={staff.avatar}
@@ -256,16 +256,16 @@ export default function Show({
                                                     className="h-12 w-12 rounded-full object-cover"
                                                 />
                                             ) : (
-                                                <span className="text-lg font-bold text-blue-600 dark:text-blue-400">
+                                                <span className="text-lg font-bold text-blue-600">
                                                     {staff.name.charAt(0)}
                                                 </span>
                                             )}
                                         </div>
                                         <div>
-                                            <p className="font-medium text-gray-900 dark:text-white">
+                                            <p className="font-medium text-gray-900">
                                                 {staff.name}
                                             </p>
-                                            <p className="text-sm text-gray-500 dark:text-gray-400">
+                                            <p className="text-sm text-gray-500">
                                                 {roleLabels[staff.role] || staff.role}
                                             </p>
                                         </div>
@@ -281,7 +281,7 @@ export default function Show({
                 <div className="mb-6">
                     <button
                         onClick={handleGoogleReviewClick}
-                        className="flex w-full items-center justify-center rounded-lg bg-white px-6 py-4 shadow-sm hover:bg-gray-50 dark:bg-gray-800 dark:hover:bg-gray-700"
+                        className="flex w-full items-center justify-center rounded-lg bg-white px-6 py-4 shadow-sm hover:bg-gray-50:bg-gray-700"
                     >
                         <svg className="mr-3 h-6 w-6" viewBox="0 0 24 24">
                             <path
@@ -301,12 +301,12 @@ export default function Show({
                                 d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"
                             />
                         </svg>
-                        <span className="font-medium text-gray-900 dark:text-white">
+                        <span className="font-medium text-gray-900">
                             Googleで口コミを書く
                         </span>
                     </button>
                     {reviewError && (
-                        <p className="mt-2 text-center text-sm text-red-600 dark:text-red-400">
+                        <p className="mt-2 text-center text-sm text-red-600">
                             {reviewError}
                         </p>
                     )}

@@ -52,11 +52,11 @@ export default function DeleteUserForm({
     return (
         <section className={`space-y-6 ${className}`}>
             <header>
-                <h2 className="text-lg font-medium text-gray-900 dark:text-gray-100">
+                <h2 className="text-lg font-medium text-gray-900">
                     アカウント削除
                 </h2>
 
-                <p className="mt-1 text-sm text-gray-600 dark:text-gray-400">
+                <p className="mt-1 text-sm text-gray-600">
                     アカウント削除後はすべてのデータが完全に削除されます。必要な情報は事前に保存してください。
                 </p>
             </header>
@@ -67,11 +67,11 @@ export default function DeleteUserForm({
 
             <Modal show={confirmingUserDeletion} onClose={closeModal}>
                 <form onSubmit={deleteUser} className="p-6">
-                    <h2 className="text-lg font-medium text-gray-900 dark:text-gray-100">
+                    <h2 className="text-lg font-medium text-gray-900">
                         アカウントを削除してもよろしいですか？
                     </h2>
 
-                    <p className="mt-1 text-sm text-gray-600 dark:text-gray-400">
+                    <p className="mt-1 text-sm text-gray-600">
                         削除を確定するためにパスワードを入力してください。
                     </p>
 

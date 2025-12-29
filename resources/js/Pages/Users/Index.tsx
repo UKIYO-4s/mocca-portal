@@ -66,7 +66,7 @@ export default function Index({ auth, users }: Props) {
     return (
         <AuthenticatedLayout
             header={
-                <h2 className="text-xl font-semibold leading-tight text-gray-800 dark:text-gray-200">
+                <h2 className="text-xl font-semibold leading-tight text-gray-800">
                     ユーザー管理
                 </h2>
             }
@@ -75,7 +75,7 @@ export default function Index({ auth, users }: Props) {
 
             <div className="py-6">
                 <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-                    <div className="overflow-hidden rounded-lg bg-white shadow-sm dark:bg-gray-800">
+                    <div className="overflow-hidden rounded-lg bg-white shadow-sm">
                         <div className="p-6">
                             <div className="mb-4 text-sm text-gray-500">
                                 登録ユーザー: {users.length}名
@@ -106,7 +106,7 @@ export default function Index({ auth, users }: Props) {
                                             {/* User Info */}
                                             <div>
                                                 <div className="flex items-center gap-2">
-                                                    <span className="font-medium text-gray-900 dark:text-gray-100">
+                                                    <span className="font-medium text-gray-900">
                                                         {user.name}
                                                     </span>
                                                     <span className={`inline-flex rounded-full px-2 py-1 text-xs font-medium ${getRoleBadgeColor(user.role)}`}>

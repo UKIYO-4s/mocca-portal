@@ -53,13 +53,13 @@ export default function Show({ auth, announcement }: Props) {
                     <div className="flex items-center gap-3">
                         <Link
                             href={route('announcements.index')}
-                            className="text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200"
+                            className="text-gray-500 hover:text-gray-700:text-gray-200"
                         >
                             <svg className="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 19l-7-7m0 0l7-7m-7 7h18" />
                             </svg>
                         </Link>
-                        <h2 className="text-xl font-semibold leading-tight text-gray-800 dark:text-gray-200">
+                        <h2 className="text-xl font-semibold leading-tight text-gray-800">
                             お知らせ詳細
                         </h2>
                     </div>
@@ -92,29 +92,29 @@ export default function Show({ auth, announcement }: Props) {
 
             <div className="py-12">
                 <div className="mx-auto max-w-3xl sm:px-6 lg:px-8">
-                    <div className="overflow-hidden bg-white shadow-sm sm:rounded-lg dark:bg-gray-800">
+                    <div className="overflow-hidden bg-white shadow-sm sm:rounded-lg">
                         <div className="p-6">
                             {/* Header with title and priority badge */}
                             <div className="mb-6">
                                 <div className="flex items-start gap-3">
                                     {announcement.priority === 'important' && (
-                                        <span className="mt-1 inline-flex items-center rounded-full bg-red-100 px-2.5 py-0.5 text-xs font-medium text-red-800 dark:bg-red-900 dark:text-red-200">
+                                        <span className="mt-1 inline-flex items-center rounded-full bg-red-100 px-2.5 py-0.5 text-xs font-medium text-red-800">
                                             重要
                                         </span>
                                     )}
                                     {announcement.priority === 'normal' && (
-                                        <span className="mt-1 inline-flex items-center rounded-full bg-gray-100 px-2.5 py-0.5 text-xs font-medium text-gray-800 dark:bg-gray-700 dark:text-gray-200">
+                                        <span className="mt-1 inline-flex items-center rounded-full bg-gray-100 px-2.5 py-0.5 text-xs font-medium text-gray-800">
                                             通常
                                         </span>
                                     )}
-                                    <h1 className="text-2xl font-bold text-gray-900 dark:text-gray-100">
+                                    <h1 className="text-2xl font-bold text-gray-900">
                                         {announcement.title}
                                     </h1>
                                 </div>
                             </div>
 
                             {/* Meta info */}
-                            <div className="mb-6 flex flex-wrap items-center gap-4 text-sm text-gray-500 dark:text-gray-400">
+                            <div className="mb-6 flex flex-wrap items-center gap-4 text-sm text-gray-500">
                                 {announcement.author && (
                                     <div className="flex items-center gap-2">
                                         <svg className="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -134,11 +134,11 @@ export default function Show({ auth, announcement }: Props) {
                             </div>
 
                             {/* Divider */}
-                            <hr className="mb-6 border-gray-200 dark:border-gray-700" />
+                            <hr className="mb-6 border-gray-200" />
 
                             {/* Content with preserved whitespace */}
-                            <div className="prose prose-gray max-w-none dark:prose-invert">
-                                <p className="whitespace-pre-wrap text-gray-700 dark:text-gray-300">
+                            <div className="prose prose-gray max-w-none">
+                                <p className="whitespace-pre-wrap text-gray-700">
                                     {announcement.content}
                                 </p>
                             </div>
@@ -149,7 +149,7 @@ export default function Show({ auth, announcement }: Props) {
                     <div className="mt-6">
                         <Link
                             href={route('announcements.index')}
-                            className="inline-flex items-center text-gray-600 hover:text-gray-900 dark:text-gray-400 dark:hover:text-gray-200"
+                            className="inline-flex items-center text-gray-600 hover:text-gray-900:text-gray-200"
                         >
                             <svg className="mr-2 h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 19l-7-7m0 0l7-7m-7 7h18" />
@@ -171,19 +171,19 @@ export default function Show({ auth, announcement }: Props) {
                         />
 
                         {/* Dialog */}
-                        <div className="relative transform overflow-hidden rounded-lg bg-white px-4 pb-4 pt-5 text-left shadow-xl transition-all sm:my-8 sm:w-full sm:max-w-lg sm:p-6 dark:bg-gray-800">
+                        <div className="relative transform overflow-hidden rounded-lg bg-white px-4 pb-4 pt-5 text-left shadow-xl transition-all sm:my-8 sm:w-full sm:max-w-lg sm:p-6">
                             <div className="sm:flex sm:items-start">
-                                <div className="mx-auto flex h-12 w-12 flex-shrink-0 items-center justify-center rounded-full bg-red-100 sm:mx-0 sm:h-10 sm:w-10 dark:bg-red-900">
-                                    <svg className="h-6 w-6 text-red-600 dark:text-red-200" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <div className="mx-auto flex h-12 w-12 flex-shrink-0 items-center justify-center rounded-full bg-red-100 sm:mx-0 sm:h-10 sm:w-10">
+                                    <svg className="h-6 w-6 text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
                                     </svg>
                                 </div>
                                 <div className="mt-3 text-center sm:ml-4 sm:mt-0 sm:text-left">
-                                    <h3 className="text-lg font-semibold leading-6 text-gray-900 dark:text-gray-100">
+                                    <h3 className="text-lg font-semibold leading-6 text-gray-900">
                                         お知らせを削除
                                     </h3>
                                     <div className="mt-2">
-                                        <p className="text-sm text-gray-500 dark:text-gray-400">
+                                        <p className="text-sm text-gray-500">
                                             「{announcement.title}」を削除しますか？この操作は取り消せません。
                                         </p>
                                     </div>
@@ -202,7 +202,7 @@ export default function Show({ auth, announcement }: Props) {
                                     type="button"
                                     onClick={() => setShowDeleteDialog(false)}
                                     disabled={isDeleting}
-                                    className="mt-3 inline-flex w-full justify-center rounded-md bg-white px-3 py-2 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50 sm:mt-0 sm:w-auto dark:bg-gray-700 dark:text-gray-100 dark:ring-gray-600 dark:hover:bg-gray-600"
+                                    className="mt-3 inline-flex w-full justify-center rounded-md bg-white px-3 py-2 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50 sm:mt-0 sm:w-auto:bg-gray-600"
                                 >
                                     キャンセル
                                 </button>

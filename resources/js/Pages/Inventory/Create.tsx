@@ -41,7 +41,7 @@ export default function Create({ locations, auth }: Props) {
     return (
         <AuthenticatedLayout
             header={
-                <h2 className="text-xl font-semibold leading-tight text-gray-800 dark:text-gray-200">
+                <h2 className="text-xl font-semibold leading-tight text-gray-800">
                     在庫品目作成
                 </h2>
             }
@@ -50,7 +50,7 @@ export default function Create({ locations, auth }: Props) {
 
             <div className="py-12">
                 <div className="mx-auto max-w-2xl sm:px-6 lg:px-8">
-                    <div className="overflow-hidden bg-white shadow-sm sm:rounded-lg dark:bg-gray-800">
+                    <div className="overflow-hidden bg-white shadow-sm sm:rounded-lg">
                         <form onSubmit={submit} className="p-6">
                             {/* 拠点 */}
                             <div>
@@ -60,7 +60,7 @@ export default function Create({ locations, auth }: Props) {
                                     name="location_id"
                                     value={data.location_id}
                                     onChange={(e) => setData('location_id', e.target.value ? Number(e.target.value) : '')}
-                                    className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-300 dark:focus:border-indigo-600 dark:focus:ring-indigo-600"
+                                    className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500:border-indigo-600:ring-indigo-600"
                                     required
                                 >
                                     <option value="">拠点を選択してください</option>
@@ -101,7 +101,7 @@ export default function Create({ locations, auth }: Props) {
                                     required
                                     placeholder="例: 枚, 個, 本, 袋, 箱"
                                 />
-                                <p className="mt-1 text-sm text-gray-500 dark:text-gray-400">
+                                <p className="mt-1 text-sm text-gray-500">
                                     例: 枚, 個, 本, 袋, 箱
                                 </p>
                                 <InputError message={errors.unit} className="mt-2" />
@@ -138,7 +138,7 @@ export default function Create({ locations, auth }: Props) {
                                     required
                                     placeholder="10"
                                 />
-                                <p className="mt-1 text-sm text-gray-500 dark:text-gray-400">
+                                <p className="mt-1 text-sm text-gray-500">
                                     在庫がこの数量を下回ると発注が必要になります
                                 </p>
                                 <InputError message={errors.reorder_point} className="mt-2" />
@@ -152,7 +152,7 @@ export default function Create({ locations, auth }: Props) {
                                         checked={data.is_active}
                                         onChange={(e) => setData('is_active', e.target.checked)}
                                     />
-                                    <span className="ms-2 text-sm text-gray-600 dark:text-gray-400">
+                                    <span className="ms-2 text-sm text-gray-600">
                                         有効にする
                                     </span>
                                 </label>

@@ -64,13 +64,13 @@ export default function Manage({ auth, items, locations, filters }: Props) {
         <AuthenticatedLayout
             header={
                 <div className="flex items-center justify-between">
-                    <h2 className="text-xl font-semibold leading-tight text-gray-800 dark:text-gray-200">
+                    <h2 className="text-xl font-semibold leading-tight text-gray-800">
                         在庫管理
                     </h2>
                     <div className="flex items-center gap-3">
                         <Link
                             href={route('inventory.logs')}
-                            className="inline-flex items-center rounded-md bg-gray-100 px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-200 dark:bg-gray-700 dark:text-gray-300 dark:hover:bg-gray-600"
+                            className="inline-flex items-center rounded-md bg-gray-100 px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-200:bg-gray-600"
                         >
                             <svg
                                 className="-ml-1 mr-2 h-4 w-4"
@@ -118,7 +118,7 @@ export default function Manage({ auth, items, locations, filters }: Props) {
                     <div className="mb-4">
                         <Link
                             href={route('inventory.index')}
-                            className="inline-flex items-center text-sm text-gray-600 hover:text-gray-900 dark:text-gray-400 dark:hover:text-gray-200"
+                            className="inline-flex items-center text-sm text-gray-600 hover:text-gray-900:text-gray-200"
                         >
                             <svg
                                 className="mr-1 h-4 w-4"
@@ -137,12 +137,12 @@ export default function Manage({ auth, items, locations, filters }: Props) {
                         </Link>
                     </div>
 
-                    <div className="overflow-hidden rounded-lg bg-white shadow-sm dark:bg-gray-800">
+                    <div className="overflow-hidden rounded-lg bg-white shadow-sm">
                         <div className="p-6">
                             {/* Filter and Stats */}
                             <div className="mb-6 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
                                 <div className="flex flex-wrap items-center gap-4">
-                                    <div className="text-sm text-gray-500 dark:text-gray-400">
+                                    <div className="text-sm text-gray-500">
                                         登録品目: {items.length}件
                                     </div>
                                     {lowStockCount > 0 && (
@@ -169,7 +169,7 @@ export default function Manage({ auth, items, locations, filters }: Props) {
                                 <div className="flex items-center gap-2">
                                     <label
                                         htmlFor="location-filter"
-                                        className="text-sm font-medium text-gray-700 dark:text-gray-300"
+                                        className="text-sm font-medium text-gray-700"
                                     >
                                         拠点:
                                     </label>
@@ -177,7 +177,7 @@ export default function Manage({ auth, items, locations, filters }: Props) {
                                         id="location-filter"
                                         value={selectedLocation ?? ''}
                                         onChange={handleLocationChange}
-                                        className="rounded-md border-gray-300 text-sm shadow-sm focus:border-blue-500 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-300"
+                                        className="rounded-md border-gray-300 text-sm shadow-sm focus:border-blue-500 focus:ring-blue-500"
                                     >
                                         <option value="">すべて</option>
                                         {locations.map((location) => (
@@ -192,93 +192,93 @@ export default function Manage({ auth, items, locations, filters }: Props) {
                             {/* Items Table */}
                             {items.length > 0 ? (
                                 <div className="overflow-x-auto">
-                                    <table className="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
-                                        <thead className="bg-gray-50 dark:bg-gray-700">
+                                    <table className="min-w-full divide-y divide-gray-200">
+                                        <thead className="bg-gray-50">
                                             <tr>
                                                 <th
                                                     scope="col"
-                                                    className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500 dark:text-gray-300"
+                                                    className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500"
                                                 >
                                                     品目名
                                                 </th>
                                                 <th
                                                     scope="col"
-                                                    className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500 dark:text-gray-300"
+                                                    className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500"
                                                 >
                                                     単位
                                                 </th>
                                                 <th
                                                     scope="col"
-                                                    className="px-6 py-3 text-right text-xs font-medium uppercase tracking-wider text-gray-500 dark:text-gray-300"
+                                                    className="px-6 py-3 text-right text-xs font-medium uppercase tracking-wider text-gray-500"
                                                 >
                                                     現在在庫
                                                 </th>
                                                 <th
                                                     scope="col"
-                                                    className="px-6 py-3 text-right text-xs font-medium uppercase tracking-wider text-gray-500 dark:text-gray-300"
+                                                    className="px-6 py-3 text-right text-xs font-medium uppercase tracking-wider text-gray-500"
                                                 >
                                                     発注点
                                                 </th>
                                                 <th
                                                     scope="col"
-                                                    className="px-6 py-3 text-center text-xs font-medium uppercase tracking-wider text-gray-500 dark:text-gray-300"
+                                                    className="px-6 py-3 text-center text-xs font-medium uppercase tracking-wider text-gray-500"
                                                 >
                                                     ステータス
                                                 </th>
                                                 <th
                                                     scope="col"
-                                                    className="px-6 py-3 text-right text-xs font-medium uppercase tracking-wider text-gray-500 dark:text-gray-300"
+                                                    className="px-6 py-3 text-right text-xs font-medium uppercase tracking-wider text-gray-500"
                                                 >
                                                     操作
                                                 </th>
                                             </tr>
                                         </thead>
-                                        <tbody className="divide-y divide-gray-200 bg-white dark:divide-gray-700 dark:bg-gray-800">
+                                        <tbody className="divide-y divide-gray-200 bg-white">
                                             {items.map((item) => (
                                                 <tr
                                                     key={item.id}
                                                     className={`${
                                                         !item.is_active
-                                                            ? 'bg-gray-50 dark:bg-gray-900'
+                                                            ? 'bg-gray-50'
                                                             : ''
                                                     } ${
                                                         item.current_stock <= item.reorder_point
-                                                            ? 'bg-yellow-50 dark:bg-yellow-900/20'
+                                                            ? 'bg-yellow-50'
                                                             : ''
                                                     }`}
                                                 >
                                                     <td className="whitespace-nowrap px-6 py-4">
                                                         <div className="flex items-center gap-2">
-                                                            <span className="font-medium text-gray-900 dark:text-gray-100">
+                                                            <span className="font-medium text-gray-900">
                                                                 {item.name}
                                                             </span>
                                                             {!item.is_active && (
-                                                                <span className="inline-flex rounded-full bg-gray-100 px-2 py-0.5 text-xs font-medium text-gray-600 dark:bg-gray-700 dark:text-gray-400">
+                                                                <span className="inline-flex rounded-full bg-gray-100 px-2 py-0.5 text-xs font-medium text-gray-600">
                                                                     無効
                                                                 </span>
                                                             )}
                                                         </div>
                                                         {item.location && (
-                                                            <div className="text-sm text-gray-500 dark:text-gray-400">
+                                                            <div className="text-sm text-gray-500">
                                                                 {item.location.name}
                                                             </div>
                                                         )}
                                                     </td>
-                                                    <td className="whitespace-nowrap px-6 py-4 text-sm text-gray-500 dark:text-gray-400">
+                                                    <td className="whitespace-nowrap px-6 py-4 text-sm text-gray-500">
                                                         {item.unit}
                                                     </td>
                                                     <td className="whitespace-nowrap px-6 py-4 text-right">
                                                         <span
                                                             className={`text-sm font-medium ${
                                                                 item.current_stock <= item.reorder_point
-                                                                    ? 'text-yellow-600 dark:text-yellow-400'
-                                                                    : 'text-gray-900 dark:text-gray-100'
+                                                                    ? 'text-yellow-600'
+                                                                    : 'text-gray-900'
                                                             }`}
                                                         >
                                                             {item.current_stock}
                                                         </span>
                                                     </td>
-                                                    <td className="whitespace-nowrap px-6 py-4 text-right text-sm text-gray-500 dark:text-gray-400">
+                                                    <td className="whitespace-nowrap px-6 py-4 text-right text-sm text-gray-500">
                                                         {item.reorder_point}
                                                     </td>
                                                     <td className="whitespace-nowrap px-6 py-4 text-center">
@@ -288,19 +288,19 @@ export default function Manage({ auth, items, locations, filters }: Props) {
                                                         <div className="flex items-center justify-end gap-2">
                                                             <Link
                                                                 href={route('inventory.edit', item.id)}
-                                                                className="rounded-md bg-gray-100 px-3 py-1.5 text-sm font-medium text-gray-700 hover:bg-gray-200 dark:bg-gray-700 dark:text-gray-300 dark:hover:bg-gray-600"
+                                                                className="rounded-md bg-gray-100 px-3 py-1.5 text-sm font-medium text-gray-700 hover:bg-gray-200:bg-gray-600"
                                                             >
                                                                 編集
                                                             </Link>
                                                             <Link
                                                                 href={route('inventory.edit', item.id) + '?action=restock'}
-                                                                className="rounded-md bg-green-100 px-3 py-1.5 text-sm font-medium text-green-700 hover:bg-green-200 dark:bg-green-900/30 dark:text-green-400 dark:hover:bg-green-900/50"
+                                                                className="rounded-md bg-green-100 px-3 py-1.5 text-sm font-medium text-green-700 hover:bg-green-200:bg-green-900/50"
                                                             >
                                                                 補充
                                                             </Link>
                                                             <Link
                                                                 href={route('inventory.edit', item.id) + '?action=adjust'}
-                                                                className="rounded-md bg-blue-100 px-3 py-1.5 text-sm font-medium text-blue-700 hover:bg-blue-200 dark:bg-blue-900/30 dark:text-blue-400 dark:hover:bg-blue-900/50"
+                                                                className="rounded-md bg-blue-100 px-3 py-1.5 text-sm font-medium text-blue-700 hover:bg-blue-200:bg-blue-900/50"
                                                             >
                                                                 調整
                                                             </Link>
@@ -326,10 +326,10 @@ export default function Manage({ auth, items, locations, filters }: Props) {
                                             d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"
                                         />
                                     </svg>
-                                    <h3 className="mt-2 text-sm font-medium text-gray-900 dark:text-gray-100">
+                                    <h3 className="mt-2 text-sm font-medium text-gray-900">
                                         在庫品目がありません
                                     </h3>
-                                    <p className="mt-1 text-sm text-gray-500 dark:text-gray-400">
+                                    <p className="mt-1 text-sm text-gray-500">
                                         新しい在庫品目を登録してください。
                                     </p>
                                     <div className="mt-6">
@@ -359,7 +359,7 @@ export default function Manage({ auth, items, locations, filters }: Props) {
                     </div>
 
                     {/* Help Text */}
-                    <div className="mt-4 rounded-lg bg-blue-50 p-4 text-sm text-blue-800 dark:bg-blue-900/20 dark:text-blue-300">
+                    <div className="mt-4 rounded-lg bg-blue-50 p-4 text-sm text-blue-800">
                         <p className="font-medium">在庫管理について:</p>
                         <ul className="mt-2 list-inside list-disc space-y-1">
                             <li>

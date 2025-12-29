@@ -79,7 +79,7 @@ export default function Login({
                     <div className="w-full border-t border-gray-300"></div>
                 </div>
                 <div className="relative flex justify-center text-sm">
-                    <span className="bg-white px-2 text-gray-500 dark:bg-gray-800 dark:text-gray-400">または</span>
+                    <span className="bg-white px-2 text-gray-500">または</span>
                 </div>
             </div>
 
@@ -129,7 +129,7 @@ export default function Login({
                                 )
                             }
                         />
-                        <span className="ms-2 text-sm text-gray-600 dark:text-gray-400">
+                        <span className="ms-2 text-sm text-gray-600">
                             ログイン状態を保持
                         </span>
                     </label>
@@ -139,7 +139,7 @@ export default function Login({
                     {canResetPassword && (
                         <Link
                             href={route('password.request')}
-                            className="rounded-md text-sm text-gray-600 underline hover:text-gray-900 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 dark:text-gray-400 dark:hover:text-gray-100 dark:focus:ring-offset-gray-800"
+                            className="rounded-md text-sm text-gray-600 underline hover:text-gray-900 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2:text-gray-100:ring-offset-gray-800"
                         >
                             パスワードを忘れた方
                         </Link>

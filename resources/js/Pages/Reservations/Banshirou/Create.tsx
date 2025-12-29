@@ -111,7 +111,7 @@ export default function Create({ auth }: PageProps) {
     return (
         <AuthenticatedLayout
             header={
-                <h2 className="text-xl font-semibold leading-tight text-gray-800 dark:text-gray-200">
+                <h2 className="text-xl font-semibold leading-tight text-gray-800">
                     新規予約
                 </h2>
             }
@@ -149,16 +149,16 @@ export default function Create({ auth }: PageProps) {
                     </div>
 
                     <form onSubmit={handleSubmit}>
-                        <div className="rounded-lg bg-white p-6 shadow-sm dark:bg-gray-800">
+                        <div className="rounded-lg bg-white p-6 shadow-sm">
                             {/* Step 1: お客様情報 */}
                             {step === 1 && (
                                 <div className="space-y-4">
-                                    <h3 className="text-lg font-medium text-gray-900 dark:text-gray-100">
+                                    <h3 className="text-lg font-medium text-gray-900">
                                         お客様情報
                                     </h3>
 
                                     <div>
-                                        <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">
+                                        <label className="block text-sm font-medium text-gray-700">
                                             お名前 <span className="text-red-500">*</span>
                                         </label>
                                         <input
@@ -172,7 +172,7 @@ export default function Create({ auth }: PageProps) {
                                     </div>
 
                                     <div>
-                                        <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">
+                                        <label className="block text-sm font-medium text-gray-700">
                                             フリガナ <span className="text-red-500">*</span>
                                         </label>
                                         <input
@@ -186,7 +186,7 @@ export default function Create({ auth }: PageProps) {
                                     </div>
 
                                     <div>
-                                        <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">
+                                        <label className="block text-sm font-medium text-gray-700">
                                             電話番号 <span className="text-red-500">*</span>
                                         </label>
                                         <input
@@ -200,7 +200,7 @@ export default function Create({ auth }: PageProps) {
                                     </div>
 
                                     <div>
-                                        <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">
+                                        <label className="block text-sm font-medium text-gray-700">
                                             メールアドレス（任意）
                                         </label>
                                         <input
@@ -213,7 +213,7 @@ export default function Create({ auth }: PageProps) {
                                     </div>
 
                                     <div>
-                                        <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">
+                                        <label className="block text-sm font-medium text-gray-700">
                                             住所 <span className="text-red-500">*</span>
                                         </label>
                                         <textarea
@@ -231,13 +231,13 @@ export default function Create({ auth }: PageProps) {
                             {/* Step 2: 宿泊情報 */}
                             {step === 2 && (
                                 <div className="space-y-4">
-                                    <h3 className="text-lg font-medium text-gray-900 dark:text-gray-100">
+                                    <h3 className="text-lg font-medium text-gray-900">
                                         宿泊情報
                                     </h3>
 
                                     <div className="grid gap-4 sm:grid-cols-2">
                                         <div>
-                                            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">
+                                            <label className="block text-sm font-medium text-gray-700">
                                                 チェックイン <span className="text-red-500">*</span>
                                             </label>
                                             <input
@@ -251,7 +251,7 @@ export default function Create({ auth }: PageProps) {
                                         </div>
 
                                         <div>
-                                            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">
+                                            <label className="block text-sm font-medium text-gray-700">
                                                 チェックアウト <span className="text-red-500">*</span>
                                             </label>
                                             <input
@@ -267,7 +267,7 @@ export default function Create({ auth }: PageProps) {
 
                                     <div className="grid gap-4 sm:grid-cols-2">
                                         <div>
-                                            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">
+                                            <label className="block text-sm font-medium text-gray-700">
                                                 大人
                                             </label>
                                             <div className="mt-1 flex items-center gap-3">
@@ -293,7 +293,7 @@ export default function Create({ auth }: PageProps) {
                                         </div>
 
                                         <div>
-                                            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">
+                                            <label className="block text-sm font-medium text-gray-700">
                                                 子供
                                             </label>
                                             <div className="mt-1 flex items-center gap-3">
@@ -324,12 +324,12 @@ export default function Create({ auth }: PageProps) {
                             {/* Step 3: お食事・オプション */}
                             {step === 3 && (
                                 <div className="space-y-4">
-                                    <h3 className="text-lg font-medium text-gray-900 dark:text-gray-100">
+                                    <h3 className="text-lg font-medium text-gray-900">
                                         お食事・オプション
                                     </h3>
 
                                     <div>
-                                        <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                                        <label className="block text-sm font-medium text-gray-700 mb-2">
                                             お食事
                                         </label>
                                         <div className="space-y-2">
@@ -377,12 +377,12 @@ export default function Create({ auth }: PageProps) {
                             {/* Step 4: お支払い・備考 */}
                             {step === 4 && (
                                 <div className="space-y-4">
-                                    <h3 className="text-lg font-medium text-gray-900 dark:text-gray-100">
+                                    <h3 className="text-lg font-medium text-gray-900">
                                         お支払い・備考
                                     </h3>
 
                                     <div>
-                                        <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                                        <label className="block text-sm font-medium text-gray-700 mb-2">
                                             お支払い方法
                                         </label>
                                         <div className="space-y-2">
@@ -414,7 +414,7 @@ export default function Create({ auth }: PageProps) {
                                     </div>
 
                                     <div>
-                                        <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">
+                                        <label className="block text-sm font-medium text-gray-700">
                                             備考
                                         </label>
                                         <textarea
@@ -431,7 +431,7 @@ export default function Create({ auth }: PageProps) {
                             {/* Step 5: 確認 */}
                             {step === 5 && (
                                 <div className="space-y-4">
-                                    <h3 className="text-lg font-medium text-gray-900 dark:text-gray-100">
+                                    <h3 className="text-lg font-medium text-gray-900">
                                         予約内容の確認
                                     </h3>
 

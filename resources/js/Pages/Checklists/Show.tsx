@@ -49,7 +49,7 @@ export default function Show({ auth, checklist, items }: Props) {
             header={
                 <div className="flex items-center justify-between">
                     <div className="flex items-center gap-3">
-                        <h2 className="text-xl font-semibold leading-tight text-gray-800 dark:text-gray-200">
+                        <h2 className="text-xl font-semibold leading-tight text-gray-800">
                             {checklist.template.name}
                         </h2>
                         {isAllCompleted && (
@@ -66,8 +66,8 @@ export default function Show({ auth, checklist, items }: Props) {
             <div className="py-6">
                 <div className="mx-auto max-w-4xl px-4 sm:px-6 lg:px-8">
                     {/* チェックリスト情報 */}
-                    <div className="mb-6 rounded-lg bg-white p-6 shadow-sm dark:bg-gray-800">
-                        <div className="flex flex-wrap items-center gap-4 text-sm text-gray-600 dark:text-gray-400">
+                    <div className="mb-6 rounded-lg bg-white p-6 shadow-sm">
+                        <div className="flex flex-wrap items-center gap-4 text-sm text-gray-600">
                             <div className="flex items-center gap-2">
                                 <svg className="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
@@ -94,14 +94,14 @@ export default function Show({ auth, checklist, items }: Props) {
                         {/* 進捗バー */}
                         <div className="mt-6">
                             <div className="mb-2 flex items-center justify-between">
-                                <span className="text-sm font-medium text-gray-700 dark:text-gray-300">
+                                <span className="text-sm font-medium text-gray-700">
                                     進捗状況
                                 </span>
-                                <span className="text-sm font-medium text-gray-700 dark:text-gray-300">
+                                <span className="text-sm font-medium text-gray-700">
                                     {completedCount} / {totalCount} ({progressPercentage}%)
                                 </span>
                             </div>
-                            <div className="h-4 w-full overflow-hidden rounded-full bg-gray-200 dark:bg-gray-700">
+                            <div className="h-4 w-full overflow-hidden rounded-full bg-gray-200">
                                 <div
                                     className={`h-4 rounded-full transition-all duration-300 ${
                                         isAllCompleted
@@ -117,13 +117,13 @@ export default function Show({ auth, checklist, items }: Props) {
                     </div>
 
                     {/* チェックリストアイテム */}
-                    <div className="rounded-lg bg-white shadow-sm dark:bg-gray-800">
-                        <div className="border-b border-gray-200 px-6 py-4 dark:border-gray-700">
-                            <h3 className="text-lg font-medium text-gray-900 dark:text-gray-100">
+                    <div className="rounded-lg bg-white shadow-sm">
+                        <div className="border-b border-gray-200 px-6 py-4">
+                            <h3 className="text-lg font-medium text-gray-900">
                                 チェック項目
                             </h3>
                         </div>
-                        <ul className="divide-y divide-gray-200 dark:divide-gray-700">
+                        <ul className="divide-y divide-gray-200">
                             {sortedItems.map((item) => {
                                 const isCompleted = item.entry?.is_completed ?? false;
                                 const completedBy = item.entry?.completed_by_user;
@@ -137,7 +137,7 @@ export default function Show({ auth, checklist, items }: Props) {
                                                 className={`mt-0.5 flex h-6 w-6 flex-shrink-0 items-center justify-center rounded border-2 transition-colors ${
                                                     isCompleted
                                                         ? 'border-green-500 bg-green-500 text-white'
-                                                        : 'border-gray-300 bg-white hover:border-blue-500 dark:border-gray-600 dark:bg-gray-700'
+                                                        : 'border-gray-300 bg-white hover:border-blue-500'
                                                 }`}
                                                 aria-label={isCompleted ? 'チェック解除' : 'チェック'}
                                             >
@@ -150,13 +150,13 @@ export default function Show({ auth, checklist, items }: Props) {
                                             <div className="flex-1 min-w-0">
                                                 <p className={`text-base ${
                                                     isCompleted
-                                                        ? 'text-gray-500 line-through dark:text-gray-400'
-                                                        : 'text-gray-900 dark:text-gray-100'
+                                                        ? 'text-gray-500 line-through'
+                                                        : 'text-gray-900'
                                                 }`}>
                                                     {item.description}
                                                 </p>
                                                 {isCompleted && completedBy && (
-                                                    <p className="mt-1 text-sm text-gray-500 dark:text-gray-400">
+                                                    <p className="mt-1 text-sm text-gray-500">
                                                         {completedBy.name} が {formatDateTime(completedAt ?? null)} に完了
                                                     </p>
                                                 )}
@@ -167,7 +167,7 @@ export default function Show({ auth, checklist, items }: Props) {
                             })}
                         </ul>
                         {sortedItems.length === 0 && (
-                            <div className="px-6 py-12 text-center text-gray-500 dark:text-gray-400">
+                            <div className="px-6 py-12 text-center text-gray-500">
                                 チェック項目がありません
                             </div>
                         )}
@@ -177,7 +177,7 @@ export default function Show({ auth, checklist, items }: Props) {
                     <div className="mt-6">
                         <Link
                             href={route('checklists.index')}
-                            className="inline-flex items-center text-gray-600 hover:text-gray-900 dark:text-gray-400 dark:hover:text-gray-200"
+                            className="inline-flex items-center text-gray-600 hover:text-gray-900:text-gray-200"
                         >
                             <svg className="mr-2 h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 19l-7-7m0 0l7-7m-7 7h18" />

@@ -53,7 +53,7 @@ export default function Edit({ announcement, auth }: Props) {
     return (
         <AuthenticatedLayout
             header={
-                <h2 className="text-xl font-semibold leading-tight text-gray-800 dark:text-gray-200">
+                <h2 className="text-xl font-semibold leading-tight text-gray-800">
                     お知らせ編集
                 </h2>
             }
@@ -62,7 +62,7 @@ export default function Edit({ announcement, auth }: Props) {
 
             <div className="py-12">
                 <div className="mx-auto max-w-2xl sm:px-6 lg:px-8">
-                    <div className="overflow-hidden bg-white shadow-sm sm:rounded-lg dark:bg-gray-800">
+                    <div className="overflow-hidden bg-white shadow-sm sm:rounded-lg">
                         <form onSubmit={submit} className="p-6">
                             {/* タイトル */}
                             <div>
@@ -88,7 +88,7 @@ export default function Edit({ announcement, auth }: Props) {
                                     name="content"
                                     value={data.content}
                                     onChange={(e) => setData('content', e.target.value)}
-                                    className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-300 dark:focus:border-indigo-600 dark:focus:ring-indigo-600"
+                                    className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500:border-indigo-600:ring-indigo-600"
                                     rows={6}
                                     required
                                     placeholder="お知らせの内容を入力"
@@ -104,7 +104,7 @@ export default function Edit({ announcement, auth }: Props) {
                                     name="priority"
                                     value={data.priority}
                                     onChange={(e) => setData('priority', e.target.value as 'normal' | 'important')}
-                                    className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-300 dark:focus:border-indigo-600 dark:focus:ring-indigo-600"
+                                    className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500:border-indigo-600:ring-indigo-600"
                                     required
                                 >
                                     <option value="normal">通常</option>
@@ -122,9 +122,9 @@ export default function Edit({ announcement, auth }: Props) {
                                     name="published_at"
                                     value={data.published_at}
                                     onChange={(e) => setData('published_at', e.target.value)}
-                                    className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-300 dark:focus:border-indigo-600 dark:focus:ring-indigo-600"
+                                    className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500:border-indigo-600:ring-indigo-600"
                                 />
-                                <p className="mt-1 text-sm text-gray-500 dark:text-gray-400">
+                                <p className="mt-1 text-sm text-gray-500">
                                     公開日時を空にすると下書きとして保存されます
                                 </p>
                                 <InputError message={errors.published_at} className="mt-2" />

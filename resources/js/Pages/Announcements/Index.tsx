@@ -23,7 +23,7 @@ export default function Index({ auth, announcements }: Props) {
         <AuthenticatedLayout
             header={
                 <div className="flex items-center justify-between">
-                    <h2 className="text-xl font-semibold leading-tight text-gray-800 dark:text-gray-200">
+                    <h2 className="text-xl font-semibold leading-tight text-gray-800">
                         お知らせ
                     </h2>
                     {isAdminOrManager && (
@@ -42,7 +42,7 @@ export default function Index({ auth, announcements }: Props) {
             <div className="py-6">
                 <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
                     {announcements.length === 0 ? (
-                        <div className="rounded-lg bg-white p-8 text-center shadow-sm dark:bg-gray-800">
+                        <div className="rounded-lg bg-white p-8 text-center shadow-sm">
                             <svg
                                 className="mx-auto h-12 w-12 text-gray-400"
                                 fill="none"
@@ -56,7 +56,7 @@ export default function Index({ auth, announcements }: Props) {
                                     d="M11 5.882V19.24a1.76 1.76 0 01-3.417.592l-2.147-6.15M18 13a3 3 0 100-6M5.436 13.683A4.001 4.001 0 017 6h1.832c4.1 0 7.625-1.234 9.168-3v14c-1.543-1.766-5.067-3-9.168-3H7a3.988 3.988 0 01-1.564-.317z"
                                 />
                             </svg>
-                            <p className="mt-4 text-gray-500 dark:text-gray-400">
+                            <p className="mt-4 text-gray-500">
                                 お知らせはありません
                             </p>
                         </div>
@@ -65,7 +65,7 @@ export default function Index({ auth, announcements }: Props) {
                             {announcements.map((announcement) => (
                                 <div
                                     key={announcement.id}
-                                    className="relative rounded-lg bg-white p-4 shadow-sm dark:bg-gray-800"
+                                    className="relative rounded-lg bg-white p-4 shadow-sm"
                                 >
                                     {/* Unread indicator */}
                                     {!announcement.is_read && (
@@ -75,7 +75,7 @@ export default function Index({ auth, announcements }: Props) {
                                     <div className="flex items-start gap-3">
                                         {/* Draft badge (Manager+ only) */}
                                         {!announcement.published_at && (
-                                            <span className="inline-flex shrink-0 rounded-full bg-yellow-100 px-2 py-1 text-xs font-medium text-yellow-800 dark:bg-yellow-900 dark:text-yellow-200">
+                                            <span className="inline-flex shrink-0 rounded-full bg-yellow-100 px-2 py-1 text-xs font-medium text-yellow-800">
                                                 下書き
                                             </span>
                                         )}
@@ -84,8 +84,8 @@ export default function Index({ auth, announcements }: Props) {
                                         <span
                                             className={`inline-flex shrink-0 rounded-full px-2 py-1 text-xs font-medium ${
                                                 announcement.priority === 'important'
-                                                    ? 'bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200'
-                                                    : 'bg-gray-100 text-gray-800 dark:bg-gray-700 dark:text-gray-200'
+                                                    ? 'bg-red-100 text-red-800'
+                                                    : 'bg-gray-100 text-gray-800'
                                             }`}
                                         >
                                             {announcement.priority === 'important' ? '重要' : '通常'}
@@ -95,13 +95,13 @@ export default function Index({ auth, announcements }: Props) {
                                             {/* Title */}
                                             <Link
                                                 href={route('announcements.show', announcement.id)}
-                                                className="block text-lg font-medium text-gray-900 hover:text-blue-600 dark:text-gray-100 dark:hover:text-blue-400"
+                                                className="block text-lg font-medium text-gray-900 hover:text-blue-600:text-blue-400"
                                             >
                                                 {announcement.title}
                                             </Link>
 
                                             {/* Meta info */}
-                                            <div className="mt-1 flex flex-wrap items-center gap-2 text-sm text-gray-500 dark:text-gray-400">
+                                            <div className="mt-1 flex flex-wrap items-center gap-2 text-sm text-gray-500">
                                                 <span>{formatDate(announcement.published_at)}</span>
                                                 {announcement.author && (
                                                     <>

@@ -154,19 +154,19 @@ export default function Manage({
         const statusConfig = {
             not_started: {
                 label: '未出勤',
-                className: 'bg-gray-100 text-gray-800 dark:bg-gray-700 dark:text-gray-300',
+                className: 'bg-gray-100 text-gray-800',
             },
             working: {
                 label: '勤務中',
-                className: 'bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-400',
+                className: 'bg-green-100 text-green-800',
             },
             on_break: {
                 label: '休憩中',
-                className: 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900/30 dark:text-yellow-400',
+                className: 'bg-yellow-100 text-yellow-800',
             },
             completed: {
                 label: '退勤済',
-                className: 'bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-400',
+                className: 'bg-blue-100 text-blue-800',
             },
         };
 
@@ -198,7 +198,7 @@ export default function Manage({
     return (
         <AuthenticatedLayout
             header={
-                <h2 className="text-xl font-semibold leading-tight text-gray-800 dark:text-gray-200">
+                <h2 className="text-xl font-semibold leading-tight text-gray-800">
                     勤怠管理
                 </h2>
             }
@@ -207,7 +207,7 @@ export default function Manage({
 
             <div className="py-6">
                 <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-                    <div className="overflow-hidden rounded-lg bg-white shadow-sm dark:bg-gray-800">
+                    <div className="overflow-hidden rounded-lg bg-white shadow-sm">
                         <div className="p-6">
                             {/* Filters */}
                             <div className="mb-6 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
@@ -215,7 +215,7 @@ export default function Manage({
                                 <div className="flex items-center gap-2">
                                     <label
                                         htmlFor="user-filter"
-                                        className="text-sm font-medium text-gray-700 dark:text-gray-300"
+                                        className="text-sm font-medium text-gray-700"
                                     >
                                         スタッフ:
                                     </label>
@@ -223,7 +223,7 @@ export default function Manage({
                                         id="user-filter"
                                         value={selectedUserId ?? ''}
                                         onChange={handleUserChange}
-                                        className="rounded-md border-gray-300 text-sm shadow-sm focus:border-blue-500 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-300"
+                                        className="rounded-md border-gray-300 text-sm shadow-sm focus:border-blue-500 focus:ring-blue-500"
                                     >
                                         <option value="">すべて</option>
                                         {users.map((user) => (
@@ -239,7 +239,7 @@ export default function Manage({
                                     <button
                                         type="button"
                                         onClick={() => handleMonthChange('prev')}
-                                        className="rounded-md bg-gray-100 p-2 text-gray-600 hover:bg-gray-200 dark:bg-gray-700 dark:text-gray-400 dark:hover:bg-gray-600"
+                                        className="rounded-md bg-gray-100 p-2 text-gray-600 hover:bg-gray-200:bg-gray-600"
                                     >
                                         <svg
                                             className="h-5 w-5"
@@ -255,13 +255,13 @@ export default function Manage({
                                             />
                                         </svg>
                                     </button>
-                                    <span className="min-w-[120px] text-center text-sm font-medium text-gray-900 dark:text-gray-100">
+                                    <span className="min-w-[120px] text-center text-sm font-medium text-gray-900">
                                         {formatMonthDisplay()}
                                     </span>
                                     <button
                                         type="button"
                                         onClick={() => handleMonthChange('next')}
-                                        className="rounded-md bg-gray-100 p-2 text-gray-600 hover:bg-gray-200 dark:bg-gray-700 dark:text-gray-400 dark:hover:bg-gray-600"
+                                        className="rounded-md bg-gray-100 p-2 text-gray-600 hover:bg-gray-200:bg-gray-600"
                                     >
                                         <svg
                                             className="h-5 w-5"
@@ -282,28 +282,28 @@ export default function Manage({
 
                             {/* Summary Stats */}
                             {selectedUserId && records.length > 0 && (
-                                <div className="mb-6 grid grid-cols-2 gap-4 rounded-lg bg-gray-50 p-4 dark:bg-gray-700/50 sm:grid-cols-3">
+                                <div className="mb-6 grid grid-cols-2 gap-4 rounded-lg bg-gray-50 p-4 sm:grid-cols-3">
                                     <div>
-                                        <div className="text-sm text-gray-500 dark:text-gray-400">
+                                        <div className="text-sm text-gray-500">
                                             出勤日数
                                         </div>
-                                        <div className="text-xl font-semibold text-gray-900 dark:text-gray-100">
+                                        <div className="text-xl font-semibold text-gray-900">
                                             {calculateWorkDays()}日
                                         </div>
                                     </div>
                                     <div>
-                                        <div className="text-sm text-gray-500 dark:text-gray-400">
+                                        <div className="text-sm text-gray-500">
                                             合計勤務時間
                                         </div>
-                                        <div className="text-xl font-semibold text-gray-900 dark:text-gray-100">
+                                        <div className="text-xl font-semibold text-gray-900">
                                             {formatMinutesToTime(calculateTotalWorkMinutes())}
                                         </div>
                                     </div>
                                     <div className="col-span-2 sm:col-span-1">
-                                        <div className="text-sm text-gray-500 dark:text-gray-400">
+                                        <div className="text-sm text-gray-500">
                                             レコード数
                                         </div>
-                                        <div className="text-xl font-semibold text-gray-900 dark:text-gray-100">
+                                        <div className="text-xl font-semibold text-gray-900">
                                             {records.length}件
                                         </div>
                                     </div>
@@ -313,88 +313,88 @@ export default function Manage({
                             {/* Records Table */}
                             {records.length > 0 ? (
                                 <div className="overflow-x-auto">
-                                    <table className="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
-                                        <thead className="bg-gray-50 dark:bg-gray-700">
+                                    <table className="min-w-full divide-y divide-gray-200">
+                                        <thead className="bg-gray-50">
                                             <tr>
                                                 <th
                                                     scope="col"
-                                                    className="px-4 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500 dark:text-gray-300"
+                                                    className="px-4 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500"
                                                 >
                                                     日付
                                                 </th>
                                                 {!selectedUserId && (
                                                     <th
                                                         scope="col"
-                                                        className="px-4 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500 dark:text-gray-300"
+                                                        className="px-4 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500"
                                                     >
                                                         スタッフ
                                                     </th>
                                                 )}
                                                 <th
                                                     scope="col"
-                                                    className="px-4 py-3 text-center text-xs font-medium uppercase tracking-wider text-gray-500 dark:text-gray-300"
+                                                    className="px-4 py-3 text-center text-xs font-medium uppercase tracking-wider text-gray-500"
                                                 >
                                                     出勤
                                                 </th>
                                                 <th
                                                     scope="col"
-                                                    className="px-4 py-3 text-center text-xs font-medium uppercase tracking-wider text-gray-500 dark:text-gray-300"
+                                                    className="px-4 py-3 text-center text-xs font-medium uppercase tracking-wider text-gray-500"
                                                 >
                                                     退勤
                                                 </th>
                                                 <th
                                                     scope="col"
-                                                    className="px-4 py-3 text-center text-xs font-medium uppercase tracking-wider text-gray-500 dark:text-gray-300"
+                                                    className="px-4 py-3 text-center text-xs font-medium uppercase tracking-wider text-gray-500"
                                                 >
                                                     休憩
                                                 </th>
                                                 <th
                                                     scope="col"
-                                                    className="px-4 py-3 text-center text-xs font-medium uppercase tracking-wider text-gray-500 dark:text-gray-300"
+                                                    className="px-4 py-3 text-center text-xs font-medium uppercase tracking-wider text-gray-500"
                                                 >
                                                     勤務時間
                                                 </th>
                                                 <th
                                                     scope="col"
-                                                    className="px-4 py-3 text-center text-xs font-medium uppercase tracking-wider text-gray-500 dark:text-gray-300"
+                                                    className="px-4 py-3 text-center text-xs font-medium uppercase tracking-wider text-gray-500"
                                                 >
                                                     ステータス
                                                 </th>
                                                 <th
                                                     scope="col"
-                                                    className="px-4 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500 dark:text-gray-300"
+                                                    className="px-4 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500"
                                                 >
                                                     備考
                                                 </th>
                                             </tr>
                                         </thead>
-                                        <tbody className="divide-y divide-gray-200 bg-white dark:divide-gray-700 dark:bg-gray-800">
+                                        <tbody className="divide-y divide-gray-200 bg-white">
                                             {records.map((record) => (
                                                 <tr
                                                     key={record.id}
                                                     onClick={() => openEditModal(record)}
-                                                    className="cursor-pointer transition-colors hover:bg-gray-50 dark:hover:bg-gray-700/50"
+                                                    className="cursor-pointer transition-colors hover:bg-gray-50:bg-gray-700/50"
                                                 >
-                                                    <td className="whitespace-nowrap px-4 py-3 text-sm font-medium text-gray-900 dark:text-gray-100">
+                                                    <td className="whitespace-nowrap px-4 py-3 text-sm font-medium text-gray-900">
                                                         {formatDate(record.date)}
                                                     </td>
                                                     {!selectedUserId && (
-                                                        <td className="whitespace-nowrap px-4 py-3 text-sm text-gray-700 dark:text-gray-300">
+                                                        <td className="whitespace-nowrap px-4 py-3 text-sm text-gray-700">
                                                             {record.user?.name ?? '-'}
                                                         </td>
                                                     )}
-                                                    <td className="whitespace-nowrap px-4 py-3 text-center text-sm text-gray-700 dark:text-gray-300">
+                                                    <td className="whitespace-nowrap px-4 py-3 text-center text-sm text-gray-700">
                                                         {formatTime(record.clock_in)}
                                                     </td>
-                                                    <td className="whitespace-nowrap px-4 py-3 text-center text-sm text-gray-700 dark:text-gray-300">
+                                                    <td className="whitespace-nowrap px-4 py-3 text-center text-sm text-gray-700">
                                                         {formatTime(record.clock_out)}
                                                     </td>
-                                                    <td className="whitespace-nowrap px-4 py-3 text-center text-sm text-gray-700 dark:text-gray-300">
+                                                    <td className="whitespace-nowrap px-4 py-3 text-center text-sm text-gray-700">
                                                         {record.break_minutes > 0
                                                             ? formatMinutesToTime(record.break_minutes)
                                                             : '-'}
                                                     </td>
-                                                    <td className="whitespace-nowrap px-4 py-3 text-center text-sm text-gray-700 dark:text-gray-300">
+                                                    <td className="whitespace-nowrap px-4 py-3 text-center text-sm text-gray-700">
                                                         {record.work_minutes
                                                             ? formatMinutesToTime(record.work_minutes)
                                                             : '-'}
@@ -402,7 +402,7 @@ export default function Manage({
                                                     <td className="whitespace-nowrap px-4 py-3 text-center">
                                                         {getStatusBadge(record.status)}
                                                     </td>
-                                                    <td className="max-w-[200px] truncate px-4 py-3 text-sm text-gray-500 dark:text-gray-400">
+                                                    <td className="max-w-[200px] truncate px-4 py-3 text-sm text-gray-500">
                                                         {record.notes ?? '-'}
                                                     </td>
                                                 </tr>
@@ -425,10 +425,10 @@ export default function Manage({
                                             d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"
                                         />
                                     </svg>
-                                    <h3 className="mt-2 text-sm font-medium text-gray-900 dark:text-gray-100">
+                                    <h3 className="mt-2 text-sm font-medium text-gray-900">
                                         勤怠記録がありません
                                     </h3>
-                                    <p className="mt-1 text-sm text-gray-500 dark:text-gray-400">
+                                    <p className="mt-1 text-sm text-gray-500">
                                         選択された条件に一致する勤怠記録が見つかりませんでした。
                                     </p>
                                 </div>
@@ -437,7 +437,7 @@ export default function Manage({
                     </div>
 
                     {/* Help Text */}
-                    <div className="mt-4 rounded-lg bg-blue-50 p-4 text-sm text-blue-800 dark:bg-blue-900/20 dark:text-blue-300">
+                    <div className="mt-4 rounded-lg bg-blue-50 p-4 text-sm text-blue-800">
                         <p className="font-medium">勤怠管理について:</p>
                         <ul className="mt-2 list-inside list-disc space-y-1">
                             <li>テーブルの行をクリックすると、勤怠記録を編集できます</li>
@@ -451,12 +451,12 @@ export default function Manage({
             {/* Edit Modal */}
             <Modal show={isModalOpen} onClose={closeModal} maxWidth="lg">
                 <form onSubmit={handleSubmit} className="p-6">
-                    <h3 className="text-lg font-medium text-gray-900 dark:text-gray-100">
+                    <h3 className="text-lg font-medium text-gray-900">
                         勤怠記録の編集
                     </h3>
 
                     {editingRecord && (
-                        <div className="mt-2 text-sm text-gray-500 dark:text-gray-400">
+                        <div className="mt-2 text-sm text-gray-500">
                             {editingRecord.user?.name} - {formatDate(editingRecord.date)}
                         </div>
                     )}
@@ -466,7 +466,7 @@ export default function Manage({
                         <div>
                             <label
                                 htmlFor="clock_in"
-                                className="block text-sm font-medium text-gray-700 dark:text-gray-300"
+                                className="block text-sm font-medium text-gray-700"
                             >
                                 出勤時刻
                             </label>
@@ -477,7 +477,7 @@ export default function Manage({
                                 onChange={(e) =>
                                     setFormData({ ...formData, clock_in: e.target.value })
                                 }
-                                className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-300 sm:text-sm"
+                                className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm"
                             />
                         </div>
 
@@ -485,7 +485,7 @@ export default function Manage({
                         <div>
                             <label
                                 htmlFor="clock_out"
-                                className="block text-sm font-medium text-gray-700 dark:text-gray-300"
+                                className="block text-sm font-medium text-gray-700"
                             >
                                 退勤時刻
                             </label>
@@ -496,7 +496,7 @@ export default function Manage({
                                 onChange={(e) =>
                                     setFormData({ ...formData, clock_out: e.target.value })
                                 }
-                                className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-300 sm:text-sm"
+                                className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm"
                             />
                         </div>
 
@@ -504,7 +504,7 @@ export default function Manage({
                         <div>
                             <label
                                 htmlFor="break_minutes"
-                                className="block text-sm font-medium text-gray-700 dark:text-gray-300"
+                                className="block text-sm font-medium text-gray-700"
                             >
                                 休憩時間（分）
                             </label>
@@ -520,7 +520,7 @@ export default function Manage({
                                         break_minutes: parseInt(e.target.value, 10) || 0,
                                     })
                                 }
-                                className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-300 sm:text-sm"
+                                className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm"
                             />
                         </div>
 
@@ -528,7 +528,7 @@ export default function Manage({
                         <div>
                             <label
                                 htmlFor="notes"
-                                className="block text-sm font-medium text-gray-700 dark:text-gray-300"
+                                className="block text-sm font-medium text-gray-700"
                             >
                                 備考
                             </label>
@@ -539,7 +539,7 @@ export default function Manage({
                                 onChange={(e) =>
                                     setFormData({ ...formData, notes: e.target.value })
                                 }
-                                className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-300 sm:text-sm"
+                                className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm"
                                 placeholder="修正理由など..."
                             />
                         </div>
@@ -547,7 +547,7 @@ export default function Manage({
 
                     {/* Modified Info */}
                     {editingRecord?.modified_at && (
-                        <div className="mt-4 text-xs text-gray-500 dark:text-gray-400">
+                        <div className="mt-4 text-xs text-gray-500">
                             最終修正: {new Date(editingRecord.modified_at).toLocaleString('ja-JP')}
                             {editingRecord.modified_by_user && (
                                 <span> ({editingRecord.modified_by_user.name})</span>
@@ -560,7 +560,7 @@ export default function Manage({
                         <button
                             type="button"
                             onClick={closeModal}
-                            className="rounded-md border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-700 shadow-sm hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-300 dark:hover:bg-gray-600"
+                            className="rounded-md border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-700 shadow-sm hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2:bg-gray-600"
                         >
                             キャンセル
                         </button>

@@ -1,3 +1,14 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+/* Force light mode only */
+:root {
+    color-scheme: light;
+}
+
+/* Ensure minimum touch target size for mobile */
+.touch-target {
+    min-height: 44px;
+    min-width: 44px;
+}

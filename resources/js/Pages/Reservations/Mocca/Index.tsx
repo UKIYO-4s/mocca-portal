@@ -82,7 +82,7 @@ export default function Index({ auth, reservations, filters }: Props) {
         <AuthenticatedLayout
             header={
                 <div className="flex items-center justify-between">
-                    <h2 className="text-xl font-semibold leading-tight text-gray-800 dark:text-gray-200">
+                    <h2 className="text-xl font-semibold leading-tight text-gray-800">
                         もっか食事予約一覧
                     </h2>
                     <Link
@@ -99,27 +99,27 @@ export default function Index({ auth, reservations, filters }: Props) {
             <div className="py-6">
                 <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
                     {/* フィルター */}
-                    <div className="mb-6 rounded-lg bg-white p-4 shadow-sm dark:bg-gray-800">
+                    <div className="mb-6 rounded-lg bg-white p-4 shadow-sm">
                         <div className="grid gap-4 sm:grid-cols-4">
                             <div>
-                                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">
+                                <label className="block text-sm font-medium text-gray-700">
                                     日付
                                 </label>
                                 <input
                                     type="date"
                                     value={date}
                                     onChange={(e) => setDate(e.target.value)}
-                                    className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700"
+                                    className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
                                 />
                             </div>
                             <div>
-                                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">
+                                <label className="block text-sm font-medium text-gray-700">
                                     種別
                                 </label>
                                 <select
                                     value={type}
                                     onChange={(e) => setType(e.target.value)}
-                                    className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700"
+                                    className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
                                 >
                                     <option value="">すべて</option>
                                     <option value="breakfast">朝食</option>
@@ -128,13 +128,13 @@ export default function Index({ auth, reservations, filters }: Props) {
                                 </select>
                             </div>
                             <div>
-                                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">
+                                <label className="block text-sm font-medium text-gray-700">
                                     ステータス
                                 </label>
                                 <select
                                     value={status}
                                     onChange={(e) => setStatus(e.target.value)}
-                                    className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700"
+                                    className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
                                 >
                                     <option value="">すべて</option>
                                     <option value="confirmed">確定</option>
@@ -161,21 +161,21 @@ export default function Index({ auth, reservations, filters }: Props) {
                     {/* 予約リスト */}
                     <div className="space-y-4">
                         {reservations.data.length === 0 ? (
-                            <div className="rounded-lg bg-white p-8 text-center shadow-sm dark:bg-gray-800">
-                                <p className="text-gray-500 dark:text-gray-400">予約がありません</p>
+                            <div className="rounded-lg bg-white p-8 text-center shadow-sm">
+                                <p className="text-gray-500">予約がありません</p>
                             </div>
                         ) : (
                             reservations.data.map((reservation) => (
                                 <div
                                     key={reservation.id}
-                                    className="rounded-lg bg-white p-4 shadow-sm dark:bg-gray-800"
+                                    className="rounded-lg bg-white p-4 shadow-sm"
                                 >
                                     <div className="flex items-start justify-between">
                                         <div className="flex-1">
                                             <div className="flex items-center gap-2 flex-wrap">
                                                 <Link
                                                     href={route('reservations.mocca.show', reservation.id)}
-                                                    className="text-lg font-medium text-gray-900 hover:text-blue-600 dark:text-gray-100"
+                                                    className="text-lg font-medium text-gray-900 hover:text-blue-600"
                                                 >
                                                     {reservation.name}様
                                                 </Link>
@@ -190,7 +190,7 @@ export default function Index({ auth, reservations, filters }: Props) {
                                                     {reservation.status_label}
                                                 </span>
                                             </div>
-                                            <p className="mt-1 text-sm text-gray-500 dark:text-gray-400">
+                                            <p className="mt-1 text-sm text-gray-500">
                                                 {reservation.reservation_date}
                                                 {reservation.formatted_arrival_time && ` ${reservation.formatted_arrival_time}〜`}
                                                 ・{reservation.guest_count}名

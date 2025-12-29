@@ -77,7 +77,7 @@ export default function Edit({ auth, item, locations }: Props) {
     return (
         <AuthenticatedLayout
             header={
-                <h2 className="text-xl font-semibold leading-tight text-gray-800 dark:text-gray-200">
+                <h2 className="text-xl font-semibold leading-tight text-gray-800">
                     在庫品目編集
                 </h2>
             }
@@ -87,13 +87,13 @@ export default function Edit({ auth, item, locations }: Props) {
             <div className="py-6">
                 <div className="mx-auto max-w-2xl px-4 sm:px-6 lg:px-8">
                     {/* Current Stock Display */}
-                    <div className="mb-6 rounded-lg bg-white p-6 shadow-sm dark:bg-gray-800">
+                    <div className="mb-6 rounded-lg bg-white p-6 shadow-sm">
                         <div className="flex items-center justify-between">
                             <div>
-                                <p className="text-sm font-medium text-gray-500 dark:text-gray-400">
+                                <p className="text-sm font-medium text-gray-500">
                                     現在の在庫数
                                 </p>
-                                <p className="text-3xl font-bold text-gray-900 dark:text-gray-100">
+                                <p className="text-3xl font-bold text-gray-900">
                                     {item.current_stock} <span className="text-lg font-normal">{item.unit}</span>
                                 </p>
                             </div>
@@ -141,17 +141,17 @@ export default function Edit({ auth, item, locations }: Props) {
                             </div>
                         </div>
                         {item.current_stock <= item.reorder_point && (
-                            <p className="mt-2 text-sm text-red-600 dark:text-red-400">
+                            <p className="mt-2 text-sm text-red-600">
                                 在庫が発注点以下です。補充をご検討ください。
                             </p>
                         )}
                     </div>
 
                     <form onSubmit={handleSubmit}>
-                        <div className="rounded-lg bg-white p-6 shadow-sm dark:bg-gray-800 space-y-6">
+                        <div className="rounded-lg bg-white p-6 shadow-sm space-y-6">
                             {/* 拠点 */}
                             <div>
-                                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">
+                                <label className="block text-sm font-medium text-gray-700">
                                     拠点 <span className="text-red-500">*</span>
                                 </label>
                                 <select
@@ -162,7 +162,7 @@ export default function Edit({ auth, item, locations }: Props) {
                                             e.target.value ? Number(e.target.value) : ''
                                         )
                                     }
-                                    className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:text-gray-100"
+                                    className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
                                 >
                                     <option value="">選択してください</option>
                                     {locations.map((location) => (
@@ -178,14 +178,14 @@ export default function Edit({ auth, item, locations }: Props) {
 
                             {/* 品目名 */}
                             <div>
-                                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">
+                                <label className="block text-sm font-medium text-gray-700">
                                     品目名 <span className="text-red-500">*</span>
                                 </label>
                                 <input
                                     type="text"
                                     value={data.name}
                                     onChange={(e) => setData('name', e.target.value)}
-                                    className="mt-1 block w-full rounded-md border-gray-300 text-lg shadow-sm focus:border-blue-500 focus:ring-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:text-gray-100"
+                                    className="mt-1 block w-full rounded-md border-gray-300 text-lg shadow-sm focus:border-blue-500 focus:ring-blue-500"
                                     placeholder="例: コーヒー豆"
                                 />
                                 {errors.name && (
@@ -195,14 +195,14 @@ export default function Edit({ auth, item, locations }: Props) {
 
                             {/* 単位 */}
                             <div>
-                                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">
+                                <label className="block text-sm font-medium text-gray-700">
                                     単位 <span className="text-red-500">*</span>
                                 </label>
                                 <input
                                     type="text"
                                     value={data.unit}
                                     onChange={(e) => setData('unit', e.target.value)}
-                                    className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:text-gray-100"
+                                    className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
                                     placeholder="例: kg, 個, 袋"
                                 />
                                 {errors.unit && (
@@ -212,7 +212,7 @@ export default function Edit({ auth, item, locations }: Props) {
 
                             {/* 発注点 */}
                             <div>
-                                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">
+                                <label className="block text-sm font-medium text-gray-700">
                                     発注点 <span className="text-red-500">*</span>
                                 </label>
                                 <input
@@ -220,10 +220,10 @@ export default function Edit({ auth, item, locations }: Props) {
                                     min="0"
                                     value={data.reorder_point}
                                     onChange={(e) => setData('reorder_point', Number(e.target.value))}
-                                    className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:text-gray-100"
+                                    className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
                                     placeholder="在庫がこの数量以下になると通知"
                                 />
-                                <p className="mt-1 text-sm text-gray-500 dark:text-gray-400">
+                                <p className="mt-1 text-sm text-gray-500">
                                     在庫数がこの数量以下になると通知されます
                                 </p>
                                 {errors.reorder_point && (
@@ -233,21 +233,21 @@ export default function Edit({ auth, item, locations }: Props) {
 
                             {/* 有効/無効 */}
                             <div>
-                                <label className="flex cursor-pointer items-center gap-3 rounded-lg border-2 border-gray-200 p-4 hover:border-gray-300 dark:border-gray-600">
+                                <label className="flex cursor-pointer items-center gap-3 rounded-lg border-2 border-gray-200 p-4 hover:border-gray-300">
                                     <input
                                         type="checkbox"
                                         checked={data.is_active}
                                         onChange={(e) => setData('is_active', e.target.checked)}
                                         className="h-5 w-5 rounded border-gray-300 text-blue-600 focus:ring-blue-500"
                                     />
-                                    <span className="text-lg font-medium text-gray-700 dark:text-gray-300">
+                                    <span className="text-lg font-medium text-gray-700">
                                         有効
                                     </span>
                                 </label>
                             </div>
 
                             {/* ボタン */}
-                            <div className="flex justify-between border-t border-gray-200 pt-6 dark:border-gray-700">
+                            <div className="flex justify-between border-t border-gray-200 pt-6">
                                 <button
                                     type="button"
                                     onClick={() => setShowDeleteConfirm(true)}
@@ -261,7 +261,7 @@ export default function Edit({ auth, item, locations }: Props) {
                                         onClick={() =>
                                             router.get(route('inventory.manage'))
                                         }
-                                        className="rounded-md bg-gray-200 px-6 py-3 text-sm font-medium text-gray-700 hover:bg-gray-300 dark:bg-gray-700 dark:text-gray-300 dark:hover:bg-gray-600"
+                                        className="rounded-md bg-gray-200 px-6 py-3 text-sm font-medium text-gray-700 hover:bg-gray-300:bg-gray-600"
                                     >
                                         キャンセル
                                     </button>
@@ -282,11 +282,11 @@ export default function Edit({ auth, item, locations }: Props) {
             {/* 削除確認モーダル */}
             {showDeleteConfirm && (
                 <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
-                    <div className="mx-4 w-full max-w-md rounded-lg bg-white p-6 shadow-xl dark:bg-gray-800">
-                        <h3 className="text-lg font-medium text-gray-900 dark:text-gray-100">
+                    <div className="mx-4 w-full max-w-md rounded-lg bg-white p-6 shadow-xl">
+                        <h3 className="text-lg font-medium text-gray-900">
                             品目を削除しますか？
                         </h3>
-                        <p className="mt-2 text-sm text-gray-500 dark:text-gray-400">
+                        <p className="mt-2 text-sm text-gray-500">
                             この操作は取り消せません。品目「{item.name}
                             」を削除すると、関連する在庫履歴もすべて削除されます。
                         </p>
@@ -294,7 +294,7 @@ export default function Edit({ auth, item, locations }: Props) {
                             <button
                                 type="button"
                                 onClick={() => setShowDeleteConfirm(false)}
-                                className="rounded-md bg-gray-200 px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-300 dark:bg-gray-700 dark:text-gray-300 dark:hover:bg-gray-600"
+                                className="rounded-md bg-gray-200 px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-300:bg-gray-600"
                             >
                                 キャンセル
                             </button>
@@ -313,16 +313,16 @@ export default function Edit({ auth, item, locations }: Props) {
             {/* 補充モーダル */}
             {showRestockModal && (
                 <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
-                    <div className="mx-4 w-full max-w-md rounded-lg bg-white p-6 shadow-xl dark:bg-gray-800">
-                        <h3 className="text-lg font-medium text-gray-900 dark:text-gray-100">
+                    <div className="mx-4 w-full max-w-md rounded-lg bg-white p-6 shadow-xl">
+                        <h3 className="text-lg font-medium text-gray-900">
                             在庫補充
                         </h3>
-                        <p className="mt-1 text-sm text-gray-500 dark:text-gray-400">
+                        <p className="mt-1 text-sm text-gray-500">
                             {item.name}の補充数量を入力してください
                         </p>
                         <form onSubmit={handleRestock}>
                             <div className="mt-4">
-                                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">
+                                <label className="block text-sm font-medium text-gray-700">
                                     補充数量 <span className="text-red-500">*</span>
                                 </label>
                                 <div className="mt-1 flex items-center gap-2">
@@ -333,11 +333,11 @@ export default function Edit({ auth, item, locations }: Props) {
                                         onChange={(e) =>
                                             restockForm.setData('quantity', Number(e.target.value))
                                         }
-                                        className="block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:text-gray-100"
+                                        className="block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
                                         placeholder="数量を入力"
                                         autoFocus
                                     />
-                                    <span className="text-gray-500 dark:text-gray-400">
+                                    <span className="text-gray-500">
                                         {item.unit}
                                     </span>
                                 </div>
@@ -354,7 +354,7 @@ export default function Edit({ auth, item, locations }: Props) {
                                         setShowRestockModal(false);
                                         restockForm.reset();
                                     }}
-                                    className="rounded-md bg-gray-200 px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-300 dark:bg-gray-700 dark:text-gray-300 dark:hover:bg-gray-600"
+                                    className="rounded-md bg-gray-200 px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-300:bg-gray-600"
                                 >
                                     キャンセル
                                 </button>
@@ -374,17 +374,17 @@ export default function Edit({ auth, item, locations }: Props) {
             {/* 調整モーダル */}
             {showAdjustModal && (
                 <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
-                    <div className="mx-4 w-full max-w-md rounded-lg bg-white p-6 shadow-xl dark:bg-gray-800">
-                        <h3 className="text-lg font-medium text-gray-900 dark:text-gray-100">
+                    <div className="mx-4 w-full max-w-md rounded-lg bg-white p-6 shadow-xl">
+                        <h3 className="text-lg font-medium text-gray-900">
                             在庫調整
                         </h3>
-                        <p className="mt-1 text-sm text-gray-500 dark:text-gray-400">
+                        <p className="mt-1 text-sm text-gray-500">
                             {item.name}の調整数量を入力してください（マイナス可）
                         </p>
                         <form onSubmit={handleAdjust}>
                             <div className="mt-4 space-y-4">
                                 <div>
-                                    <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">
+                                    <label className="block text-sm font-medium text-gray-700">
                                         調整数量 <span className="text-red-500">*</span>
                                     </label>
                                     <div className="mt-1 flex items-center gap-2">
@@ -394,15 +394,15 @@ export default function Edit({ auth, item, locations }: Props) {
                                             onChange={(e) =>
                                                 adjustForm.setData('quantity', Number(e.target.value))
                                             }
-                                            className="block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:text-gray-100"
+                                            className="block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
                                             placeholder="数量を入力（-10, +5 など）"
                                             autoFocus
                                         />
-                                        <span className="text-gray-500 dark:text-gray-400">
+                                        <span className="text-gray-500">
                                             {item.unit}
                                         </span>
                                     </div>
-                                    <p className="mt-1 text-sm text-gray-500 dark:text-gray-400">
+                                    <p className="mt-1 text-sm text-gray-500">
                                         現在: {item.current_stock} {item.unit} → 調整後:{' '}
                                         {item.current_stock + adjustForm.data.quantity} {item.unit}
                                     </p>
@@ -413,7 +413,7 @@ export default function Edit({ auth, item, locations }: Props) {
                                     )}
                                 </div>
                                 <div>
-                                    <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">
+                                    <label className="block text-sm font-medium text-gray-700">
                                         備考
                                     </label>
                                     <textarea
@@ -422,7 +422,7 @@ export default function Edit({ auth, item, locations }: Props) {
                                             adjustForm.setData('notes', e.target.value)
                                         }
                                         rows={3}
-                                        className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:text-gray-100"
+                                        className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
                                         placeholder="調整理由を記入（任意）"
                                     />
                                     {adjustForm.errors.notes && (
@@ -439,7 +439,7 @@ export default function Edit({ auth, item, locations }: Props) {
                                         setShowAdjustModal(false);
                                         adjustForm.reset();
                                     }}
-                                    className="rounded-md bg-gray-200 px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-300 dark:bg-gray-700 dark:text-gray-300 dark:hover:bg-gray-600"
+                                    className="rounded-md bg-gray-200 px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-300:bg-gray-600"
                                 >
                                     キャンセル
                                 </button>

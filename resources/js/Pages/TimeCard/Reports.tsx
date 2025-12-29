@@ -80,7 +80,7 @@ export default function Reports({ auth, reports, currentMonth }: Props) {
     return (
         <AuthenticatedLayout
             header={
-                <h2 className="text-xl font-semibold leading-tight text-gray-800 dark:text-gray-200">
+                <h2 className="text-xl font-semibold leading-tight text-gray-800">
                     月次勤怠レポート
                 </h2>
             }
@@ -93,7 +93,7 @@ export default function Reports({ auth, reports, currentMonth }: Props) {
                     <div className="mb-6 flex items-center justify-center gap-4">
                         <button
                             onClick={() => navigateMonth(-1)}
-                            className="inline-flex items-center rounded-md bg-gray-200 px-3 py-2 text-sm font-medium text-gray-700 hover:bg-gray-300 dark:bg-gray-700 dark:text-gray-300 dark:hover:bg-gray-600"
+                            className="inline-flex items-center rounded-md bg-gray-200 px-3 py-2 text-sm font-medium text-gray-700 hover:bg-gray-300:bg-gray-600"
                         >
                             <svg className="mr-1 h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
@@ -102,12 +102,12 @@ export default function Reports({ auth, reports, currentMonth }: Props) {
                         </button>
 
                         <div className="flex items-center gap-2">
-                            <span className="text-lg font-semibold text-gray-900 dark:text-gray-100">
+                            <span className="text-lg font-semibold text-gray-900">
                                 {formatMonthDisplay(currentMonth)}
                             </span>
                             <button
                                 onClick={goToCurrentMonth}
-                                className="rounded-md bg-blue-100 px-2 py-1 text-xs font-medium text-blue-700 hover:bg-blue-200 dark:bg-blue-900 dark:text-blue-300 dark:hover:bg-blue-800"
+                                className="rounded-md bg-blue-100 px-2 py-1 text-xs font-medium text-blue-700 hover:bg-blue-200:bg-blue-800"
                             >
                                 今月
                             </button>
@@ -115,7 +115,7 @@ export default function Reports({ auth, reports, currentMonth }: Props) {
 
                         <button
                             onClick={() => navigateMonth(1)}
-                            className="inline-flex items-center rounded-md bg-gray-200 px-3 py-2 text-sm font-medium text-gray-700 hover:bg-gray-300 dark:bg-gray-700 dark:text-gray-300 dark:hover:bg-gray-600"
+                            className="inline-flex items-center rounded-md bg-gray-200 px-3 py-2 text-sm font-medium text-gray-700 hover:bg-gray-300:bg-gray-600"
                         >
                             翌月
                             <svg className="ml-1 h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -125,55 +125,55 @@ export default function Reports({ auth, reports, currentMonth }: Props) {
                     </div>
 
                     {/* Reports Table */}
-                    <div className="overflow-hidden rounded-lg bg-white shadow-sm dark:bg-gray-800">
+                    <div className="overflow-hidden rounded-lg bg-white shadow-sm">
                         {reports.length === 0 ? (
                             <div className="p-8 text-center">
-                                <p className="text-gray-500 dark:text-gray-400">
+                                <p className="text-gray-500">
                                     {formatMonthDisplay(currentMonth)}の勤怠データがありません
                                 </p>
                             </div>
                         ) : (
                             <div className="overflow-x-auto">
-                                <table className="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
-                                    <thead className="bg-gray-50 dark:bg-gray-700">
+                                <table className="min-w-full divide-y divide-gray-200">
+                                    <thead className="bg-gray-50">
                                         <tr>
-                                            <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500 dark:text-gray-300">
+                                            <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500">
                                                 スタッフ名
                                             </th>
-                                            <th className="px-6 py-3 text-right text-xs font-medium uppercase tracking-wider text-gray-500 dark:text-gray-300">
+                                            <th className="px-6 py-3 text-right text-xs font-medium uppercase tracking-wider text-gray-500">
                                                 出勤日数
                                             </th>
-                                            <th className="px-6 py-3 text-right text-xs font-medium uppercase tracking-wider text-gray-500 dark:text-gray-300">
+                                            <th className="px-6 py-3 text-right text-xs font-medium uppercase tracking-wider text-gray-500">
                                                 総勤務時間
                                             </th>
-                                            <th className="px-6 py-3 text-right text-xs font-medium uppercase tracking-wider text-gray-500 dark:text-gray-300">
+                                            <th className="px-6 py-3 text-right text-xs font-medium uppercase tracking-wider text-gray-500">
                                                 総休憩時間
                                             </th>
-                                            <th className="px-6 py-3 text-right text-xs font-medium uppercase tracking-wider text-gray-500 dark:text-gray-300">
+                                            <th className="px-6 py-3 text-right text-xs font-medium uppercase tracking-wider text-gray-500">
                                                 平均勤務時間/日
                                             </th>
                                         </tr>
                                     </thead>
-                                    <tbody className="divide-y divide-gray-200 bg-white dark:divide-gray-700 dark:bg-gray-800">
+                                    <tbody className="divide-y divide-gray-200 bg-white">
                                         {reports.map((report) => (
-                                            <tr key={report.user_id} className="hover:bg-gray-50 dark:hover:bg-gray-700">
-                                                <td className="whitespace-nowrap px-6 py-4 text-sm font-medium text-gray-900 dark:text-gray-100">
+                                            <tr key={report.user_id} className="hover:bg-gray-50:bg-gray-700">
+                                                <td className="whitespace-nowrap px-6 py-4 text-sm font-medium text-gray-900">
                                                     {report.user_name}
                                                 </td>
-                                                <td className="whitespace-nowrap px-6 py-4 text-right text-sm text-gray-900 dark:text-gray-100">
+                                                <td className="whitespace-nowrap px-6 py-4 text-right text-sm text-gray-900">
                                                     {report.work_days}日
                                                 </td>
-                                                <td className="whitespace-nowrap px-6 py-4 text-right text-sm text-gray-900 dark:text-gray-100">
+                                                <td className="whitespace-nowrap px-6 py-4 text-right text-sm text-gray-900">
                                                     <span title={formatMinutesToHHMM(report.total_work_minutes)}>
                                                         {formatMinutesToJapanese(report.total_work_minutes)}
                                                     </span>
                                                 </td>
-                                                <td className="whitespace-nowrap px-6 py-4 text-right text-sm text-gray-900 dark:text-gray-100">
+                                                <td className="whitespace-nowrap px-6 py-4 text-right text-sm text-gray-900">
                                                     <span title={formatMinutesToHHMM(report.total_break_minutes)}>
                                                         {formatMinutesToJapanese(report.total_break_minutes)}
                                                     </span>
                                                 </td>
-                                                <td className="whitespace-nowrap px-6 py-4 text-right text-sm text-gray-900 dark:text-gray-100">
+                                                <td className="whitespace-nowrap px-6 py-4 text-right text-sm text-gray-900">
                                                     <span title={formatMinutesToHHMM(report.average_work_minutes_per_day)}>
                                                         {formatMinutesToJapanese(report.average_work_minutes_per_day)}
                                                     </span>
@@ -182,25 +182,25 @@ export default function Reports({ auth, reports, currentMonth }: Props) {
                                         ))}
                                     </tbody>
                                     {/* Summary Totals */}
-                                    <tfoot className="bg-gray-100 dark:bg-gray-700">
+                                    <tfoot className="bg-gray-100">
                                         <tr className="font-semibold">
-                                            <td className="whitespace-nowrap px-6 py-4 text-sm text-gray-900 dark:text-gray-100">
+                                            <td className="whitespace-nowrap px-6 py-4 text-sm text-gray-900">
                                                 合計 / 平均
                                             </td>
-                                            <td className="whitespace-nowrap px-6 py-4 text-right text-sm text-gray-900 dark:text-gray-100">
+                                            <td className="whitespace-nowrap px-6 py-4 text-right text-sm text-gray-900">
                                                 {summaryTotals.totalWorkDays}日
                                             </td>
-                                            <td className="whitespace-nowrap px-6 py-4 text-right text-sm text-gray-900 dark:text-gray-100">
+                                            <td className="whitespace-nowrap px-6 py-4 text-right text-sm text-gray-900">
                                                 <span title={formatMinutesToHHMM(summaryTotals.totalWorkMinutes)}>
                                                     {formatMinutesToJapanese(summaryTotals.totalWorkMinutes)}
                                                 </span>
                                             </td>
-                                            <td className="whitespace-nowrap px-6 py-4 text-right text-sm text-gray-900 dark:text-gray-100">
+                                            <td className="whitespace-nowrap px-6 py-4 text-right text-sm text-gray-900">
                                                 <span title={formatMinutesToHHMM(summaryTotals.totalBreakMinutes)}>
                                                     {formatMinutesToJapanese(summaryTotals.totalBreakMinutes)}
                                                 </span>
                                             </td>
-                                            <td className="whitespace-nowrap px-6 py-4 text-right text-sm text-gray-900 dark:text-gray-100">
+                                            <td className="whitespace-nowrap px-6 py-4 text-right text-sm text-gray-900">
                                                 <span title={formatMinutesToHHMM(overallAverageMinutes)}>
                                                     {formatMinutesToJapanese(overallAverageMinutes)}
                                                 </span>
@@ -213,7 +213,7 @@ export default function Reports({ auth, reports, currentMonth }: Props) {
                     </div>
 
                     {/* Legend */}
-                    <div className="mt-4 text-sm text-gray-500 dark:text-gray-400">
+                    <div className="mt-4 text-sm text-gray-500">
                         <p>* 時間にマウスを合わせるとHH:MM形式で表示されます</p>
                     </div>
                 </div>

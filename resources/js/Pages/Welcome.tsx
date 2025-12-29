@@ -7,12 +7,12 @@ export default function Welcome({
     return (
         <>
             <Head title="ようこそ" />
-            <div className="min-h-screen bg-gradient-to-b from-blue-50 to-white dark:from-gray-900 dark:to-gray-800">
+            <div className="min-h-screen bg-gradient-to-b from-blue-50 to-white">
                 <div className="relative flex min-h-screen flex-col items-center justify-center">
                     <div className="relative w-full max-w-2xl px-6">
                         <header className="flex items-center justify-between py-10">
                             <div className="flex items-center">
-                                <h1 className="text-2xl font-bold text-gray-900 dark:text-white">
+                                <h1 className="text-2xl font-bold text-gray-900">
                                     Mocca Portal
                                 </h1>
                             </div>
@@ -34,7 +34,7 @@ export default function Welcome({
                                         </Link>
                                         <Link
                                             href={route('register')}
-                                            className="rounded-md border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-700 transition hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 dark:border-gray-600 dark:bg-gray-800 dark:text-gray-300 dark:hover:bg-gray-700"
+                                            className="rounded-md border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-700 transition hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2:bg-gray-700"
                                         >
                                             新規登録
                                         </Link>
@@ -44,10 +44,10 @@ export default function Welcome({
                         </header>
 
                         <main className="py-12 text-center">
-                            <h2 className="text-4xl font-bold tracking-tight text-gray-900 sm:text-5xl dark:text-white">
+                            <h2 className="text-4xl font-bold tracking-tight text-gray-900 sm:text-5xl">
                                 ようこそ
                             </h2>
-                            <p className="mt-6 text-lg leading-8 text-gray-600 dark:text-gray-400">
+                            <p className="mt-6 text-lg leading-8 text-gray-600">
                                 施設管理をスマートに。予約管理、スタッフ管理を一元管理できるポータルサイトです。
                             </p>
                             <div className="mt-10 flex items-center justify-center gap-x-6">
@@ -62,7 +62,7 @@ export default function Welcome({
                             </div>
                         </main>
 
-                        <footer className="py-16 text-center text-sm text-gray-500 dark:text-gray-400">
+                        <footer className="py-16 text-center text-sm text-gray-500">
                             © {new Date().getFullYear()} Mocca Portal
                         </footer>
                     </div>

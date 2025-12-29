@@ -153,7 +153,7 @@ export default function Manage({ auth, shifts, users, locations }: Props) {
     return (
         <AuthenticatedLayout
             header={
-                <h2 className="text-xl font-semibold leading-tight text-gray-800 dark:text-gray-200">
+                <h2 className="text-xl font-semibold leading-tight text-gray-800">
                     シフト管理
                 </h2>
             }
@@ -162,11 +162,11 @@ export default function Manage({ auth, shifts, users, locations }: Props) {
 
             <div className="py-6">
                 <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-                    <div className="overflow-hidden rounded-lg bg-white shadow-sm dark:bg-gray-800">
+                    <div className="overflow-hidden rounded-lg bg-white shadow-sm">
                         <div className="p-6">
                             {/* Header with Add Button */}
                             <div className="mb-6 flex items-center justify-between">
-                                <h3 className="text-lg font-medium text-gray-900 dark:text-gray-100">
+                                <h3 className="text-lg font-medium text-gray-900">
                                     シフト一覧
                                 </h3>
                                 <button
@@ -194,18 +194,18 @@ export default function Manage({ auth, shifts, users, locations }: Props) {
                             {/* Shifts Table */}
                             {sortedShifts.length > 0 ? (
                                 <div className="overflow-x-auto">
-                                    <table className="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
-                                        <thead className="bg-gray-50 dark:bg-gray-700">
+                                    <table className="min-w-full divide-y divide-gray-200">
+                                        <thead className="bg-gray-50">
                                             <tr>
                                                 <th
                                                     scope="col"
-                                                    className="px-4 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500 dark:text-gray-300"
+                                                    className="px-4 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500"
                                                 >
                                                     スタッフ
                                                 </th>
                                                 <th
                                                     scope="col"
-                                                    className="cursor-pointer px-4 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500 hover:text-gray-700 dark:text-gray-300 dark:hover:text-gray-100"
+                                                    className="cursor-pointer px-4 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500 hover:text-gray-700:text-gray-100"
                                                     onClick={toggleSortDirection}
                                                 >
                                                     <div className="flex items-center gap-1">
@@ -227,58 +227,58 @@ export default function Manage({ auth, shifts, users, locations }: Props) {
                                                 </th>
                                                 <th
                                                     scope="col"
-                                                    className="px-4 py-3 text-center text-xs font-medium uppercase tracking-wider text-gray-500 dark:text-gray-300"
+                                                    className="px-4 py-3 text-center text-xs font-medium uppercase tracking-wider text-gray-500"
                                                 >
                                                     開始
                                                 </th>
                                                 <th
                                                     scope="col"
-                                                    className="px-4 py-3 text-center text-xs font-medium uppercase tracking-wider text-gray-500 dark:text-gray-300"
+                                                    className="px-4 py-3 text-center text-xs font-medium uppercase tracking-wider text-gray-500"
                                                 >
                                                     終了
                                                 </th>
                                                 <th
                                                     scope="col"
-                                                    className="px-4 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500 dark:text-gray-300"
+                                                    className="px-4 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500"
                                                 >
                                                     拠点
                                                 </th>
                                                 <th
                                                     scope="col"
-                                                    className="px-4 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500 dark:text-gray-300"
+                                                    className="px-4 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500"
                                                 >
                                                     備考
                                                 </th>
                                                 <th
                                                     scope="col"
-                                                    className="px-4 py-3 text-center text-xs font-medium uppercase tracking-wider text-gray-500 dark:text-gray-300"
+                                                    className="px-4 py-3 text-center text-xs font-medium uppercase tracking-wider text-gray-500"
                                                 >
                                                     操作
                                                 </th>
                                             </tr>
                                         </thead>
-                                        <tbody className="divide-y divide-gray-200 bg-white dark:divide-gray-700 dark:bg-gray-800">
+                                        <tbody className="divide-y divide-gray-200 bg-white">
                                             {sortedShifts.map((shift) => (
                                                 <tr
                                                     key={shift.id}
-                                                    className="transition-colors hover:bg-gray-50 dark:hover:bg-gray-700/50"
+                                                    className="transition-colors hover:bg-gray-50:bg-gray-700/50"
                                                 >
-                                                    <td className="whitespace-nowrap px-4 py-3 text-sm font-medium text-gray-900 dark:text-gray-100">
+                                                    <td className="whitespace-nowrap px-4 py-3 text-sm font-medium text-gray-900">
                                                         {shift.user?.name ?? '-'}
                                                     </td>
-                                                    <td className="whitespace-nowrap px-4 py-3 text-sm text-gray-700 dark:text-gray-300">
+                                                    <td className="whitespace-nowrap px-4 py-3 text-sm text-gray-700">
                                                         {formatDate(shift.date)}
                                                     </td>
-                                                    <td className="whitespace-nowrap px-4 py-3 text-center text-sm text-gray-700 dark:text-gray-300">
+                                                    <td className="whitespace-nowrap px-4 py-3 text-center text-sm text-gray-700">
                                                         {formatTime(shift.start_time)}
                                                     </td>
-                                                    <td className="whitespace-nowrap px-4 py-3 text-center text-sm text-gray-700 dark:text-gray-300">
+                                                    <td className="whitespace-nowrap px-4 py-3 text-center text-sm text-gray-700">
                                                         {formatTime(shift.end_time)}
                                                     </td>
-                                                    <td className="whitespace-nowrap px-4 py-3 text-sm text-gray-700 dark:text-gray-300">
+                                                    <td className="whitespace-nowrap px-4 py-3 text-sm text-gray-700">
                                                         {getLocationName(shift)}
                                                     </td>
-                                                    <td className="max-w-[200px] truncate px-4 py-3 text-sm text-gray-500 dark:text-gray-400">
+                                                    <td className="max-w-[200px] truncate px-4 py-3 text-sm text-gray-500">
                                                         {shift.notes ?? '-'}
                                                     </td>
                                                     <td className="whitespace-nowrap px-4 py-3 text-center text-sm">
@@ -286,7 +286,7 @@ export default function Manage({ auth, shifts, users, locations }: Props) {
                                                             <button
                                                                 type="button"
                                                                 onClick={() => openEditModal(shift)}
-                                                                className="text-blue-600 hover:text-blue-800 dark:text-blue-400 dark:hover:text-blue-300"
+                                                                className="text-blue-600 hover:text-blue-800:text-blue-300"
                                                                 title="編集"
                                                             >
                                                                 <svg
@@ -306,7 +306,7 @@ export default function Manage({ auth, shifts, users, locations }: Props) {
                                                             <button
                                                                 type="button"
                                                                 onClick={() => openDeleteConfirm(shift)}
-                                                                className="text-red-600 hover:text-red-800 dark:text-red-400 dark:hover:text-red-300"
+                                                                className="text-red-600 hover:text-red-800:text-red-300"
                                                                 title="削除"
                                                             >
                                                                 <svg
@@ -345,10 +345,10 @@ export default function Manage({ auth, shifts, users, locations }: Props) {
                                             d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"
                                         />
                                     </svg>
-                                    <h3 className="mt-2 text-sm font-medium text-gray-900 dark:text-gray-100">
+                                    <h3 className="mt-2 text-sm font-medium text-gray-900">
                                         シフトがありません
                                     </h3>
-                                    <p className="mt-1 text-sm text-gray-500 dark:text-gray-400">
+                                    <p className="mt-1 text-sm text-gray-500">
                                         「新規シフト追加」ボタンからシフトを登録してください。
                                     </p>
                                 </div>
@@ -357,7 +357,7 @@ export default function Manage({ auth, shifts, users, locations }: Props) {
                     </div>
 
                     {/* Help Text */}
-                    <div className="mt-4 rounded-lg bg-blue-50 p-4 text-sm text-blue-800 dark:bg-blue-900/20 dark:text-blue-300">
+                    <div className="mt-4 rounded-lg bg-blue-50 p-4 text-sm text-blue-800">
                         <p className="font-medium">シフト管理について:</p>
                         <ul className="mt-2 list-inside list-disc space-y-1">
                             <li>シフトは日付・時間・スタッフを指定して登録できます</li>
@@ -371,7 +371,7 @@ export default function Manage({ auth, shifts, users, locations }: Props) {
             {/* Create/Edit Modal */}
             <Modal show={isModalOpen} onClose={closeModal} maxWidth="lg">
                 <form onSubmit={handleSubmit} className="p-6">
-                    <h3 className="text-lg font-medium text-gray-900 dark:text-gray-100">
+                    <h3 className="text-lg font-medium text-gray-900">
                         {editingShift ? 'シフト編集' : '新規シフト追加'}
                     </h3>
 
@@ -380,7 +380,7 @@ export default function Manage({ auth, shifts, users, locations }: Props) {
                         <div>
                             <label
                                 htmlFor="user_id"
-                                className="block text-sm font-medium text-gray-700 dark:text-gray-300"
+                                className="block text-sm font-medium text-gray-700"
                             >
                                 スタッフ <span className="text-red-500">*</span>
                             </label>
@@ -390,7 +390,7 @@ export default function Manage({ auth, shifts, users, locations }: Props) {
                                 onChange={(e) =>
                                     setData('user_id', e.target.value ? Number(e.target.value) : '')
                                 }
-                                className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-300 sm:text-sm"
+                                className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm"
                                 required
                             >
                                 <option value="">選択してください</option>
@@ -409,7 +409,7 @@ export default function Manage({ auth, shifts, users, locations }: Props) {
                         <div>
                             <label
                                 htmlFor="date"
-                                className="block text-sm font-medium text-gray-700 dark:text-gray-300"
+                                className="block text-sm font-medium text-gray-700"
                             >
                                 日付 <span className="text-red-500">*</span>
                             </label>
@@ -418,7 +418,7 @@ export default function Manage({ auth, shifts, users, locations }: Props) {
                                 id="date"
                                 value={data.date}
                                 onChange={(e) => setData('date', e.target.value)}
-                                className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-300 sm:text-sm"
+                                className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm"
                                 required
                             />
                             {errors.date && (
@@ -430,7 +430,7 @@ export default function Manage({ auth, shifts, users, locations }: Props) {
                         <div>
                             <label
                                 htmlFor="start_time"
-                                className="block text-sm font-medium text-gray-700 dark:text-gray-300"
+                                className="block text-sm font-medium text-gray-700"
                             >
                                 開始時刻 <span className="text-red-500">*</span>
                             </label>
@@ -439,7 +439,7 @@ export default function Manage({ auth, shifts, users, locations }: Props) {
                                 id="start_time"
                                 value={data.start_time}
                                 onChange={(e) => setData('start_time', e.target.value)}
-                                className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-300 sm:text-sm"
+                                className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm"
                                 required
                             />
                             {errors.start_time && (
@@ -451,7 +451,7 @@ export default function Manage({ auth, shifts, users, locations }: Props) {
                         <div>
                             <label
                                 htmlFor="end_time"
-                                className="block text-sm font-medium text-gray-700 dark:text-gray-300"
+                                className="block text-sm font-medium text-gray-700"
                             >
                                 終了時刻 <span className="text-red-500">*</span>
                             </label>
@@ -460,7 +460,7 @@ export default function Manage({ auth, shifts, users, locations }: Props) {
                                 id="end_time"
                                 value={data.end_time}
                                 onChange={(e) => setData('end_time', e.target.value)}
-                                className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-300 sm:text-sm"
+                                className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm"
                                 required
                             />
                             {errors.end_time && (
@@ -477,7 +477,7 @@ export default function Manage({ auth, shifts, users, locations }: Props) {
                         <div>
                             <label
                                 htmlFor="location_id"
-                                className="block text-sm font-medium text-gray-700 dark:text-gray-300"
+                                className="block text-sm font-medium text-gray-700"
                             >
                                 拠点
                             </label>
@@ -487,7 +487,7 @@ export default function Manage({ auth, shifts, users, locations }: Props) {
                                 onChange={(e) =>
                                     setData('location_id', e.target.value ? Number(e.target.value) : '')
                                 }
-                                className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-300 sm:text-sm"
+                                className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm"
                             >
                                 <option value="">全店舗</option>
                                 {locations.map((location) => (
@@ -505,7 +505,7 @@ export default function Manage({ auth, shifts, users, locations }: Props) {
                         <div>
                             <label
                                 htmlFor="notes"
-                                className="block text-sm font-medium text-gray-700 dark:text-gray-300"
+                                className="block text-sm font-medium text-gray-700"
                             >
                                 備考
                             </label>
@@ -514,7 +514,7 @@ export default function Manage({ auth, shifts, users, locations }: Props) {
                                 rows={3}
                                 value={data.notes}
                                 onChange={(e) => setData('notes', e.target.value)}
-                                className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-300 sm:text-sm"
+                                className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm"
                                 placeholder="メモなど..."
                             />
                             {errors.notes && (
@@ -525,7 +525,7 @@ export default function Manage({ auth, shifts, users, locations }: Props) {
 
                     {/* General Error Message (for overlap errors etc.) */}
                     {Object.keys(errors).some(key => !['user_id', 'date', 'start_time', 'end_time', 'location_id', 'notes'].includes(key)) && (
-                        <div className="mt-4 rounded-md bg-red-50 p-4 dark:bg-red-900/20">
+                        <div className="mt-4 rounded-md bg-red-50 p-4">
                             <div className="flex">
                                 <div className="flex-shrink-0">
                                     <svg
@@ -541,7 +541,7 @@ export default function Manage({ auth, shifts, users, locations }: Props) {
                                     </svg>
                                 </div>
                                 <div className="ml-3">
-                                    <p className="text-sm text-red-700 dark:text-red-300">
+                                    <p className="text-sm text-red-700">
                                         {Object.entries(errors)
                                             .filter(([key]) => !['user_id', 'date', 'start_time', 'end_time', 'location_id', 'notes'].includes(key))
                                             .map(([, value]) => value)
@@ -557,7 +557,7 @@ export default function Manage({ auth, shifts, users, locations }: Props) {
                         <button
                             type="button"
                             onClick={closeModal}
-                            className="rounded-md border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-700 shadow-sm hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-300 dark:hover:bg-gray-600"
+                            className="rounded-md border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-700 shadow-sm hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2:bg-gray-600"
                         >
                             キャンセル
                         </button>
@@ -602,11 +602,11 @@ export default function Manage({ auth, shifts, users, locations }: Props) {
             {/* Delete Confirmation Modal */}
             {showDeleteConfirm && deletingShift && (
                 <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
-                    <div className="mx-4 w-full max-w-md rounded-lg bg-white p-6 shadow-xl dark:bg-gray-800">
-                        <h3 className="text-lg font-medium text-gray-900 dark:text-gray-100">
+                    <div className="mx-4 w-full max-w-md rounded-lg bg-white p-6 shadow-xl">
+                        <h3 className="text-lg font-medium text-gray-900">
                             シフトを削除しますか?
                         </h3>
-                        <p className="mt-2 text-sm text-gray-500 dark:text-gray-400">
+                        <p className="mt-2 text-sm text-gray-500">
                             {deletingShift.user?.name}さんの{formatDate(deletingShift.date)}のシフト（
                             {formatTime(deletingShift.start_time)} - {formatTime(deletingShift.end_time)}
                             ）を削除します。この操作は取り消せません。
@@ -615,7 +615,7 @@ export default function Manage({ auth, shifts, users, locations }: Props) {
                             <button
                                 type="button"
                                 onClick={closeDeleteConfirm}
-                                className="rounded-md bg-gray-200 px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-300 dark:bg-gray-700 dark:text-gray-300 dark:hover:bg-gray-600"
+                                className="rounded-md bg-gray-200 px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-300:bg-gray-600"
                             >
                                 キャンセル
                             </button>

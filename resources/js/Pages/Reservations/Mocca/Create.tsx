@@ -102,7 +102,7 @@ export default function Create({ auth, banshirouReservations, linkedReservationI
     return (
         <AuthenticatedLayout
             header={
-                <h2 className="text-xl font-semibold leading-tight text-gray-800 dark:text-gray-200">
+                <h2 className="text-xl font-semibold leading-tight text-gray-800">
                     新規食事予約
                 </h2>
             }
@@ -112,11 +112,11 @@ export default function Create({ auth, banshirouReservations, linkedReservationI
             <div className="py-6">
                 <div className="mx-auto max-w-2xl px-4 sm:px-6 lg:px-8">
                     <form onSubmit={handleSubmit}>
-                        <div className="rounded-lg bg-white p-6 shadow-sm dark:bg-gray-800 space-y-6">
+                        <div className="rounded-lg bg-white p-6 shadow-sm space-y-6">
                             {/* ばんしろう連携 */}
                             {banshirouReservations.length > 0 && (
                                 <div>
-                                    <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">
+                                    <label className="block text-sm font-medium text-gray-700">
                                         ばんしろう予約と連携（任意）
                                     </label>
                                     <select
@@ -136,7 +136,7 @@ export default function Create({ auth, banshirouReservations, linkedReservationI
 
                             {/* 種別選択 */}
                             <div>
-                                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                                <label className="block text-sm font-medium text-gray-700 mb-2">
                                     種別 <span className="text-red-500">*</span>
                                 </label>
                                 <div className="grid grid-cols-3 gap-3">
@@ -170,7 +170,7 @@ export default function Create({ auth, banshirouReservations, linkedReservationI
 
                             {/* 日付 */}
                             <div>
-                                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">
+                                <label className="block text-sm font-medium text-gray-700">
                                     日付 <span className="text-red-500">*</span>
                                 </label>
                                 <input
@@ -185,7 +185,7 @@ export default function Create({ auth, banshirouReservations, linkedReservationI
 
                             {/* 到着時間 */}
                             <div>
-                                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">
+                                <label className="block text-sm font-medium text-gray-700">
                                     到着予定時間（任意）
                                 </label>
                                 <input
@@ -198,7 +198,7 @@ export default function Create({ auth, banshirouReservations, linkedReservationI
 
                             {/* お名前 */}
                             <div>
-                                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">
+                                <label className="block text-sm font-medium text-gray-700">
                                     お名前 <span className="text-red-500">*</span>
                                 </label>
                                 <input
@@ -213,7 +213,7 @@ export default function Create({ auth, banshirouReservations, linkedReservationI
 
                             {/* 人数 */}
                             <div>
-                                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">
+                                <label className="block text-sm font-medium text-gray-700">
                                     人数 <span className="text-red-500">*</span>
                                 </label>
                                 <div className="mt-1 flex items-center gap-3">
@@ -241,7 +241,7 @@ export default function Create({ auth, banshirouReservations, linkedReservationI
 
                             {/* 電話番号 */}
                             <div>
-                                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">
+                                <label className="block text-sm font-medium text-gray-700">
                                     電話番号（任意）
                                 </label>
                                 <input
@@ -255,7 +255,7 @@ export default function Create({ auth, banshirouReservations, linkedReservationI
 
                             {/* 先出メニュー */}
                             <div>
-                                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">
+                                <label className="block text-sm font-medium text-gray-700">
                                     先出メニュー（任意）
                                 </label>
                                 <textarea
@@ -269,7 +269,7 @@ export default function Create({ auth, banshirouReservations, linkedReservationI
 
                             {/* 備考 */}
                             <div>
-                                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">
+                                <label className="block text-sm font-medium text-gray-700">
                                     備考（任意）
                                 </label>
                                 <textarea

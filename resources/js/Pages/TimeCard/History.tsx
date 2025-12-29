@@ -86,7 +86,7 @@ export default function History({ records, currentMonth }: Props) {
     return (
         <AuthenticatedLayout
             header={
-                <h2 className="text-xl font-semibold leading-tight text-gray-800 dark:text-gray-200">
+                <h2 className="text-xl font-semibold leading-tight text-gray-800">
                     勤務履歴
                 </h2>
             }
@@ -96,16 +96,16 @@ export default function History({ records, currentMonth }: Props) {
             <div className="py-6">
                 <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
                     {/* Month Selector */}
-                    <div className="mb-6 rounded-lg bg-white p-4 shadow-sm dark:bg-gray-800">
+                    <div className="mb-6 rounded-lg bg-white p-4 shadow-sm">
                         <div className="flex flex-wrap items-center gap-4">
                             <div className="flex items-center gap-2">
-                                <label className="text-sm font-medium text-gray-700 dark:text-gray-300">
+                                <label className="text-sm font-medium text-gray-700">
                                     年月選択:
                                 </label>
                                 <select
                                     value={selectedYear}
                                     onChange={(e) => setSelectedYear(e.target.value)}
-                                    className="rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-200"
+                                    className="rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
                                 >
                                     {years.map((year) => (
                                         <option key={year} value={year}>
@@ -116,7 +116,7 @@ export default function History({ records, currentMonth }: Props) {
                                 <select
                                     value={selectedMonth}
                                     onChange={(e) => setSelectedMonth(e.target.value)}
-                                    className="rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-200"
+                                    className="rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
                                 >
                                     {months.map((month) => (
                                         <option key={month.value} value={month.value}>
@@ -136,87 +136,87 @@ export default function History({ records, currentMonth }: Props) {
 
                     {/* Monthly Summary */}
                     <div className="mb-6 grid gap-4 sm:grid-cols-3">
-                        <div className="rounded-lg bg-white p-4 shadow-sm dark:bg-gray-800">
-                            <div className="text-sm font-medium text-gray-500 dark:text-gray-400">
+                        <div className="rounded-lg bg-white p-4 shadow-sm">
+                            <div className="text-sm font-medium text-gray-500">
                                 合計勤務時間
                             </div>
-                            <div className="mt-1 text-2xl font-bold text-gray-900 dark:text-gray-100">
+                            <div className="mt-1 text-2xl font-bold text-gray-900">
                                 {totalWorkHours}時間{totalWorkMins > 0 && `${totalWorkMins}分`}
                             </div>
                         </div>
-                        <div className="rounded-lg bg-white p-4 shadow-sm dark:bg-gray-800">
-                            <div className="text-sm font-medium text-gray-500 dark:text-gray-400">
+                        <div className="rounded-lg bg-white p-4 shadow-sm">
+                            <div className="text-sm font-medium text-gray-500">
                                 出勤日数
                             </div>
-                            <div className="mt-1 text-2xl font-bold text-gray-900 dark:text-gray-100">
+                            <div className="mt-1 text-2xl font-bold text-gray-900">
                                 {workingDays}日
                             </div>
                         </div>
-                        <div className="rounded-lg bg-white p-4 shadow-sm dark:bg-gray-800">
-                            <div className="text-sm font-medium text-gray-500 dark:text-gray-400">
+                        <div className="rounded-lg bg-white p-4 shadow-sm">
+                            <div className="text-sm font-medium text-gray-500">
                                 合計休憩時間
                             </div>
-                            <div className="mt-1 text-2xl font-bold text-gray-900 dark:text-gray-100">
+                            <div className="mt-1 text-2xl font-bold text-gray-900">
                                 {formatMinutes(totalBreakMinutes)}
                             </div>
                         </div>
                     </div>
 
                     {/* Time Records Table */}
-                    <div className="overflow-hidden rounded-lg bg-white shadow-sm dark:bg-gray-800">
+                    <div className="overflow-hidden rounded-lg bg-white shadow-sm">
                         {records.length === 0 ? (
                             <div className="p-8 text-center">
-                                <p className="text-gray-500 dark:text-gray-400">
+                                <p className="text-gray-500">
                                     この月の勤務記録がありません
                                 </p>
                             </div>
                         ) : (
                             <div className="overflow-x-auto">
-                                <table className="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
-                                    <thead className="bg-gray-50 dark:bg-gray-700">
+                                <table className="min-w-full divide-y divide-gray-200">
+                                    <thead className="bg-gray-50">
                                         <tr>
-                                            <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500 dark:text-gray-300">
+                                            <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500">
                                                 日付
                                             </th>
-                                            <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500 dark:text-gray-300">
+                                            <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500">
                                                 出勤
                                             </th>
-                                            <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500 dark:text-gray-300">
+                                            <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500">
                                                 退勤
                                             </th>
-                                            <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500 dark:text-gray-300">
+                                            <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500">
                                                 休憩時間
                                             </th>
-                                            <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500 dark:text-gray-300">
+                                            <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500">
                                                 勤務時間
                                             </th>
-                                            <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500 dark:text-gray-300">
+                                            <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500">
                                                 備考
                                             </th>
                                         </tr>
                                     </thead>
-                                    <tbody className="divide-y divide-gray-200 bg-white dark:divide-gray-700 dark:bg-gray-800">
+                                    <tbody className="divide-y divide-gray-200 bg-white">
                                         {records.map((record) => (
                                             <tr
                                                 key={record.id}
-                                                className="hover:bg-gray-50 dark:hover:bg-gray-700"
+                                                className="hover:bg-gray-50:bg-gray-700"
                                             >
-                                                <td className="whitespace-nowrap px-6 py-4 text-sm font-medium text-gray-900 dark:text-gray-100">
+                                                <td className="whitespace-nowrap px-6 py-4 text-sm font-medium text-gray-900">
                                                     {formatDate(record.date)}
                                                 </td>
-                                                <td className="whitespace-nowrap px-6 py-4 text-sm text-gray-900 dark:text-gray-100">
+                                                <td className="whitespace-nowrap px-6 py-4 text-sm text-gray-900">
                                                     {formatTime(record.clock_in)}
                                                 </td>
-                                                <td className="whitespace-nowrap px-6 py-4 text-sm text-gray-900 dark:text-gray-100">
+                                                <td className="whitespace-nowrap px-6 py-4 text-sm text-gray-900">
                                                     {formatTime(record.clock_out)}
                                                 </td>
-                                                <td className="whitespace-nowrap px-6 py-4 text-sm text-gray-900 dark:text-gray-100">
+                                                <td className="whitespace-nowrap px-6 py-4 text-sm text-gray-900">
                                                     {formatMinutes(record.break_minutes)}
                                                 </td>
-                                                <td className="whitespace-nowrap px-6 py-4 text-sm font-medium text-gray-900 dark:text-gray-100">
+                                                <td className="whitespace-nowrap px-6 py-4 text-sm font-medium text-gray-900">
                                                     {formatMinutes(record.work_minutes)}
                                                 </td>
-                                                <td className="px-6 py-4 text-sm text-gray-500 dark:text-gray-400">
+                                                <td className="px-6 py-4 text-sm text-gray-500">
                                                     {record.notes || '-'}
                                                 </td>
                                             </tr>

@@ -79,7 +79,7 @@ export default function Create({ locations, auth }: Props) {
     return (
         <AuthenticatedLayout
             header={
-                <h2 className="text-xl font-semibold leading-tight text-gray-800 dark:text-gray-200">
+                <h2 className="text-xl font-semibold leading-tight text-gray-800">
                     チェックリストテンプレート作成
                 </h2>
             }
@@ -88,7 +88,7 @@ export default function Create({ locations, auth }: Props) {
 
             <div className="py-12">
                 <div className="mx-auto max-w-2xl sm:px-6 lg:px-8">
-                    <div className="overflow-hidden bg-white shadow-sm sm:rounded-lg dark:bg-gray-800">
+                    <div className="overflow-hidden bg-white shadow-sm sm:rounded-lg">
                         <form onSubmit={submit} className="p-6">
                             {/* テンプレート名 */}
                             <div>
@@ -114,7 +114,7 @@ export default function Create({ locations, auth }: Props) {
                                     name="type"
                                     value={data.type}
                                     onChange={(e) => setData('type', e.target.value as FormData['type'])}
-                                    className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-300 dark:focus:border-indigo-600 dark:focus:ring-indigo-600"
+                                    className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500:border-indigo-600:ring-indigo-600"
                                     required
                                 >
                                     {typeOptions.map((option) => (
@@ -134,7 +134,7 @@ export default function Create({ locations, auth }: Props) {
                                     name="location_id"
                                     value={data.location_id ?? ''}
                                     onChange={(e) => setData('location_id', e.target.value ? Number(e.target.value) : null)}
-                                    className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-300 dark:focus:border-indigo-600 dark:focus:ring-indigo-600"
+                                    className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500:border-indigo-600:ring-indigo-600"
                                 >
                                     <option value="">全拠点共通</option>
                                     {locations.map((location) => (
@@ -154,7 +154,7 @@ export default function Create({ locations, auth }: Props) {
                                         checked={data.is_active}
                                         onChange={(e) => setData('is_active', e.target.checked)}
                                     />
-                                    <span className="ms-2 text-sm text-gray-600 dark:text-gray-400">
+                                    <span className="ms-2 text-sm text-gray-600">
                                         有効にする
                                     </span>
                                 </label>
@@ -168,14 +168,14 @@ export default function Create({ locations, auth }: Props) {
                                     <button
                                         type="button"
                                         onClick={addItem}
-                                        className="inline-flex items-center rounded-md border border-transparent bg-indigo-600 px-3 py-1.5 text-xs font-semibold uppercase tracking-widest text-white transition duration-150 ease-in-out hover:bg-indigo-700 focus:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 active:bg-indigo-900 dark:focus:ring-offset-gray-800"
+                                        className="inline-flex items-center rounded-md border border-transparent bg-indigo-600 px-3 py-1.5 text-xs font-semibold uppercase tracking-widest text-white transition duration-150 ease-in-out hover:bg-indigo-700 focus:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 active:bg-indigo-900:ring-offset-gray-800"
                                     >
                                         項目を追加
                                     </button>
                                 </div>
 
                                 {data.items.length === 0 ? (
-                                    <p className="mt-3 text-sm text-gray-500 dark:text-gray-400">
+                                    <p className="mt-3 text-sm text-gray-500">
                                         まだ項目がありません。「項目を追加」ボタンをクリックして追加してください。
                                     </p>
                                 ) : (
@@ -183,9 +183,9 @@ export default function Create({ locations, auth }: Props) {
                                         {data.items.map((item, index) => (
                                             <div
                                                 key={index}
-                                                className="flex items-center gap-2 rounded-lg border border-gray-200 bg-gray-50 p-3 dark:border-gray-700 dark:bg-gray-900"
+                                                className="flex items-center gap-2 rounded-lg border border-gray-200 bg-gray-50 p-3"
                                             >
-                                                <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-gray-200 text-xs font-medium text-gray-600 dark:bg-gray-700 dark:text-gray-400">
+                                                <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-gray-200 text-xs font-medium text-gray-600">
                                                     {index + 1}
                                                 </span>
                                                 <TextInput
@@ -200,7 +200,7 @@ export default function Create({ locations, auth }: Props) {
                                                         type="button"
                                                         onClick={() => moveItemUp(index)}
                                                         disabled={index === 0}
-                                                        className="rounded p-1 text-gray-400 hover:bg-gray-200 hover:text-gray-600 disabled:cursor-not-allowed disabled:opacity-50 dark:hover:bg-gray-700 dark:hover:text-gray-300"
+                                                        className="rounded p-1 text-gray-400 hover:bg-gray-200 hover:text-gray-600 disabled:cursor-not-allowed disabled:opacity-50:bg-gray-700:text-gray-300"
                                                         title="上に移動"
                                                     >
                                                         <svg className="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -211,7 +211,7 @@ export default function Create({ locations, auth }: Props) {
                                                         type="button"
                                                         onClick={() => moveItemDown(index)}
                                                         disabled={index === data.items.length - 1}
-                                                        className="rounded p-1 text-gray-400 hover:bg-gray-200 hover:text-gray-600 disabled:cursor-not-allowed disabled:opacity-50 dark:hover:bg-gray-700 dark:hover:text-gray-300"
+                                                        className="rounded p-1 text-gray-400 hover:bg-gray-200 hover:text-gray-600 disabled:cursor-not-allowed disabled:opacity-50:bg-gray-700:text-gray-300"
                                                         title="下に移動"
                                                     >
                                                         <svg className="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -221,7 +221,7 @@ export default function Create({ locations, auth }: Props) {
                                                     <button
                                                         type="button"
                                                         onClick={() => removeItem(index)}
-                                                        className="rounded p-1 text-red-400 hover:bg-red-100 hover:text-red-600 dark:hover:bg-red-900 dark:hover:text-red-300"
+                                                        className="rounded p-1 text-red-400 hover:bg-red-100 hover:text-red-600:bg-red-900:text-red-300"
                                                         title="削除"
                                                     >
                                                         <svg className="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">

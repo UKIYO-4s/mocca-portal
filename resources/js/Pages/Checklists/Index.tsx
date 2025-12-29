@@ -71,7 +71,7 @@ export default function Index({ auth, checklists, filters }: Props) {
         <AuthenticatedLayout
             header={
                 <div className="flex items-center justify-between">
-                    <h2 className="text-xl font-semibold leading-tight text-gray-800 dark:text-gray-200">
+                    <h2 className="text-xl font-semibold leading-tight text-gray-800">
                         デイリーチェックリスト
                     </h2>
                     <div className="flex items-center gap-2">
@@ -109,27 +109,27 @@ export default function Index({ auth, checklists, filters }: Props) {
             <div className="py-6">
                 <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
                     {/* フィルター */}
-                    <div className="mb-6 rounded-lg bg-white p-4 shadow-sm dark:bg-gray-800">
+                    <div className="mb-6 rounded-lg bg-white p-4 shadow-sm">
                         <div className="grid gap-4 sm:grid-cols-4">
                             <div>
-                                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">
+                                <label className="block text-sm font-medium text-gray-700">
                                     日付
                                 </label>
                                 <input
                                     type="date"
                                     value={selectedDate}
                                     onChange={(e) => setSelectedDate(e.target.value)}
-                                    className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-100"
+                                    className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
                                 />
                             </div>
                             <div>
-                                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">
+                                <label className="block text-sm font-medium text-gray-700">
                                     タイプ
                                 </label>
                                 <select
                                     value={selectedType}
                                     onChange={(e) => setSelectedType(e.target.value)}
-                                    className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-100"
+                                    className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
                                 >
                                     <option value="">すべて</option>
                                     <option value="lunch_prep">ランチ準備</option>
@@ -147,7 +147,7 @@ export default function Index({ auth, checklists, filters }: Props) {
                                 </button>
                                 <button
                                     onClick={clearFilters}
-                                    className="rounded-md bg-gray-300 px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-400 dark:bg-gray-600 dark:text-gray-200 dark:hover:bg-gray-500"
+                                    className="rounded-md bg-gray-300 px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-400:bg-gray-500"
                                 >
                                     クリア
                                 </button>
@@ -158,7 +158,7 @@ export default function Index({ auth, checklists, filters }: Props) {
                     {/* チェックリスト一覧 */}
                     <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
                         {checklists.length === 0 ? (
-                            <div className="col-span-full rounded-lg bg-white p-8 text-center shadow-sm dark:bg-gray-800">
+                            <div className="col-span-full rounded-lg bg-white p-8 text-center shadow-sm">
                                 <svg
                                     className="mx-auto h-12 w-12 text-gray-400"
                                     fill="none"
@@ -172,10 +172,10 @@ export default function Index({ auth, checklists, filters }: Props) {
                                         d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4"
                                     />
                                 </svg>
-                                <p className="mt-4 text-gray-500 dark:text-gray-400">
+                                <p className="mt-4 text-gray-500">
                                     チェックリストがありません
                                 </p>
-                                <p className="mt-2 text-sm text-gray-400 dark:text-gray-500">
+                                <p className="mt-2 text-sm text-gray-400">
                                     「本日分を生成」ボタンでチェックリストを作成してください
                                 </p>
                             </div>
@@ -189,11 +189,11 @@ export default function Index({ auth, checklists, filters }: Props) {
                                     <Link
                                         key={checklist.id}
                                         href={route('checklists.show', checklist.id)}
-                                        className="block rounded-lg bg-white p-4 shadow-sm transition-shadow hover:shadow-md dark:bg-gray-800"
+                                        className="block rounded-lg bg-white p-4 shadow-sm transition-shadow hover:shadow-md"
                                     >
                                         <div className="flex items-start justify-between">
                                             <div className="flex-1 min-w-0">
-                                                <h3 className="truncate text-lg font-medium text-gray-900 dark:text-gray-100">
+                                                <h3 className="truncate text-lg font-medium text-gray-900">
                                                     {checklist.template?.name ?? 'チェックリスト'}
                                                 </h3>
                                                 <span
@@ -220,14 +220,14 @@ export default function Index({ auth, checklists, filters }: Props) {
                                         {/* 進捗バー */}
                                         <div className="mt-4">
                                             <div className="flex items-center justify-between text-sm">
-                                                <span className="text-gray-600 dark:text-gray-400">
+                                                <span className="text-gray-600">
                                                     {completedCount}/{totalCount} 完了
                                                 </span>
-                                                <span className="font-medium text-gray-900 dark:text-gray-100">
+                                                <span className="font-medium text-gray-900">
                                                     {completionRate}%
                                                 </span>
                                             </div>
-                                            <div className="mt-2 h-2 w-full overflow-hidden rounded-full bg-gray-200 dark:bg-gray-700">
+                                            <div className="mt-2 h-2 w-full overflow-hidden rounded-full bg-gray-200">
                                                 <div
                                                     className={`h-full rounded-full transition-all duration-300 ${
                                                         completionRate === 100
@@ -242,7 +242,7 @@ export default function Index({ auth, checklists, filters }: Props) {
                                         </div>
 
                                         {/* 詳細リンクヒント */}
-                                        <div className="mt-4 flex items-center justify-end text-sm text-blue-600 dark:text-blue-400">
+                                        <div className="mt-4 flex items-center justify-end text-sm text-blue-600">
                                             <span>詳細を見る</span>
                                             <svg
                                                 className="ml-1 h-4 w-4"

@@ -73,7 +73,7 @@ export default function Index({ auth, items }: Props) {
         <AuthenticatedLayout
             header={
                 <div className="flex items-center justify-between">
-                    <h2 className="text-xl font-semibold leading-tight text-gray-800 dark:text-gray-200">
+                    <h2 className="text-xl font-semibold leading-tight text-gray-800">
                         備品使用入力
                     </h2>
                     {isAdminOrManager && (
@@ -95,7 +95,7 @@ export default function Index({ auth, items }: Props) {
                         {/* 備品一覧 */}
                         <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
                             {items.length === 0 ? (
-                                <div className="col-span-full rounded-lg bg-white p-8 text-center shadow-sm dark:bg-gray-800">
+                                <div className="col-span-full rounded-lg bg-white p-8 text-center shadow-sm">
                                     <svg
                                         className="mx-auto h-12 w-12 text-gray-400"
                                         fill="none"
@@ -109,7 +109,7 @@ export default function Index({ auth, items }: Props) {
                                             d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"
                                         />
                                     </svg>
-                                    <p className="mt-4 text-gray-500 dark:text-gray-400">
+                                    <p className="mt-4 text-gray-500">
                                         備品が登録されていません
                                     </p>
                                 </div>
@@ -117,13 +117,13 @@ export default function Index({ auth, items }: Props) {
                                 items.map((item) => (
                                     <div
                                         key={item.id}
-                                        className="rounded-lg bg-white p-4 shadow-sm dark:bg-gray-800"
+                                        className="rounded-lg bg-white p-4 shadow-sm"
                                     >
                                         <div className="mb-3">
-                                            <h3 className="text-lg font-medium text-gray-900 dark:text-gray-100">
+                                            <h3 className="text-lg font-medium text-gray-900">
                                                 {item.name}
                                             </h3>
-                                            <p className="text-sm text-gray-500 dark:text-gray-400">
+                                            <p className="text-sm text-gray-500">
                                                 単位: {item.unit}
                                             </p>
                                         </div>
@@ -131,7 +131,7 @@ export default function Index({ auth, items }: Props) {
                                         <div className="flex items-center gap-2">
                                             <label
                                                 htmlFor={`quantity-${item.id}`}
-                                                className="text-sm font-medium text-gray-700 dark:text-gray-300"
+                                                className="text-sm font-medium text-gray-700"
                                             >
                                                 使用数量
                                             </label>
@@ -145,9 +145,9 @@ export default function Index({ auth, items }: Props) {
                                                     handleQuantityChange(item.id, e.target.value)
                                                 }
                                                 placeholder="0"
-                                                className="block w-24 rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-100 text-right"
+                                                className="block w-24 rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 text-right"
                                             />
-                                            <span className="text-sm text-gray-500 dark:text-gray-400">
+                                            <span className="text-sm text-gray-500">
                                                 {item.unit}
                                             </span>
                                         </div>

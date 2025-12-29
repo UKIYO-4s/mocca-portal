@@ -26,7 +26,7 @@ export default function Wallet({ wallet }: WalletProps) {
     return (
         <AuthenticatedLayout
             header={
-                <h2 className="text-xl font-semibold leading-tight text-gray-800 dark:text-gray-200">
+                <h2 className="text-xl font-semibold leading-tight text-gray-800">
                     ウォレット設定
                 </h2>
             }
@@ -35,12 +35,12 @@ export default function Wallet({ wallet }: WalletProps) {
 
             <div className="py-12">
                 <div className="mx-auto max-w-7xl sm:px-6 lg:px-8">
-                    <div className="bg-white p-6 shadow sm:rounded-lg dark:bg-gray-800">
+                    <div className="bg-white p-6 shadow sm:rounded-lg">
                         <div className="max-w-xl">
-                            <h3 className="text-lg font-medium text-gray-900 dark:text-gray-100">
+                            <h3 className="text-lg font-medium text-gray-900">
                                 イーサリアムウォレットアドレス
                             </h3>
-                            <p className="mt-1 text-sm text-gray-600 dark:text-gray-400">
+                            <p className="mt-1 text-sm text-gray-600">
                                 投げ銭を受け取るためのポリゴン（マティック）ネットワーク対応ウォレットアドレスを登録してください。
                             </p>
 
@@ -48,7 +48,7 @@ export default function Wallet({ wallet }: WalletProps) {
                                 <div>
                                     <label
                                         htmlFor="wallet_address"
-                                        className="block text-sm font-medium text-gray-700 dark:text-gray-300"
+                                        className="block text-sm font-medium text-gray-700"
                                     >
                                         ウォレットアドレス
                                     </label>
@@ -58,7 +58,7 @@ export default function Wallet({ wallet }: WalletProps) {
                                         value={data.wallet_address}
                                         onChange={(e) => setData('wallet_address', e.target.value)}
                                         placeholder="0x..."
-                                        className="mt-1 block w-full rounded-md border-gray-300 font-mono text-sm shadow-sm focus:border-indigo-500 focus:ring-indigo-500 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-300"
+                                        className="mt-1 block w-full rounded-md border-gray-300 font-mono text-sm shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
                                     />
                                     {errors.wallet_address && (
                                         <p className="mt-2 text-sm text-red-600">{errors.wallet_address}</p>
@@ -66,28 +66,28 @@ export default function Wallet({ wallet }: WalletProps) {
                                 </div>
 
                                 {wallet && (
-                                    <div className="mt-4 rounded-lg bg-gray-50 p-4 dark:bg-gray-700">
+                                    <div className="mt-4 rounded-lg bg-gray-50 p-4">
                                         <div className="flex items-center justify-between">
                                             <div>
-                                                <p className="text-sm font-medium text-gray-900 dark:text-gray-100">
+                                                <p className="text-sm font-medium text-gray-900">
                                                     現在のアドレス
                                                 </p>
-                                                <p className="font-mono text-sm text-gray-500 dark:text-gray-400">
+                                                <p className="font-mono text-sm text-gray-500">
                                                     {wallet.short_address}
                                                 </p>
                                             </div>
                                             <span
                                                 className={`inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium ${
                                                     wallet.is_verified
-                                                        ? 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200'
-                                                        : 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-200'
+                                                        ? 'bg-green-100 text-green-800'
+                                                        : 'bg-yellow-100 text-yellow-800'
                                                 }`}
                                             >
                                                 {wallet.is_verified ? '検証済み' : '未検証'}
                                             </span>
                                         </div>
                                         {wallet.connected_at && (
-                                            <p className="mt-2 text-xs text-gray-500 dark:text-gray-400">
+                                            <p className="mt-2 text-xs text-gray-500">
                                                 登録日: {wallet.connected_at}
                                             </p>
                                         )}
