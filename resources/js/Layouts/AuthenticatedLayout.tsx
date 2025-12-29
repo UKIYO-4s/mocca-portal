@@ -51,6 +51,12 @@ export default function Authenticated({
                                 >
                                     タイムカード
                                 </NavLink>
+                                <NavLink
+                                    href={route('announcements.index')}
+                                    active={route().current('announcements.*')}
+                                >
+                                    お知らせ
+                                </NavLink>
                             </div>
                         </div>
 
@@ -172,6 +178,12 @@ export default function Authenticated({
                             active={route().current('timecard.*')}
                         >
                             タイムカード
+                        </ResponsiveNavLink>
+                        <ResponsiveNavLink
+                            href={route('announcements.index')}
+                            active={route().current('announcements.*')}
+                        >
+                            お知らせ
                         </ResponsiveNavLink>
                     </div>
 

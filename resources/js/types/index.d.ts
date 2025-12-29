@@ -180,3 +180,24 @@ export interface MonthlyTimeReport {
     work_days: number;
     records: TimeRecord[];
 }
+
+// Announcement Types
+export interface Announcement {
+    id: number;
+    title: string;
+    content: string;
+    priority: 'normal' | 'important';
+    published_at: string | null;
+    created_by: number;
+    created_at: string;
+    updated_at: string;
+    author?: User;
+    is_read?: boolean;
+}
+
+export interface AnnouncementRead {
+    id: number;
+    announcement_id: number;
+    user_id: number;
+    read_at: string;
+}
