@@ -57,6 +57,12 @@ export default function Authenticated({
                                 >
                                     お知らせ
                                 </NavLink>
+                                <NavLink
+                                    href={route('shifts.index')}
+                                    active={route().current('shifts.*')}
+                                >
+                                    シフト
+                                </NavLink>
                             </div>
                         </div>
 
@@ -184,6 +190,12 @@ export default function Authenticated({
                             active={route().current('announcements.*')}
                         >
                             お知らせ
+                        </ResponsiveNavLink>
+                        <ResponsiveNavLink
+                            href={route('shifts.index')}
+                            active={route().current('shifts.*')}
+                        >
+                            シフト
                         </ResponsiveNavLink>
                     </div>
 

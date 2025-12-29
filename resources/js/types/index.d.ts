@@ -121,6 +121,9 @@ export interface Location {
     id: number;
     name: string;
     slug: string;
+    is_active: boolean;
+    created_at: string;
+    updated_at: string;
 }
 
 // Inventory Types
@@ -200,4 +203,22 @@ export interface AnnouncementRead {
     announcement_id: number;
     user_id: number;
     read_at: string;
+}
+
+// Shift Types
+export interface Shift {
+    id: number;
+    user_id: number;
+    location_id: number | null;
+    date: string;
+    start_time: string;
+    end_time: string;
+    notes: string | null;
+    created_by: number;
+    duration_minutes: number;
+    created_at: string;
+    updated_at: string;
+    user?: User;
+    location?: Location;
+    creator?: User;
 }

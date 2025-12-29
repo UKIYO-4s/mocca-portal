@@ -12,8 +12,7 @@ class ShiftModule extends BaseModule
 
     public function boot(): void
     {
-        // Controllers not yet implemented - routes will be registered when ready
-        // $this->registerRoutes();
+        $this->registerRoutes();
     }
 
     protected function registerRoutes(): void
