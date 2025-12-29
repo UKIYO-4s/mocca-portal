@@ -17,7 +17,7 @@ class AdminUserSeeder extends Seeder
             ['email' => 'admin@mocca-portal.local'],
             [
                 'name' => '管理者',
-                'password' => Hash::make('password'),
+                'password' => Hash::make('Smskso0311'),
                 'role' => 'admin',
             ]
         );
@@ -26,7 +26,7 @@ class AdminUserSeeder extends Seeder
             ['email' => 'manager@mocca-portal.local'],
             [
                 'name' => 'マネージャー',
-                'password' => Hash::make('password'),
+                'password' => Hash::make('Smskso0311'),
                 'role' => 'manager',
             ]
         );
@@ -35,7 +35,7 @@ class AdminUserSeeder extends Seeder
             ['email' => 'staff@mocca-portal.local'],
             [
                 'name' => 'スタッフ',
-                'password' => Hash::make('password'),
+                'password' => Hash::make('Smskso0311'),
                 'role' => 'staff',
             ]
         );
