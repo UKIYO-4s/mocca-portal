@@ -466,7 +466,8 @@ export default function Index({ auth, currentMonth }: Props) {
                                         const isSunday = dayOfWeek === 6;
                                         const isBooked =
                                             day.availability?.status === 'booked';
-                                        const sources = day.availability?.sources || [];
+                                        const details = day.availability?.details || [];
+                                        const firstReservation = details[0];
 
                                         return (
                                             <button
@@ -477,7 +478,7 @@ export default function Index({ auth, currentMonth }: Props) {
                                                         setShowModal(true);
                                                     }
                                                 }}
-                                                className={`relative min-h-[80px] border-b border-r border-gray-200 p-2 text-left transition-colors ${
+                                                className={`relative min-h-[90px] border-b border-r border-gray-200 p-1.5 text-left transition-colors sm:min-h-[100px] sm:p-2 ${
                                                     !day.isCurrentMonth
                                                         ? 'bg-gray-50'
                                                         : isBooked
@@ -489,26 +490,24 @@ export default function Index({ auth, currentMonth }: Props) {
                                                         : ''
                                                 }`}
                                             >
-                                                {/* Day Number */}
-                                                <div
-                                                    className={`text-sm font-medium ${
-                                                        !day.isCurrentMonth
-                                                            ? 'text-gray-400'
-                                                            : isSaturday
-                                                              ? 'text-blue-600'
-                                                              : isSunday
-                                                                ? 'text-red-600'
-                                                                : 'text-gray-900'
-                                                    } ${day.isToday ? 'inline-flex h-6 w-6 items-center justify-center rounded-full bg-blue-600 text-white' : ''}`}
-                                                >
-                                                    {day.dayNumber}
-                                                </div>
-
-                                                {/* Availability Status */}
-                                                {day.isCurrentMonth && (
-                                                    <div className="mt-1 flex flex-col items-center">
+                                                {/* Header: Day Number + Status */}
+                                                <div className="flex items-center justify-between">
+                                                    <div
+                                                        className={`text-sm font-medium ${
+                                                            !day.isCurrentMonth
+                                                                ? 'text-gray-400'
+                                                                : isSaturday
+                                                                  ? 'text-blue-600'
+                                                                  : isSunday
+                                                                    ? 'text-red-600'
+                                                                    : 'text-gray-900'
+                                                        } ${day.isToday ? 'inline-flex h-5 w-5 items-center justify-center rounded-full bg-blue-600 text-xs text-white' : ''}`}
+                                                    >
+                                                        {day.dayNumber}
+                                                    </div>
+                                                    {day.isCurrentMonth && (
                                                         <span
-                                                            className={`text-2xl font-bold ${
+                                                            className={`text-base font-bold sm:text-lg ${
                                                                 isBooked
                                                                     ? 'text-red-500'
                                                                     : 'text-green-500'
@@ -516,20 +515,24 @@ export default function Index({ auth, currentMonth }: Props) {
                                                         >
                                                             {isBooked ? 'X' : 'O'}
                                                         </span>
+                                                    )}
+                                                </div>
 
-                                                        {/* Source indicators */}
-                                                        {sources.length > 0 && (
-                                                            <div className="mt-1 flex gap-0.5">
-                                                                {sources.includes('portal') && (
-                                                                    <div className="h-2 w-2 rounded-full bg-blue-400" />
-                                                                )}
-                                                                {sources.includes('form') && (
-                                                                    <div className="h-2 w-2 rounded-full bg-yellow-400" />
-                                                                )}
-                                                                {sources.includes('external') && (
-                                                                    <div className="h-2 w-2 rounded-full bg-purple-400" />
-                                                                )}
-                                                            </div>
+                                                {/* Reservation Preview */}
+                                                {day.isCurrentMonth && firstReservation && (
+                                                    <div className="mt-1 min-w-0 overflow-hidden">
+                                                        <p className="truncate text-[10px] font-medium leading-tight text-gray-700 sm:text-xs">
+                                                            {firstReservation.name}
+                                                        </p>
+                                                        {firstReservation.guests && (
+                                                            <p className="text-[9px] text-gray-500 sm:text-[10px]">
+                                                                {firstReservation.guests}名
+                                                            </p>
+                                                        )}
+                                                        {details.length > 1 && (
+                                                            <p className="text-[9px] text-gray-400 sm:text-[10px]">
+                                                                +{details.length - 1}件
+                                                            </p>
                                                         )}
                                                     </div>
                                                 )}
