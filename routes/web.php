@@ -4,7 +4,6 @@ use App\Http\Controllers\Admin\InvitesController;
 use App\Http\Controllers\Admin\TipStatisticsController;
 use App\Http\Controllers\Api\ReviewController;
 use App\Http\Controllers\Api\TipController;
-use App\Http\Controllers\Auth\GoogleController;
 use App\Http\Controllers\Auth\InviteController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\GuestPageController;
@@ -42,10 +41,6 @@ Route::middleware('auth')->group(function () {
         Route::delete('/users/{user}', [UserController::class, 'destroy'])->name('users.destroy');
     });
 });
-
-// Google OAuth routes
-Route::get('/auth/google', [GoogleController::class, 'redirect'])->name('auth.google');
-Route::get('/auth/google/callback', [GoogleController::class, 'callback'])->name('auth.google.callback');
 
 // Guest page (no authentication required)
 Route::get('/guest/{uuid}', [GuestPageController::class, 'show'])->name('guest.page');

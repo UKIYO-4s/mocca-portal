@@ -367,16 +367,18 @@ export default function Index({ reservations, filters }: Props) {
                                                 >
                                                     {reservation.type_label}
                                                 </span>
-                                                <span
-                                                    className={`inline-flex rounded-full px-2 py-1 text-xs font-medium ${
-                                                        reservation.status ===
-                                                        'confirmed'
-                                                            ? 'bg-green-100 text-green-800'
-                                                            : 'bg-red-100 text-red-800'
-                                                    }`}
-                                                >
-                                                    {reservation.status_label}
-                                                </span>
+                                                {reservation.status_label && (
+                                                    <span
+                                                        className={`inline-flex rounded-full px-2 py-1 text-xs font-medium ${
+                                                            reservation.status ===
+                                                            'confirmed'
+                                                                ? 'bg-green-100 text-green-800'
+                                                                : 'bg-red-100 text-red-800'
+                                                        }`}
+                                                    >
+                                                        {reservation.status_label}
+                                                    </span>
+                                                )}
                                             </div>
 
                                             {/* 日時・人数 */}

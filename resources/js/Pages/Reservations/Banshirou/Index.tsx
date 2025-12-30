@@ -354,16 +354,18 @@ export default function Index({ auth, reservations, filters }: Props) {
                                                         ? '両方'
                                                         : 'ばんしろう'}
                                                 </span>
-                                                <span
-                                                    className={`inline-flex rounded-full px-2 py-1 text-xs font-medium ${
-                                                        reservation.status ===
-                                                        'confirmed'
-                                                            ? 'bg-green-100 text-green-800'
-                                                            : 'bg-red-100 text-red-800'
-                                                    }`}
-                                                >
-                                                    {reservation.status_label}
-                                                </span>
+                                                {reservation.status_label && (
+                                                    <span
+                                                        className={`inline-flex rounded-full px-2 py-1 text-xs font-medium ${
+                                                            reservation.status ===
+                                                            'confirmed'
+                                                                ? 'bg-green-100 text-green-800'
+                                                                : 'bg-red-100 text-red-800'
+                                                        }`}
+                                                    >
+                                                        {reservation.status_label}
+                                                    </span>
+                                                )}
                                             </div>
 
                                             {/* 日程 */}
@@ -379,9 +381,8 @@ export default function Index({ auth, reservations, filters }: Props) {
 
                                             {/* 人数・食事 */}
                                             <p className="mt-1 text-base text-gray-600">
-                                                {formatGuestCount(reservation)}{' '}
-                                                ・{' '}
-                                                {reservation.meal_option_label}
+                                                {formatGuestCount(reservation)}
+                                                {reservation.meal_option_label && ` ${reservation.meal_option_label}`}
                                             </p>
 
                                             {/* 担当者 */}
