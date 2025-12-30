@@ -61,8 +61,9 @@ Route::middleware('auth')->group(function () {
     Route::delete('/profile/wallet', [StaffWalletController::class, 'destroy'])->name('profile.wallet.destroy');
 });
 
-// Admin tip statistics
+// Admin routes
 Route::middleware(['auth', 'role:admin'])->prefix('admin')->name('admin.')->group(function () {
+    Route::get('/', [App\Http\Controllers\Admin\AdminHubController::class, 'index'])->name('hub');
     Route::get('/tips', [TipStatisticsController::class, 'index'])->name('tips.index');
     Route::get('/tips/staff/{user}', [TipStatisticsController::class, 'show'])->name('tips.show');
     Route::get('/tips/export', [TipStatisticsController::class, 'export'])->name('tips.export');

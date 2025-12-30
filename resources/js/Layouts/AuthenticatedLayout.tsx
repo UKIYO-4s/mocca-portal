@@ -158,12 +158,15 @@ export default function Authenticated({
                                 </NavLink>
 
                                 {/* 管理（Admin専用） */}
-                                {isAdmin && routeExists('admin.locations.index') && (
+                                {isAdmin && routeExists('admin.hub') && (
                                     <NavDropdown
                                         label="管理"
-                                        active={route().current('admin.*')}
+                                        active={route().current('admin.*') || route().current('users.*')}
                                         items={[
+                                            { href: safeRoute('admin.hub'), label: '管理ハブ' },
+                                            { href: safeRoute('users.index'), label: 'ユーザー管理' },
                                             { href: safeRoute('admin.locations.index'), label: '拠点管理' },
+                                            { href: safeRoute('admin.tips.index'), label: '投げ銭統計' },
                                         ]}
                                     />
                                 )}
@@ -387,12 +390,12 @@ export default function Authenticated({
                         </ResponsiveNavLink>
 
                         {/* 管理（Admin専用） */}
-                        {isAdmin && routeExists('admin.locations.index') && (
+                        {isAdmin && routeExists('admin.hub') && (
                             <div>
                                 <button
                                     onClick={() => toggleMobileSubmenu('admin')}
                                     className={`flex w-full items-center justify-between border-l-4 py-2 pe-4 ps-3 text-start text-base font-medium transition duration-150 ease-in-out focus:outline-none ${
-                                        route().current('admin.*')
+                                        route().current('admin.*') || route().current('users.*')
                                             ? 'border-blue-400 bg-blue-50 text-blue-700 focus:border-blue-700 focus:bg-blue-100 focus:text-blue-800'
                                             : 'border-transparent text-gray-600 hover:border-gray-300 hover:bg-gray-50 hover:text-gray-800 focus:border-gray-300 focus:bg-gray-50 focus:text-gray-800'
                                     }`}
@@ -404,8 +407,17 @@ export default function Authenticated({
                                 </button>
                                 {expandedMobileMenu === 'admin' && (
                                     <div className="bg-gray-50 pl-6">
+                                        <ResponsiveNavLink href={safeRoute('admin.hub')}>
+                                            管理ハブ
+                                        </ResponsiveNavLink>
+                                        <ResponsiveNavLink href={safeRoute('users.index')}>
+                                            ユーザー管理
+                                        </ResponsiveNavLink>
                                         <ResponsiveNavLink href={safeRoute('admin.locations.index')}>
                                             拠点管理
+                                        </ResponsiveNavLink>
+                                        <ResponsiveNavLink href={safeRoute('admin.tips.index')}>
+                                            投げ銭統計
                                         </ResponsiveNavLink>
                                     </div>
                                 )}
