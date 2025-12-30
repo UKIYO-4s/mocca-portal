@@ -222,14 +222,14 @@ export default function Index({ auth, currentMonth }: Props) {
     return (
         <AuthenticatedLayout
             header={
-                <div className="flex items-center justify-between">
+                <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
                     <h2 className="text-xl font-semibold leading-tight text-gray-800">
                         予約カレンダー
                     </h2>
-                    <div className="flex items-center gap-3">
+                    <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:gap-3">
                         <Link
                             href={route('reservations.banshirou.create')}
-                            className="inline-flex items-center rounded-md bg-blue-600 px-4 py-2 text-sm font-medium text-white hover:bg-blue-700"
+                            className="inline-flex min-h-[44px] items-center justify-center rounded-md bg-blue-600 px-4 py-2 text-sm font-medium text-white hover:bg-blue-700"
                         >
                             + 新規予約
                         </Link>
@@ -237,7 +237,7 @@ export default function Index({ auth, currentMonth }: Props) {
                             <button
                                 onClick={handleRefresh}
                                 disabled={refreshing}
-                                className="inline-flex items-center rounded-md border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50 disabled:opacity-50"
+                                className="inline-flex min-h-[44px] items-center justify-center rounded-md border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50 disabled:opacity-50"
                             >
                                 <svg
                                     className={`mr-2 h-4 w-4 ${refreshing ? 'animate-spin' : ''}`}
@@ -264,10 +264,83 @@ export default function Index({ auth, currentMonth }: Props) {
             <div className="py-6">
                 <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
                     {/* Month Navigation */}
-                    <div className="mb-6 flex items-center justify-between rounded-lg bg-white p-4 shadow-sm">
+                    <div className="mb-6 flex flex-col gap-3 rounded-lg bg-white p-4 shadow-sm sm:flex-row sm:items-center sm:justify-between sm:gap-4">
+                        {/* Mobile: Month title and toggle on top */}
+                        <div className="flex flex-col items-center gap-2 sm:hidden">
+                            <h3 className="text-xl font-bold text-gray-900">
+                                {formatMonthDisplay()}
+                            </h3>
+                            {/* View Mode Toggle - Mobile */}
+                            <div className="flex rounded-lg bg-gray-100 p-1">
+                                <button
+                                    onClick={() => setViewMode('calendar')}
+                                    className={`min-w-[80px] rounded-md px-3 py-1.5 text-sm font-medium transition-colors ${
+                                        viewMode === 'calendar'
+                                            ? 'bg-white text-gray-900 shadow-sm'
+                                            : 'text-gray-600 hover:text-gray-900'
+                                    }`}
+                                >
+                                    カレンダー
+                                </button>
+                                <button
+                                    onClick={() => setViewMode('list')}
+                                    className={`min-w-[80px] rounded-md px-3 py-1.5 text-sm font-medium transition-colors ${
+                                        viewMode === 'list'
+                                            ? 'bg-white text-gray-900 shadow-sm'
+                                            : 'text-gray-600 hover:text-gray-900'
+                                    }`}
+                                >
+                                    一覧
+                                </button>
+                            </div>
+                        </div>
+
+                        {/* Mobile: Navigation buttons in row */}
+                        <div className="flex items-center justify-between sm:hidden">
+                            <button
+                                onClick={() => navigateToMonth(getPrevMonth())}
+                                className="inline-flex min-h-[44px] items-center rounded-md border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50"
+                            >
+                                <svg
+                                    className="mr-1 h-5 w-5"
+                                    fill="none"
+                                    stroke="currentColor"
+                                    viewBox="0 0 24 24"
+                                >
+                                    <path
+                                        strokeLinecap="round"
+                                        strokeLinejoin="round"
+                                        strokeWidth={2}
+                                        d="M15 19l-7-7 7-7"
+                                    />
+                                </svg>
+                                前月
+                            </button>
+                            <button
+                                onClick={() => navigateToMonth(getNextMonth())}
+                                className="inline-flex min-h-[44px] items-center rounded-md border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50"
+                            >
+                                翌月
+                                <svg
+                                    className="ml-1 h-5 w-5"
+                                    fill="none"
+                                    stroke="currentColor"
+                                    viewBox="0 0 24 24"
+                                >
+                                    <path
+                                        strokeLinecap="round"
+                                        strokeLinejoin="round"
+                                        strokeWidth={2}
+                                        d="M9 5l7 7-7 7"
+                                    />
+                                </svg>
+                            </button>
+                        </div>
+
+                        {/* Desktop: Original layout */}
                         <button
                             onClick={() => navigateToMonth(getPrevMonth())}
-                            className="inline-flex min-h-[44px] items-center rounded-md border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50"
+                            className="hidden min-h-[44px] items-center rounded-md border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50 sm:inline-flex"
                         >
                             <svg
                                 className="mr-2 h-5 w-5"
@@ -285,11 +358,11 @@ export default function Index({ auth, currentMonth }: Props) {
                             前月
                         </button>
 
-                        <div className="flex items-center gap-4">
+                        <div className="hidden items-center gap-4 sm:flex">
                             <h3 className="text-xl font-bold text-gray-900">
                                 {formatMonthDisplay()}
                             </h3>
-                            {/* View Mode Toggle */}
+                            {/* View Mode Toggle - Desktop */}
                             <div className="flex rounded-lg bg-gray-100 p-1">
                                 <button
                                     onClick={() => setViewMode('calendar')}
@@ -316,7 +389,7 @@ export default function Index({ auth, currentMonth }: Props) {
 
                         <button
                             onClick={() => navigateToMonth(getNextMonth())}
-                            className="inline-flex min-h-[44px] items-center rounded-md border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50"
+                            className="hidden min-h-[44px] items-center rounded-md border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50 sm:inline-flex"
                         >
                             翌月
                             <svg
@@ -336,20 +409,22 @@ export default function Index({ auth, currentMonth }: Props) {
                     </div>
 
                     {/* Legend */}
-                    <div className="mb-4 flex flex-wrap items-center gap-4 rounded-lg bg-white p-3 shadow-sm">
-                        <div className="flex items-center gap-2">
-                            <div className="flex h-6 w-6 items-center justify-center rounded bg-green-100 text-green-600">
-                                <span className="text-sm font-bold">O</span>
+                    <div className="mb-4 flex flex-col gap-3 rounded-lg bg-white p-3 shadow-sm sm:flex-row sm:flex-wrap sm:items-center sm:gap-4">
+                        <div className="flex items-center justify-center gap-4 sm:justify-start">
+                            <div className="flex items-center gap-2">
+                                <div className="flex h-6 w-6 items-center justify-center rounded bg-green-100 text-green-600">
+                                    <span className="text-sm font-bold">O</span>
+                                </div>
+                                <span className="text-sm text-gray-600">空室</span>
                             </div>
-                            <span className="text-sm text-gray-600">空室</span>
-                        </div>
-                        <div className="flex items-center gap-2">
-                            <div className="flex h-6 w-6 items-center justify-center rounded bg-red-100 text-red-600">
-                                <span className="text-sm font-bold">X</span>
+                            <div className="flex items-center gap-2">
+                                <div className="flex h-6 w-6 items-center justify-center rounded bg-red-100 text-red-600">
+                                    <span className="text-sm font-bold">X</span>
+                                </div>
+                                <span className="text-sm text-gray-600">満室</span>
                             </div>
-                            <span className="text-sm text-gray-600">満室</span>
                         </div>
-                        <div className="ml-auto flex gap-2 text-xs text-gray-500">
+                        <div className="flex flex-wrap justify-center gap-2 text-xs text-gray-500 sm:ml-auto sm:justify-end">
                             <span className="rounded bg-blue-50 px-2 py-1">ポータル</span>
                             <span className="rounded bg-yellow-50 px-2 py-1">フォーム</span>
                             <span className="rounded bg-purple-50 px-2 py-1">外部サイト</span>
@@ -476,7 +551,7 @@ export default function Index({ auth, currentMonth }: Props) {
                                             {selectedDetails.details.map((detail, idx) => (
                                                 <li
                                                     key={idx}
-                                                    className={`flex items-center justify-between gap-3 rounded-md p-3 ${
+                                                    className={`flex flex-col gap-2 rounded-md p-3 sm:flex-row sm:items-center sm:justify-between sm:gap-3 ${
                                                         detail.source === 'portal'
                                                             ? 'bg-blue-50'
                                                             : detail.source === 'form'
@@ -484,9 +559,9 @@ export default function Index({ auth, currentMonth }: Props) {
                                                               : 'bg-purple-50'
                                                     }`}
                                                 >
-                                                    <div className="flex items-center gap-3">
+                                                    <div className="flex min-w-0 flex-wrap items-center gap-2 sm:gap-3">
                                                         <span
-                                                            className={`rounded px-2 py-1 text-xs font-medium ${
+                                                            className={`shrink-0 rounded px-2 py-1 text-xs font-medium ${
                                                                 detail.source === 'portal'
                                                                     ? 'bg-blue-100 text-blue-700'
                                                                     : detail.source === 'form'
@@ -511,7 +586,7 @@ export default function Index({ auth, currentMonth }: Props) {
                                                     {detail.id && (
                                                         <Link
                                                             href={route('reservations.banshirou.show', detail.id)}
-                                                            className="text-sm text-blue-600 hover:text-blue-800"
+                                                            className="shrink-0 text-sm text-blue-600 hover:text-blue-800"
                                                         >
                                                             詳細
                                                         </Link>
