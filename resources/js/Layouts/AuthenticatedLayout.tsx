@@ -5,6 +5,25 @@ import ResponsiveNavLink from '@/Components/ResponsiveNavLink';
 import { Link, usePage } from '@inertiajs/react';
 import { PropsWithChildren, ReactNode, useState } from 'react';
 
+// ルートが存在するかチェックするヘルパー
+const routeExists = (name: string): boolean => {
+    try {
+        route(name);
+        return true;
+    } catch {
+        return false;
+    }
+};
+
+// 安全にルートを取得するヘルパー
+const safeRoute = (name: string): string => {
+    try {
+        return route(name);
+    } catch {
+        return '#';
+    }
+};
+
 // ナビゲーションドロップダウン用コンポーネント
 function NavDropdown({
     label,
@@ -139,12 +158,12 @@ export default function Authenticated({
                                 </NavLink>
 
                                 {/* 管理（Admin専用） */}
-                                {isAdmin && (
+                                {isAdmin && routeExists('admin.locations.index') && (
                                     <NavDropdown
                                         label="管理"
                                         active={route().current('admin.*')}
                                         items={[
-                                            { href: route('admin.locations.index'), label: '拠点管理' },
+                                            { href: safeRoute('admin.locations.index'), label: '拠点管理' },
                                         ]}
                                     />
                                 )}
@@ -368,7 +387,7 @@ export default function Authenticated({
                         </ResponsiveNavLink>
 
                         {/* 管理（Admin専用） */}
-                        {isAdmin && (
+                        {isAdmin && routeExists('admin.locations.index') && (
                             <div>
                                 <button
                                     onClick={() => toggleMobileSubmenu('admin')}
@@ -385,7 +404,7 @@ export default function Authenticated({
                                 </button>
                                 {expandedMobileMenu === 'admin' && (
                                     <div className="bg-gray-50 pl-6">
-                                        <ResponsiveNavLink href={route('admin.locations.index')}>
+                                        <ResponsiveNavLink href={safeRoute('admin.locations.index')}>
                                             拠点管理
                                         </ResponsiveNavLink>
                                     </div>
