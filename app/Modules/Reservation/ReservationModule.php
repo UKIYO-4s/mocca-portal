@@ -59,6 +59,17 @@ class ReservationModule extends BaseModule
                         Route::post('/{reservation}', [\App\Modules\Reservation\Controllers\AssignmentController::class, 'store'])->name('store');
                         Route::delete('/{assignment}', [\App\Modules\Reservation\Controllers\AssignmentController::class, 'destroy'])->name('destroy');
                     });
+
+                // 空室カレンダー
+                Route::prefix('availability')
+                    ->name('availability.')
+                    ->group(function () {
+                        Route::get('/', [\App\Modules\Reservation\Controllers\AvailabilityController::class, 'index'])->name('index');
+                        Route::get('/data', [\App\Modules\Reservation\Controllers\AvailabilityController::class, 'getAvailability'])->name('data');
+                        Route::post('/refresh', [\App\Modules\Reservation\Controllers\AvailabilityController::class, 'refreshCache'])
+                            ->middleware('role:admin,manager')
+                            ->name('refresh');
+                    });
             });
     }
 
@@ -71,6 +82,7 @@ class ReservationModule extends BaseModule
                 'icon' => 'calendar',
                 'roles' => ['admin', 'manager', 'staff'],
                 'children' => [
+                    ['label' => '空室カレンダー', 'route' => 'reservations.availability.index'],
                     ['label' => 'ばんしろう', 'route' => 'reservations.banshirou.index'],
                     ['label' => 'もっか', 'route' => 'reservations.mocca.index'],
                 ],
