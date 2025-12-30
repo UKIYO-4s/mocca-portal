@@ -21,6 +21,7 @@ interface Reservation {
     nights: number;
     meal_option_label: string;
     status_label: string;
+    mocca_reservations_count: number;
     cleaning_assignment?: { user: { name: string } };
     setup_assignment?: { user: { name: string } };
 }
@@ -189,11 +190,12 @@ export default function Index({ auth, reservations, filters }: Props) {
         );
     };
 
-    // 人数表示を統一形式に
+    // 人数表示を統一形式に（total_guestsではなく個別に計算）
     const formatGuestCount = (reservation: Reservation): string => {
-        const { total_guests, guest_count_adults, guest_count_children } =
-            reservation;
-        return `${total_guests}名（大人${guest_count_adults}・子供${guest_count_children}）`;
+        const adults = reservation.guest_count_adults || 0;
+        const children = reservation.guest_count_children || 0;
+        const total = adults + children;
+        return `${total}名（大人${adults}・子供${children}）`;
     };
 
     return (
@@ -338,6 +340,20 @@ export default function Index({ auth, reservations, filters }: Props) {
                                                 >
                                                     {reservation.name}様
                                                 </Link>
+                                                {/* 施設バッジ */}
+                                                <span
+                                                    className={`inline-flex rounded-full px-2 py-1 text-xs font-medium ${
+                                                        reservation.mocca_reservations_count >
+                                                        0
+                                                            ? 'bg-purple-100 text-purple-800'
+                                                            : 'bg-blue-100 text-blue-800'
+                                                    }`}
+                                                >
+                                                    {reservation.mocca_reservations_count >
+                                                    0
+                                                        ? '両方'
+                                                        : 'ばんしろう'}
+                                                </span>
                                                 <span
                                                     className={`inline-flex rounded-full px-2 py-1 text-xs font-medium ${
                                                         reservation.status ===
@@ -359,9 +375,6 @@ export default function Index({ auth, reservations, filters }: Props) {
                                                 {formatDateYmd(
                                                     reservation.checkout_date,
                                                 )}
-                                                <span className="ml-2 text-gray-600">
-                                                    （{reservation.nights}泊）
-                                                </span>
                                             </p>
 
                                             {/* 人数・食事 */}

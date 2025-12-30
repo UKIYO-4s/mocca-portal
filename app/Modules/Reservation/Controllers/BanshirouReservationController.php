@@ -22,6 +22,7 @@ class BanshirouReservationController extends Controller
     public function index(Request $request): Response
     {
         $query = BanshirouReservation::with(['creator', 'cleaningAssignment.user', 'setupAssignment.user'])
+            ->withCount('moccaReservations')
             ->orderBy('checkin_date', 'desc');
 
         // Filter by date range
