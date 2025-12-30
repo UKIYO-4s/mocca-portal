@@ -98,16 +98,26 @@ class InviteController extends Controller
 
         $validated = $request->validate($rules, $messages);
 
-        // ユーザー作成（メールは招待から取得、無ければフォームから）
-        $user = User::create([
-            'name' => $validated['name'],
-            'email' => $invite->email ?? $validated['email'],
-            'password' => Hash::make($validated['password']),
-            'role' => $invite->role,
-        ]);
+        // トランザクションでユーザー作成と招待更新を行う
+        $user = \DB::transaction(function () use ($validated, $invite) {
+            // ユーザー作成（メールは招待から取得、無ければフォームから）
+            $user = User::create([
+                'name' => $validated['name'],
+                'email' => $invite->email ?? $validated['email'],
+                'password' => Hash::make($validated['password']),
+                'role' => $invite->role,
+            ]);
 
-        // 招待を使用済みにする
-        $invite->markAsUsed();
+            // 招待を使用済みにする
+            $invite->markAsUsed();
+
+            return $user;
+        });
+
+        event(new Registered($user));
+
+        // ログインしてからアクティビティログを記録（Auth::id()が必要なため）
+        Auth::login($user);
 
         $this->activityLog->log(
             'user',
@@ -116,10 +126,6 @@ class InviteController extends Controller
             "招待から登録: {$user->name} ({$invite->role_label})"
         );
 
-        event(new Registered($user));
-
-        Auth::login($user);
-
-        return redirect()->route('dashboard');
+        return redirect()->route('dashboard')->with('success', '登録が完了しました。ようこそ！');
     }
 }
