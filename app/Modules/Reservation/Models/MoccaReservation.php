@@ -26,6 +26,7 @@ class MoccaReservation extends Model
     ];
 
     protected $casts = [
+        'reservation_type' => 'array',
         'reservation_date' => 'date:Y-m-d',
         'arrival_time' => 'datetime:H:i',
     ];
@@ -59,12 +60,22 @@ class MoccaReservation extends Model
      */
     public function getTypeLabelAttribute(): string
     {
-        return match($this->reservation_type) {
-            'breakfast' => '朝食',
-            'lunch' => '昼食',
-            'dinner' => '夕食',
-            default => $this->reservation_type,
-        };
+        $types = $this->reservation_type ?? [];
+
+        if (empty($types)) {
+            return '';
+        }
+
+        $labels = array_map(function ($type) {
+            return match($type) {
+                'breakfast' => '朝食',
+                'lunch' => '昼食',
+                'dinner' => '夕食',
+                default => $type,
+            };
+        }, $types);
+
+        return implode('・', $labels);
     }
 
     /**
@@ -145,7 +156,7 @@ class MoccaReservation extends Model
      */
     public function scopeOfType($query, string $type)
     {
-        return $query->where('reservation_type', $type);
+        return $query->whereJsonContains('reservation_type', $type);
     }
 
     /**

@@ -72,7 +72,8 @@ class MoccaReservationController extends Controller
     public function store(Request $request)
     {
         $validated = $request->validate([
-            'reservation_type' => 'required|in:breakfast,lunch,dinner',
+            'reservation_type' => 'required|array|min:1',
+            'reservation_type.*' => 'in:breakfast,lunch,dinner',
             'reservation_date' => 'required|date',
             'name' => 'required|string|max:255',
             'guest_count' => 'required|integer|min:1',
@@ -132,7 +133,8 @@ class MoccaReservationController extends Controller
     public function update(Request $request, MoccaReservation $reservation)
     {
         $validated = $request->validate([
-            'reservation_type' => 'required|in:breakfast,lunch,dinner',
+            'reservation_type' => 'required|array|min:1',
+            'reservation_type.*' => 'in:breakfast,lunch,dinner',
             'reservation_date' => 'required|date',
             'name' => 'required|string|max:255',
             'guest_count' => 'required|integer|min:1',

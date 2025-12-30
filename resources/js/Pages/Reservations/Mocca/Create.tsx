@@ -17,8 +17,8 @@ interface Props extends PageProps {
 }
 
 interface MoccaFormData {
-    [key: string]: string | number;
-    reservation_type: string;
+    [key: string]: string | number | string[];
+    reservation_type: string[];
     reservation_date: string;
     name: string;
     guest_count: number;
@@ -41,7 +41,7 @@ export default function Create({
         : null;
 
     const [formData, setFormData] = useState<MoccaFormData>({
-        reservation_type: 'dinner',
+        reservation_type: [],
         reservation_date: '',
         name: linkedReservation?.name || '',
         guest_count: 1,
@@ -94,8 +94,8 @@ export default function Create({
         e.preventDefault();
         const newErrors: Record<string, string> = {};
 
-        if (!formData.reservation_type)
-            newErrors.reservation_type = '種別を選択してください';
+        if (formData.reservation_type.length === 0)
+            newErrors.reservation_type = '種別を1つ以上選択してください';
         if (!formData.reservation_date)
             newErrors.reservation_date = '日付を選択してください';
         if (!formData.name) newErrors.name = 'お名前を入力してください';
@@ -165,10 +165,11 @@ export default function Create({
                                 </div>
                             )}
 
-                            {/* 種別選択 */}
+                            {/* 種別選択（複数選択可） */}
                             <div>
                                 <label className="mb-2 block text-sm font-medium text-gray-700">
                                     種別 <span className="text-red-500">*</span>
+                                    <span className="ml-2 text-xs text-gray-500">（複数選択可）</span>
                                 </label>
                                 <div className="grid grid-cols-3 gap-3">
                                     {[
@@ -190,37 +191,53 @@ export default function Create({
                                             selectedClass:
                                                 'border-purple-500 bg-purple-50',
                                         },
-                                    ].map((option) => (
-                                        <label
-                                            key={option.value}
-                                            className={`flex cursor-pointer items-center justify-center rounded-lg border-2 p-4 ${
-                                                formData.reservation_type ===
-                                                option.value
-                                                    ? option.selectedClass
-                                                    : 'border-gray-200 hover:border-gray-300'
-                                            }`}
-                                        >
-                                            <input
-                                                type="radio"
-                                                name="reservation_type"
-                                                value={option.value}
-                                                checked={
-                                                    formData.reservation_type ===
-                                                    option.value
-                                                }
-                                                onChange={(e) =>
-                                                    updateField(
-                                                        'reservation_type',
-                                                        e.target.value,
-                                                    )
-                                                }
-                                                className="sr-only"
-                                            />
-                                            <span className="text-lg font-medium">
-                                                {option.label}
-                                            </span>
-                                        </label>
-                                    ))}
+                                    ].map((option) => {
+                                        const isSelected = formData.reservation_type.includes(option.value);
+                                        return (
+                                            <label
+                                                key={option.value}
+                                                className={`flex cursor-pointer items-center justify-center rounded-lg border-2 p-4 ${
+                                                    isSelected
+                                                        ? option.selectedClass
+                                                        : 'border-gray-200 hover:border-gray-300'
+                                                }`}
+                                            >
+                                                <input
+                                                    type="checkbox"
+                                                    value={option.value}
+                                                    checked={isSelected}
+                                                    onChange={(e) => {
+                                                        const value = e.target.value;
+                                                        const currentTypes = [...formData.reservation_type];
+                                                        if (e.target.checked) {
+                                                            if (!currentTypes.includes(value)) {
+                                                                currentTypes.push(value);
+                                                            }
+                                                        } else {
+                                                            const index = currentTypes.indexOf(value);
+                                                            if (index > -1) {
+                                                                currentTypes.splice(index, 1);
+                                                            }
+                                                        }
+                                                        setFormData(prev => ({
+                                                            ...prev,
+                                                            reservation_type: currentTypes,
+                                                        }));
+                                                        if (errors.reservation_type) {
+                                                            setErrors(prev => {
+                                                                const { reservation_type, ...rest } = prev;
+                                                                return rest;
+                                                            });
+                                                        }
+                                                    }}
+                                                    className="sr-only"
+                                                />
+                                                <span className="text-lg font-medium">
+                                                    {option.label}
+                                                </span>
+                                            </label>
+                                        );
+                                    })}
                                 </div>
                                 {errors.reservation_type && (
                                     <p className="mt-1 text-sm text-red-500">
