@@ -60,6 +60,7 @@ export default function Index({ auth, currentMonth }: Props) {
     const [loading, setLoading] = useState(true);
     const [refreshing, setRefreshing] = useState(false);
     const [selectedDate, setSelectedDate] = useState<string | null>(null);
+    const [showModal, setShowModal] = useState(false);
     const [viewMode, setViewMode] = useState<'calendar' | 'list'>('calendar');
 
     // Fetch availability data
@@ -470,14 +471,12 @@ export default function Index({ auth, currentMonth }: Props) {
                                         return (
                                             <button
                                                 key={index}
-                                                onClick={() =>
-                                                    day.isCurrentMonth &&
-                                                    setSelectedDate(
-                                                        selectedDate === day.dateStr
-                                                            ? null
-                                                            : day.dateStr,
-                                                    )
-                                                }
+                                                onClick={() => {
+                                                    if (day.isCurrentMonth) {
+                                                        setSelectedDate(day.dateStr);
+                                                        setShowModal(true);
+                                                    }
+                                                }}
                                                 className={`relative min-h-[80px] border-b border-r border-gray-200 p-2 text-left transition-colors ${
                                                     !day.isCurrentMonth
                                                         ? 'bg-gray-50'
@@ -540,65 +539,6 @@ export default function Index({ auth, currentMonth }: Props) {
                                 </div>
                             </div>
 
-                            {/* Selected Date Details */}
-                            {selectedDate && selectedDetails && (
-                                <div className="mt-4 rounded-lg bg-white p-4 shadow-sm">
-                                    <h4 className="mb-3 font-semibold text-gray-900">
-                                        {selectedDate} の予約
-                                    </h4>
-                                    {selectedDetails.details.length > 0 ? (
-                                        <ul className="space-y-2">
-                                            {selectedDetails.details.map((detail, idx) => (
-                                                <li
-                                                    key={idx}
-                                                    className={`flex flex-col gap-2 rounded-md p-3 sm:flex-row sm:items-center sm:justify-between sm:gap-3 ${
-                                                        detail.source === 'portal'
-                                                            ? 'bg-blue-50'
-                                                            : detail.source === 'form'
-                                                              ? 'bg-yellow-50'
-                                                              : 'bg-purple-50'
-                                                    }`}
-                                                >
-                                                    <div className="flex min-w-0 flex-wrap items-center gap-2 sm:gap-3">
-                                                        <span
-                                                            className={`shrink-0 rounded px-2 py-1 text-xs font-medium ${
-                                                                detail.source === 'portal'
-                                                                    ? 'bg-blue-100 text-blue-700'
-                                                                    : detail.source === 'form'
-                                                                      ? 'bg-yellow-100 text-yellow-700'
-                                                                      : 'bg-purple-100 text-purple-700'
-                                                            }`}
-                                                        >
-                                                            {sourceLabels[detail.source] || detail.source}
-                                                        </span>
-                                                        <span className="font-medium text-gray-900">{detail.name}</span>
-                                                        {detail.guests && (
-                                                            <span className="text-sm text-gray-500">
-                                                                {detail.guests}名
-                                                            </span>
-                                                        )}
-                                                        {detail.checkin_date && detail.checkout_date && (
-                                                            <span className="text-sm text-gray-500">
-                                                                {detail.checkin_date} - {detail.checkout_date}
-                                                            </span>
-                                                        )}
-                                                    </div>
-                                                    {detail.id && (
-                                                        <Link
-                                                            href={route('reservations.banshirou.show', detail.id)}
-                                                            className="shrink-0 text-sm text-blue-600 hover:text-blue-800"
-                                                        >
-                                                            詳細
-                                                        </Link>
-                                                    )}
-                                                </li>
-                                            ))}
-                                        </ul>
-                                    ) : (
-                                        <p className="text-gray-500">予約なし</p>
-                                    )}
-                                </div>
-                            )}
                         </>
                     ) : (
                         /* List View */
@@ -692,6 +632,120 @@ export default function Index({ auth, currentMonth }: Props) {
                     )}
                 </div>
             </div>
+
+            {/* Date Details Modal */}
+            {showModal && selectedDate && (
+                <div
+                    className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4"
+                    onClick={() => setShowModal(false)}
+                >
+                    <div
+                        className="max-h-[80vh] w-full max-w-md overflow-y-auto rounded-lg bg-white shadow-xl"
+                        onClick={(e) => e.stopPropagation()}
+                    >
+                        {/* Modal Header */}
+                        <div className="flex items-center justify-between border-b border-gray-200 p-4">
+                            <h3 className="text-lg font-semibold text-gray-900">
+                                {selectedDate} の予約状況
+                            </h3>
+                            <button
+                                onClick={() => setShowModal(false)}
+                                className="rounded-full p-1 text-gray-400 hover:bg-gray-100 hover:text-gray-600"
+                            >
+                                <svg className="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                                </svg>
+                            </button>
+                        </div>
+
+                        {/* Modal Body */}
+                        <div className="p-4">
+                            {/* Status Badge */}
+                            <div className="mb-4 flex items-center gap-2">
+                                <span className="text-sm text-gray-600">状態:</span>
+                                {selectedDetails?.status === 'booked' ? (
+                                    <span className="inline-flex items-center rounded-full bg-red-100 px-3 py-1 text-sm font-medium text-red-700">
+                                        <span className="mr-1 font-bold">X</span> 満室
+                                    </span>
+                                ) : (
+                                    <span className="inline-flex items-center rounded-full bg-green-100 px-3 py-1 text-sm font-medium text-green-700">
+                                        <span className="mr-1 font-bold">O</span> 空室
+                                    </span>
+                                )}
+                            </div>
+
+                            {/* Reservation List */}
+                            {selectedDetails && selectedDetails.details.length > 0 ? (
+                                <div className="space-y-3">
+                                    <p className="text-sm font-medium text-gray-700">予約一覧:</p>
+                                    {selectedDetails.details.map((detail, idx) => (
+                                        <div
+                                            key={idx}
+                                            className={`rounded-lg p-3 ${
+                                                detail.source === 'portal'
+                                                    ? 'bg-blue-50'
+                                                    : detail.source === 'form'
+                                                      ? 'bg-yellow-50'
+                                                      : 'bg-purple-50'
+                                            }`}
+                                        >
+                                            <div className="flex items-start justify-between gap-2">
+                                                <div className="space-y-1">
+                                                    <span
+                                                        className={`inline-block rounded px-2 py-0.5 text-xs font-medium ${
+                                                            detail.source === 'portal'
+                                                                ? 'bg-blue-100 text-blue-700'
+                                                                : detail.source === 'form'
+                                                                  ? 'bg-yellow-100 text-yellow-700'
+                                                                  : 'bg-purple-100 text-purple-700'
+                                                        }`}
+                                                    >
+                                                        {sourceLabels[detail.source] || detail.source}
+                                                    </span>
+                                                    <p className="font-medium text-gray-900">{detail.name}</p>
+                                                    {detail.guests && (
+                                                        <p className="text-sm text-gray-600">人数: {detail.guests}名</p>
+                                                    )}
+                                                    {detail.checkin_date && detail.checkout_date && (
+                                                        <p className="text-sm text-gray-600">
+                                                            期間: {detail.checkin_date} ~ {detail.checkout_date}
+                                                        </p>
+                                                    )}
+                                                </div>
+                                                {detail.id && (
+                                                    <Link
+                                                        href={route('reservations.banshirou.show', detail.id)}
+                                                        className="shrink-0 rounded-md bg-white px-3 py-1.5 text-sm font-medium text-blue-600 shadow-sm hover:bg-blue-50"
+                                                    >
+                                                        詳細
+                                                    </Link>
+                                                )}
+                                            </div>
+                                        </div>
+                                    ))}
+                                </div>
+                            ) : (
+                                <div className="py-6 text-center">
+                                    <svg className="mx-auto h-12 w-12 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                                    </svg>
+                                    <p className="mt-2 text-gray-500">この日の予約はありません</p>
+                                </div>
+                            )}
+                        </div>
+
+                        {/* Modal Footer */}
+                        <div className="border-t border-gray-200 p-4">
+                            <Link
+                                href={route('reservations.banshirou.create')}
+                                className="block w-full rounded-md bg-blue-600 py-2.5 text-center text-sm font-medium text-white hover:bg-blue-700"
+                            >
+                                + この日に予約を作成
+                            </Link>
+                        </div>
+                    </div>
+                </div>
+            )}
         </AuthenticatedLayout>
     );
 }
