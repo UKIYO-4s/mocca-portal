@@ -3,6 +3,12 @@ import { Head, Link, router } from '@inertiajs/react';
 import { PageProps } from '@/types';
 import { formatDateYmd } from '@/utils/date';
 
+// 電話番号からハイフンを除去してtel:リンクを生成
+const createTelLink = (phone: string): string => {
+    const digits = phone.replace(/\D/g, '');
+    return `tel:${digits}`;
+};
+
 interface User {
     id: number;
     name: string;
@@ -138,10 +144,10 @@ export default function Show({ auth, reservation }: Props) {
                                     <dt className="text-sm font-medium text-gray-600">電話番号</dt>
                                     <dd className="mt-1">
                                         <a
-                                            href={reservation.phone_link}
-                                            className="inline-flex min-h-[44px] items-center text-lg font-semibold text-blue-600 hover:text-blue-800"
+                                            href={createTelLink(reservation.phone)}
+                                            className="inline-flex min-h-[44px] items-center gap-2 rounded-md bg-green-600 px-4 py-2 text-base font-medium text-white hover:bg-green-700"
                                         >
-                                            <svg className="mr-2 h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <svg className="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z" />
                                             </svg>
                                             {reservation.formatted_phone}
@@ -187,9 +193,8 @@ export default function Show({ auth, reservation }: Props) {
                                     <dt className="text-sm font-medium text-gray-600">人数</dt>
                                     <dd className="mt-1 text-lg font-semibold text-gray-900">
                                         {reservation.total_guests}名
-                                        <span className="ml-2 text-sm font-normal text-gray-600">
-                                            （大人{reservation.guest_count_adults}名
-                                            {reservation.guest_count_children > 0 && `、子供${reservation.guest_count_children}名`}）
+                                        <span className="ml-2 text-base font-normal text-gray-600">
+                                            （大人{reservation.guest_count_adults}・子供{reservation.guest_count_children}）
                                         </span>
                                     </dd>
                                 </div>
