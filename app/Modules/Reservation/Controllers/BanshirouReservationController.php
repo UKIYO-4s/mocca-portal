@@ -51,7 +51,15 @@ class BanshirouReservationController extends Controller
      */
     public function create(): Response
     {
-        return Inertia::render('Reservations/Banshirou/Create');
+        // 食事予約連携用のばんしろう予約一覧を取得
+        $banshirouReservations = BanshirouReservation::confirmed()
+            ->where('checkout_date', '>=', now())
+            ->orderBy('checkin_date')
+            ->get(['id', 'name', 'checkin_date', 'checkout_date']);
+
+        return Inertia::render('Reservations/Banshirou/Create', [
+            'banshirouReservations' => $banshirouReservations,
+        ]);
     }
 
     /**

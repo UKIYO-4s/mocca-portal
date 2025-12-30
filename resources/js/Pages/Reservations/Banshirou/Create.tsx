@@ -1,8 +1,47 @@
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
 import { PageProps } from '@/types';
+import { formatDateYmd } from '@/utils/date';
 import { Head, router, usePage } from '@inertiajs/react';
 import { FormEvent, useEffect, useState } from 'react';
 
+// 予約タイプ（宿泊 or 食事）
+type ReservationType = 'banshirou' | 'mocca';
+
+// ばんしろう予約（食事連携用）
+interface BanshirouReservationLink {
+    id: number;
+    name: string;
+    checkin_date: string;
+    checkout_date: string;
+}
+
+// 食事予約フォームデータ
+interface MoccaFormData {
+    [key: string]: string | number;
+    reservation_type: string;
+    reservation_date: string;
+    name: string;
+    guest_count: number;
+    arrival_time: string;
+    phone: string;
+    advance_menu: string;
+    notes: string;
+    banshirou_reservation_id: string;
+}
+
+const initialMoccaFormData: MoccaFormData = {
+    reservation_type: 'dinner',
+    reservation_date: '',
+    name: '',
+    guest_count: 1,
+    arrival_time: '',
+    phone: '',
+    advance_menu: '',
+    notes: '',
+    banshirou_reservation_id: '',
+};
+
+// 宿泊予約フォームデータ
 interface ReservationFormData {
     [key: string]: string | number | boolean;
     name: string;
@@ -493,10 +532,26 @@ function ConfirmationView({ formData }: ConfirmationViewProps) {
 }
 
 const STORAGE_KEY = 'reservation_input_mode';
+const RESERVATION_TYPE_KEY = 'reservation_type_tab';
 
-export default function Create({ auth }: PageProps) {
+interface Props extends PageProps {
+    banshirouReservations: BanshirouReservationLink[];
+}
+
+export default function Create({ auth, banshirouReservations = [] }: Props) {
     const user = usePage().props.auth.user;
     const isStaff = user.role === 'staff';
+
+    // 予約タイプ（宿泊/食事）のデフォルト値取得
+    const getDefaultReservationType = (): ReservationType => {
+        if (typeof window !== 'undefined') {
+            const saved = localStorage.getItem(RESERVATION_TYPE_KEY);
+            if (saved === 'banshirou' || saved === 'mocca') {
+                return saved;
+            }
+        }
+        return 'banshirou';
+    };
 
     // Staffはデフォルトで一括入力、それ以外はLocalStorageまたはウィザード
     const getDefaultMode = (): InputMode => {
@@ -509,6 +564,11 @@ export default function Create({ auth }: PageProps) {
         return isStaff ? 'single' : 'wizard';
     };
 
+    // 予約タイプ（宿泊/食事）
+    const [reservationType, setReservationType] =
+        useState<ReservationType>('banshirou');
+
+    // 宿泊予約用state
     const [inputMode, setInputMode] = useState<InputMode>('wizard');
     const [step, setStep] = useState(1);
     const [formData, setFormData] =
@@ -516,9 +576,20 @@ export default function Create({ auth }: PageProps) {
     const [errors, setErrors] = useState<Record<string, string>>({});
     const [processing, setProcessing] = useState(false);
 
+    // 食事予約用state
+    const [moccaFormData, setMoccaFormData] =
+        useState<MoccaFormData>(initialMoccaFormData);
+    const [moccaErrors, setMoccaErrors] = useState<Record<string, string>>({});
+
     useEffect(() => {
         setInputMode(getDefaultMode());
+        setReservationType(getDefaultReservationType());
     }, []);
+
+    const handleReservationTypeChange = (type: ReservationType) => {
+        setReservationType(type);
+        localStorage.setItem(RESERVATION_TYPE_KEY, type);
+    };
 
     const handleModeChange = (mode: InputMode) => {
         setInputMode(mode);
@@ -637,36 +708,119 @@ export default function Create({ auth }: PageProps) {
         });
     };
 
+    // ===== 食事予約用関数 =====
+    const updateMoccaField = <K extends keyof MoccaFormData>(
+        field: K,
+        value: MoccaFormData[K],
+    ) => {
+        setMoccaFormData((prev) => ({ ...prev, [field]: value }));
+        setMoccaErrors((prev) => ({ ...prev, [field]: '' }));
+    };
+
+    const handleMoccaPhoneChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const formatted = formatPhone(e.target.value);
+        updateMoccaField('phone', formatted);
+    };
+
+    const handleBanshirouSelect = (id: string) => {
+        updateMoccaField('banshirou_reservation_id', id);
+        if (id) {
+            const selected = banshirouReservations.find(
+                (r) => r.id === parseInt(id),
+            );
+            if (selected && !moccaFormData.name) {
+                updateMoccaField('name', selected.name);
+            }
+        }
+    };
+
+    const handleMoccaSubmit = (e: FormEvent) => {
+        e.preventDefault();
+        const newErrors: Record<string, string> = {};
+
+        if (!moccaFormData.reservation_type)
+            newErrors.reservation_type = '種別を選択してください';
+        if (!moccaFormData.reservation_date)
+            newErrors.reservation_date = '日付を選択してください';
+        if (!moccaFormData.name) newErrors.name = 'お名前を入力してください';
+        if (moccaFormData.guest_count < 1)
+            newErrors.guest_count = '人数を入力してください';
+
+        if (Object.keys(newErrors).length > 0) {
+            setMoccaErrors(newErrors);
+            return;
+        }
+
+        setProcessing(true);
+        router.post(route('reservations.mocca.store'), moccaFormData, {
+            onError: (errors) => {
+                setMoccaErrors(errors as Record<string, string>);
+                setProcessing(false);
+            },
+        });
+    };
+
     return (
         <AuthenticatedLayout
             header={
-                <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-                    <h2 className="text-xl font-semibold leading-tight text-gray-800">
-                        新規予約
-                    </h2>
-                    {/* 入力モード切替 */}
-                    <div className="flex rounded-lg bg-gray-100 p-1">
+                <div className="flex flex-col gap-3">
+                    <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+                        <h2 className="text-xl font-semibold leading-tight text-gray-800">
+                            新規予約
+                        </h2>
+                        {/* 入力モード切替（宿泊時のみ表示） */}
+                        {reservationType === 'banshirou' && (
+                            <div className="flex rounded-lg bg-gray-100 p-1">
+                                <button
+                                    type="button"
+                                    onClick={() => handleModeChange('wizard')}
+                                    className={`rounded-md px-3 py-1.5 text-sm font-medium transition-colors ${
+                                        inputMode === 'wizard'
+                                            ? 'bg-white text-gray-900 shadow-sm'
+                                            : 'text-gray-600 hover:text-gray-900'
+                                    }`}
+                                >
+                                    ステップ入力
+                                </button>
+                                <button
+                                    type="button"
+                                    onClick={() => handleModeChange('single')}
+                                    className={`rounded-md px-3 py-1.5 text-sm font-medium transition-colors ${
+                                        inputMode === 'single'
+                                            ? 'bg-white text-gray-900 shadow-sm'
+                                            : 'text-gray-600 hover:text-gray-900'
+                                    }`}
+                                >
+                                    一括入力
+                                </button>
+                            </div>
+                        )}
+                    </div>
+                    {/* 予約タイプ切替タブ */}
+                    <div className="flex border-b border-gray-200">
                         <button
                             type="button"
-                            onClick={() => handleModeChange('wizard')}
-                            className={`rounded-md px-3 py-1.5 text-sm font-medium transition-colors ${
-                                inputMode === 'wizard'
-                                    ? 'bg-white text-gray-900 shadow-sm'
-                                    : 'text-gray-600 hover:text-gray-900'
+                            onClick={() =>
+                                handleReservationTypeChange('banshirou')
+                            }
+                            className={`flex-1 border-b-2 py-3 text-center text-sm font-medium transition-colors ${
+                                reservationType === 'banshirou'
+                                    ? 'border-blue-600 text-blue-600'
+                                    : 'border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700'
                             }`}
                         >
-                            ステップ入力
+                            🏠 宿泊予約
                         </button>
                         <button
                             type="button"
-                            onClick={() => handleModeChange('single')}
-                            className={`rounded-md px-3 py-1.5 text-sm font-medium transition-colors ${
-                                inputMode === 'single'
-                                    ? 'bg-white text-gray-900 shadow-sm'
-                                    : 'text-gray-600 hover:text-gray-900'
+                            onClick={() => handleReservationTypeChange('mocca')}
+                            className={`flex-1 border-b-2 py-3 text-center text-sm font-medium transition-colors ${
+                                reservationType === 'mocca'
+                                    ? 'border-orange-600 text-orange-600'
+                                    : 'border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700'
                             }`}
                         >
-                            一括入力
+                            🍽️ 食事予約
                         </button>
                     </div>
                 </div>
@@ -676,7 +830,9 @@ export default function Create({ auth }: PageProps) {
 
             <div className="py-6">
                 <div className="mx-auto max-w-2xl px-4 sm:px-6 lg:px-8">
-                    {inputMode === 'wizard' ? (
+                    {/* 宿泊予約フォーム */}
+                    {reservationType === 'banshirou' && (
+                        inputMode === 'wizard' ? (
                         <>
                             {/* ステップインジケーター */}
                             <div className="mb-8">
@@ -833,6 +989,288 @@ export default function Create({ auth }: PageProps) {
                                         {processing
                                             ? '保存中...'
                                             : '予約を確定'}
+                                    </button>
+                                </div>
+                            </div>
+                        </form>
+                    ))}
+
+                    {/* 食事予約フォーム */}
+                    {reservationType === 'mocca' && (
+                        <form onSubmit={handleMoccaSubmit}>
+                            <div className="space-y-6 rounded-lg bg-white p-6 shadow-sm">
+                                {/* ばんしろう連携 */}
+                                {banshirouReservations.length > 0 && (
+                                    <div>
+                                        <label className="block text-sm font-medium text-gray-700">
+                                            ばんしろう予約と連携（任意）
+                                        </label>
+                                        <select
+                                            value={
+                                                moccaFormData.banshirou_reservation_id
+                                            }
+                                            onChange={(e) =>
+                                                handleBanshirouSelect(
+                                                    e.target.value,
+                                                )
+                                            }
+                                            className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
+                                        >
+                                            <option value="">連携しない</option>
+                                            {banshirouReservations.map((res) => (
+                                                <option key={res.id} value={res.id}>
+                                                    {res.name}様（
+                                                    {formatDateYmd(
+                                                        res.checkin_date,
+                                                    )}
+                                                    〜
+                                                    {formatDateYmd(
+                                                        res.checkout_date,
+                                                    )}
+                                                    ）
+                                                </option>
+                                            ))}
+                                        </select>
+                                    </div>
+                                )}
+
+                                {/* 種別選択 */}
+                                <div>
+                                    <label className="mb-2 block text-sm font-medium text-gray-700">
+                                        種別 <span className="text-red-500">*</span>
+                                    </label>
+                                    <div className="grid grid-cols-3 gap-3">
+                                        {[
+                                            {
+                                                value: 'breakfast',
+                                                label: '朝食',
+                                                selectedClass:
+                                                    'border-yellow-500 bg-yellow-50',
+                                            },
+                                            {
+                                                value: 'lunch',
+                                                label: '昼食',
+                                                selectedClass:
+                                                    'border-orange-500 bg-orange-50',
+                                            },
+                                            {
+                                                value: 'dinner',
+                                                label: '夕食',
+                                                selectedClass:
+                                                    'border-purple-500 bg-purple-50',
+                                            },
+                                        ].map((option) => (
+                                            <label
+                                                key={option.value}
+                                                className={`flex cursor-pointer items-center justify-center rounded-lg border-2 p-4 ${
+                                                    moccaFormData.reservation_type ===
+                                                    option.value
+                                                        ? option.selectedClass
+                                                        : 'border-gray-200 hover:border-gray-300'
+                                                }`}
+                                            >
+                                                <input
+                                                    type="radio"
+                                                    name="reservation_type"
+                                                    value={option.value}
+                                                    checked={
+                                                        moccaFormData.reservation_type ===
+                                                        option.value
+                                                    }
+                                                    onChange={(e) =>
+                                                        updateMoccaField(
+                                                            'reservation_type',
+                                                            e.target.value,
+                                                        )
+                                                    }
+                                                    className="sr-only"
+                                                />
+                                                <span className="text-lg font-medium">
+                                                    {option.label}
+                                                </span>
+                                            </label>
+                                        ))}
+                                    </div>
+                                    {moccaErrors.reservation_type && (
+                                        <p className="mt-1 text-sm text-red-500">
+                                            {moccaErrors.reservation_type}
+                                        </p>
+                                    )}
+                                </div>
+
+                                {/* 日付 */}
+                                <div>
+                                    <label className="block text-sm font-medium text-gray-700">
+                                        日付 <span className="text-red-500">*</span>
+                                    </label>
+                                    <input
+                                        type="date"
+                                        value={moccaFormData.reservation_date}
+                                        onChange={(e) =>
+                                            updateMoccaField(
+                                                'reservation_date',
+                                                e.target.value,
+                                            )
+                                        }
+                                        min={new Date().toISOString().split('T')[0]}
+                                        className="mt-1 block w-full rounded-md border-gray-300 text-lg shadow-sm focus:border-blue-500 focus:ring-blue-500"
+                                    />
+                                    {moccaErrors.reservation_date && (
+                                        <p className="mt-1 text-sm text-red-500">
+                                            {moccaErrors.reservation_date}
+                                        </p>
+                                    )}
+                                </div>
+
+                                {/* 到着時間 */}
+                                <div>
+                                    <label className="block text-sm font-medium text-gray-700">
+                                        到着予定時間（任意）
+                                    </label>
+                                    <input
+                                        type="time"
+                                        value={moccaFormData.arrival_time}
+                                        onChange={(e) =>
+                                            updateMoccaField(
+                                                'arrival_time',
+                                                e.target.value,
+                                            )
+                                        }
+                                        className="mt-1 block w-full rounded-md border-gray-300 text-lg shadow-sm focus:border-blue-500 focus:ring-blue-500"
+                                    />
+                                </div>
+
+                                {/* お名前 */}
+                                <div>
+                                    <label className="block text-sm font-medium text-gray-700">
+                                        お名前{' '}
+                                        <span className="text-red-500">*</span>
+                                    </label>
+                                    <input
+                                        type="text"
+                                        value={moccaFormData.name}
+                                        onChange={(e) =>
+                                            updateMoccaField('name', e.target.value)
+                                        }
+                                        className="mt-1 block w-full rounded-md border-gray-300 text-lg shadow-sm focus:border-blue-500 focus:ring-blue-500"
+                                        placeholder="山田 太郎"
+                                    />
+                                    {moccaErrors.name && (
+                                        <p className="mt-1 text-sm text-red-500">
+                                            {moccaErrors.name}
+                                        </p>
+                                    )}
+                                </div>
+
+                                {/* 人数 */}
+                                <div>
+                                    <label className="block text-sm font-medium text-gray-700">
+                                        人数 <span className="text-red-500">*</span>
+                                    </label>
+                                    <div className="mt-1 flex items-center gap-3">
+                                        <button
+                                            type="button"
+                                            onClick={() =>
+                                                updateMoccaField(
+                                                    'guest_count',
+                                                    Math.max(
+                                                        1,
+                                                        moccaFormData.guest_count - 1,
+                                                    ),
+                                                )
+                                            }
+                                            className="flex h-12 w-12 items-center justify-center rounded-full bg-gray-200 text-2xl font-bold hover:bg-gray-300"
+                                        >
+                                            −
+                                        </button>
+                                        <span className="w-12 text-center text-2xl font-bold">
+                                            {moccaFormData.guest_count}
+                                        </span>
+                                        <button
+                                            type="button"
+                                            onClick={() =>
+                                                updateMoccaField(
+                                                    'guest_count',
+                                                    moccaFormData.guest_count + 1,
+                                                )
+                                            }
+                                            className="flex h-12 w-12 items-center justify-center rounded-full bg-gray-200 text-2xl font-bold hover:bg-gray-300"
+                                        >
+                                            +
+                                        </button>
+                                        <span className="text-gray-500">名</span>
+                                    </div>
+                                    {moccaErrors.guest_count && (
+                                        <p className="mt-1 text-sm text-red-500">
+                                            {moccaErrors.guest_count}
+                                        </p>
+                                    )}
+                                </div>
+
+                                {/* 電話番号 */}
+                                <div>
+                                    <label className="block text-sm font-medium text-gray-700">
+                                        電話番号（任意）
+                                    </label>
+                                    <input
+                                        type="tel"
+                                        value={moccaFormData.phone}
+                                        onChange={handleMoccaPhoneChange}
+                                        className="mt-1 block w-full rounded-md border-gray-300 text-lg shadow-sm focus:border-blue-500 focus:ring-blue-500"
+                                        placeholder="090-1234-5678"
+                                    />
+                                </div>
+
+                                {/* 先出メニュー */}
+                                <div>
+                                    <label className="block text-sm font-medium text-gray-700">
+                                        先出メニュー（任意）
+                                    </label>
+                                    <textarea
+                                        value={moccaFormData.advance_menu}
+                                        onChange={(e) =>
+                                            updateMoccaField(
+                                                'advance_menu',
+                                                e.target.value,
+                                            )
+                                        }
+                                        rows={3}
+                                        className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
+                                        placeholder="先に出すメニューがあれば記載..."
+                                    />
+                                </div>
+
+                                {/* 備考 */}
+                                <div>
+                                    <label className="block text-sm font-medium text-gray-700">
+                                        備考（任意）
+                                    </label>
+                                    <textarea
+                                        value={moccaFormData.notes}
+                                        onChange={(e) =>
+                                            updateMoccaField('notes', e.target.value)
+                                        }
+                                        rows={3}
+                                        className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
+                                        placeholder="アレルギー、リクエストなど..."
+                                    />
+                                </div>
+
+                                {/* 送信ボタン */}
+                                <div className="flex justify-end gap-3">
+                                    <button
+                                        type="button"
+                                        onClick={() => window.history.back()}
+                                        className="rounded-md bg-gray-200 px-6 py-3 text-sm font-medium text-gray-700 hover:bg-gray-300"
+                                    >
+                                        キャンセル
+                                    </button>
+                                    <button
+                                        type="submit"
+                                        disabled={processing}
+                                        className="rounded-md bg-orange-600 px-6 py-3 text-sm font-medium text-white hover:bg-orange-700 disabled:opacity-50"
+                                    >
+                                        {processing ? '保存中...' : '食事予約を作成'}
                                     </button>
                                 </div>
                             </div>
