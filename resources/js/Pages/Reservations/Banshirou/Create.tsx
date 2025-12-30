@@ -1,7 +1,7 @@
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
 import { PageProps } from '@/types';
 import { formatDateYmd } from '@/utils/date';
-import { Head, router, usePage } from '@inertiajs/react';
+import { Head, router } from '@inertiajs/react';
 import { FormEvent, useEffect, useState } from 'react';
 
 // 予約タイプ（宿泊 or 食事）
@@ -74,8 +74,6 @@ const initialFormData: ReservationFormData = {
     payment_method: 'cash',
     notes: '',
 };
-
-type InputMode = 'wizard' | 'single';
 
 interface FormFieldsProps {
     formData: ReservationFormData;
@@ -449,99 +447,13 @@ function PaymentNotesFields({
     );
 }
 
-interface ConfirmationViewProps {
-    formData: ReservationFormData;
-}
-
-function ConfirmationView({ formData }: ConfirmationViewProps) {
-    return (
-        <div className="space-y-4">
-            <h3 className="text-lg font-medium text-gray-900">
-                予約内容の確認
-            </h3>
-
-            <div className="divide-y divide-gray-200 rounded-lg border border-gray-200">
-                <div className="p-4">
-                    <h4 className="text-sm font-medium text-gray-500">
-                        お客様情報
-                    </h4>
-                    <p className="mt-1 text-lg">
-                        {formData.name}（{formData.name_kana}）様
-                    </p>
-                    <p className="text-sm text-gray-600">{formData.phone}</p>
-                    {formData.email && (
-                        <p className="text-sm text-gray-600">
-                            {formData.email}
-                        </p>
-                    )}
-                    <p className="mt-1 text-sm text-gray-600">
-                        {formData.address}
-                    </p>
-                </div>
-                <div className="p-4">
-                    <h4 className="text-sm font-medium text-gray-500">
-                        宿泊情報
-                    </h4>
-                    <p className="mt-1 text-lg">
-                        {formData.checkin_date} 〜 {formData.checkout_date}
-                    </p>
-                    <p className="text-sm text-gray-600">
-                        大人{formData.guest_count_adults}名
-                        {formData.guest_count_children > 0 &&
-                            `、子供${formData.guest_count_children}名`}
-                    </p>
-                </div>
-                <div className="p-4">
-                    <h4 className="text-sm font-medium text-gray-500">
-                        お食事・オプション
-                    </h4>
-                    <p className="mt-1 text-lg">
-                        {formData.meal_option === 'with_meals' && '食事付き'}
-                        {formData.meal_option === 'seat_only' && '席のみ'}
-                        {formData.meal_option === 'no_meals' && '素泊まり'}
-                    </p>
-                    {formData.pickup_required && (
-                        <p className="text-sm text-gray-600">送迎あり</p>
-                    )}
-                </div>
-                <div className="p-4">
-                    <h4 className="text-sm font-medium text-gray-500">
-                        お支払い
-                    </h4>
-                    <p className="mt-1 text-lg">
-                        {formData.payment_method === 'cash' && '現金'}
-                        {formData.payment_method === 'credit' &&
-                            'クレジットカード'}
-                        {formData.payment_method === 'bank_transfer' &&
-                            '銀行振込'}
-                    </p>
-                </div>
-                {formData.notes && (
-                    <div className="p-4">
-                        <h4 className="text-sm font-medium text-gray-500">
-                            備考
-                        </h4>
-                        <p className="mt-1 whitespace-pre-wrap text-sm text-gray-600">
-                            {formData.notes}
-                        </p>
-                    </div>
-                )}
-            </div>
-        </div>
-    );
-}
-
-const STORAGE_KEY = 'reservation_input_mode';
 const RESERVATION_TYPE_KEY = 'reservation_type_tab';
 
 interface Props extends PageProps {
     banshirouReservations: BanshirouReservationLink[];
 }
 
-export default function Create({ auth, banshirouReservations = [] }: Props) {
-    const user = usePage().props.auth.user;
-    const isStaff = user.role === 'staff';
-
+export default function Create({ banshirouReservations = [] }: Props) {
     // 予約タイプ（宿泊/食事）のデフォルト値取得
     const getDefaultReservationType = (): ReservationType => {
         if (typeof window !== 'undefined') {
@@ -553,24 +465,11 @@ export default function Create({ auth, banshirouReservations = [] }: Props) {
         return 'banshirou';
     };
 
-    // Staffはデフォルトで一括入力、それ以外はLocalStorageまたはウィザード
-    const getDefaultMode = (): InputMode => {
-        if (typeof window !== 'undefined') {
-            const saved = localStorage.getItem(STORAGE_KEY);
-            if (saved === 'wizard' || saved === 'single') {
-                return saved;
-            }
-        }
-        return isStaff ? 'single' : 'wizard';
-    };
-
     // 予約タイプ（宿泊/食事）
     const [reservationType, setReservationType] =
         useState<ReservationType>('banshirou');
 
     // 宿泊予約用state
-    const [inputMode, setInputMode] = useState<InputMode>('wizard');
-    const [step, setStep] = useState(1);
     const [formData, setFormData] =
         useState<ReservationFormData>(initialFormData);
     const [errors, setErrors] = useState<Record<string, string>>({});
@@ -582,7 +481,6 @@ export default function Create({ auth, banshirouReservations = [] }: Props) {
     const [moccaErrors, setMoccaErrors] = useState<Record<string, string>>({});
 
     useEffect(() => {
-        setInputMode(getDefaultMode());
         setReservationType(getDefaultReservationType());
     }, []);
 
@@ -590,16 +488,6 @@ export default function Create({ auth, banshirouReservations = [] }: Props) {
         setReservationType(type);
         localStorage.setItem(RESERVATION_TYPE_KEY, type);
     };
-
-    const handleModeChange = (mode: InputMode) => {
-        setInputMode(mode);
-        localStorage.setItem(STORAGE_KEY, mode);
-        if (mode === 'wizard') {
-            setStep(1);
-        }
-    };
-
-    const totalSteps = 5;
 
     const updateField = <K extends keyof ReservationFormData>(
         field: K,
@@ -625,36 +513,7 @@ export default function Create({ auth, banshirouReservations = [] }: Props) {
         updateField('phone', formatted);
     };
 
-    const validateStep = (stepNum: number): boolean => {
-        const newErrors: Record<string, string> = {};
-
-        if (stepNum === 1) {
-            if (!formData.name) newErrors.name = '名前を入力してください';
-            if (!formData.name_kana)
-                newErrors.name_kana = 'フリガナを入力してください';
-            if (!formData.phone) newErrors.phone = '電話番号を入力してください';
-            if (!formData.address) newErrors.address = '住所を入力してください';
-        } else if (stepNum === 2) {
-            if (!formData.checkin_date)
-                newErrors.checkin_date = 'チェックイン日を選択してください';
-            if (!formData.checkout_date)
-                newErrors.checkout_date = 'チェックアウト日を選択してください';
-            if (formData.checkin_date && formData.checkout_date) {
-                if (
-                    new Date(formData.checkout_date) <=
-                    new Date(formData.checkin_date)
-                ) {
-                    newErrors.checkout_date =
-                        'チェックアウト日はチェックイン日より後にしてください';
-                }
-            }
-        }
-
-        setErrors(newErrors);
-        return Object.keys(newErrors).length === 0;
-    };
-
-    const validateAll = (): boolean => {
+    const validateForm = (): boolean => {
         const newErrors: Record<string, string> = {};
 
         if (!formData.name) newErrors.name = '名前を入力してください';
@@ -680,24 +539,10 @@ export default function Create({ auth, banshirouReservations = [] }: Props) {
         return Object.keys(newErrors).length === 0;
     };
 
-    const nextStep = () => {
-        if (validateStep(step)) {
-            setStep((prev) => Math.min(prev + 1, totalSteps));
-        }
-    };
-
-    const prevStep = () => {
-        setStep((prev) => Math.max(prev - 1, 1));
-    };
-
     const handleSubmit = (e: FormEvent) => {
         e.preventDefault();
 
-        if (inputMode === 'wizard') {
-            if (!validateStep(step)) return;
-        } else {
-            if (!validateAll()) return;
-        }
+        if (!validateForm()) return;
 
         setProcessing(true);
         router.post(route('reservations.banshirou.store'), formData, {
@@ -764,38 +609,9 @@ export default function Create({ auth, banshirouReservations = [] }: Props) {
         <AuthenticatedLayout
             header={
                 <div className="flex flex-col gap-3">
-                    <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-                        <h2 className="text-xl font-semibold leading-tight text-gray-800">
-                            新規予約
-                        </h2>
-                        {/* 入力モード切替（宿泊時のみ表示） */}
-                        {reservationType === 'banshirou' && (
-                            <div className="flex rounded-lg bg-gray-100 p-1">
-                                <button
-                                    type="button"
-                                    onClick={() => handleModeChange('wizard')}
-                                    className={`rounded-md px-3 py-1.5 text-sm font-medium transition-colors ${
-                                        inputMode === 'wizard'
-                                            ? 'bg-white text-gray-900 shadow-sm'
-                                            : 'text-gray-600 hover:text-gray-900'
-                                    }`}
-                                >
-                                    ステップ入力
-                                </button>
-                                <button
-                                    type="button"
-                                    onClick={() => handleModeChange('single')}
-                                    className={`rounded-md px-3 py-1.5 text-sm font-medium transition-colors ${
-                                        inputMode === 'single'
-                                            ? 'bg-white text-gray-900 shadow-sm'
-                                            : 'text-gray-600 hover:text-gray-900'
-                                    }`}
-                                >
-                                    一括入力
-                                </button>
-                            </div>
-                        )}
-                    </div>
+                    <h2 className="text-xl font-semibold leading-tight text-gray-800">
+                        新規予約
+                    </h2>
                     {/* 予約タイプ切替タブ */}
                     <div className="flex border-b border-gray-200">
                         <button
@@ -809,7 +625,7 @@ export default function Create({ auth, banshirouReservations = [] }: Props) {
                                     : 'border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700'
                             }`}
                         >
-                            🏠 宿泊予約
+                            宿泊予約
                         </button>
                         <button
                             type="button"
@@ -820,7 +636,7 @@ export default function Create({ auth, banshirouReservations = [] }: Props) {
                                     : 'border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700'
                             }`}
                         >
-                            🍽️ 食事予約
+                            食事予約
                         </button>
                     </div>
                 </div>
@@ -832,113 +648,6 @@ export default function Create({ auth, banshirouReservations = [] }: Props) {
                 <div className="mx-auto max-w-2xl px-4 sm:px-6 lg:px-8">
                     {/* 宿泊予約フォーム */}
                     {reservationType === 'banshirou' && (
-                        inputMode === 'wizard' ? (
-                        <>
-                            {/* ステップインジケーター */}
-                            <div className="mb-8">
-                                <div className="flex items-center justify-between">
-                                    {[1, 2, 3, 4, 5].map((s) => (
-                                        <div
-                                            key={s}
-                                            className="flex flex-col items-center"
-                                        >
-                                            <div
-                                                className={`flex h-10 w-10 items-center justify-center rounded-full text-sm font-medium ${
-                                                    s === step
-                                                        ? 'bg-blue-600 text-white'
-                                                        : s < step
-                                                          ? 'bg-green-500 text-white'
-                                                          : 'bg-gray-200 text-gray-600'
-                                                }`}
-                                            >
-                                                {s < step ? '✓' : s}
-                                            </div>
-                                            <span className="mt-1 text-xs text-gray-500">
-                                                {s === 1 && 'お客様情報'}
-                                                {s === 2 && '宿泊情報'}
-                                                {s === 3 && 'お食事'}
-                                                {s === 4 && 'お支払い'}
-                                                {s === 5 && '確認'}
-                                            </span>
-                                        </div>
-                                    ))}
-                                </div>
-                            </div>
-
-                            <form onSubmit={handleSubmit}>
-                                <div className="rounded-lg bg-white p-6 shadow-sm">
-                                    {step === 1 && (
-                                        <CustomerInfoFields
-                                            formData={formData}
-                                            errors={errors}
-                                            updateField={updateField}
-                                            handlePhoneChange={
-                                                handlePhoneChange
-                                            }
-                                        />
-                                    )}
-                                    {step === 2 && (
-                                        <StayInfoFields
-                                            formData={formData}
-                                            errors={errors}
-                                            updateField={updateField}
-                                        />
-                                    )}
-                                    {step === 3 && (
-                                        <MealOptionsFields
-                                            formData={formData}
-                                            updateField={updateField}
-                                        />
-                                    )}
-                                    {step === 4 && (
-                                        <PaymentNotesFields
-                                            formData={formData}
-                                            updateField={updateField}
-                                        />
-                                    )}
-                                    {step === 5 && (
-                                        <ConfirmationView formData={formData} />
-                                    )}
-
-                                    {/* ナビゲーションボタン */}
-                                    <div className="mt-6 flex justify-between">
-                                        {step > 1 ? (
-                                            <button
-                                                type="button"
-                                                onClick={prevStep}
-                                                className="rounded-md bg-gray-200 px-6 py-3 text-sm font-medium text-gray-700 hover:bg-gray-300"
-                                            >
-                                                戻る
-                                            </button>
-                                        ) : (
-                                            <div />
-                                        )}
-
-                                        {step < totalSteps ? (
-                                            <button
-                                                type="button"
-                                                onClick={nextStep}
-                                                className="rounded-md bg-blue-600 px-6 py-3 text-sm font-medium text-white hover:bg-blue-700"
-                                            >
-                                                次へ
-                                            </button>
-                                        ) : (
-                                            <button
-                                                type="submit"
-                                                disabled={processing}
-                                                className="rounded-md bg-green-600 px-6 py-3 text-sm font-medium text-white hover:bg-green-700 disabled:opacity-50"
-                                            >
-                                                {processing
-                                                    ? '保存中...'
-                                                    : '予約を確定'}
-                                            </button>
-                                        )}
-                                    </div>
-                                </div>
-                            </form>
-                        </>
-                    ) : (
-                        /* 一括入力モード */
                         <form onSubmit={handleSubmit}>
                             <div className="space-y-6">
                                 <div className="rounded-lg bg-white p-6 shadow-sm">
@@ -984,16 +693,16 @@ export default function Create({ auth, banshirouReservations = [] }: Props) {
                                     <button
                                         type="submit"
                                         disabled={processing}
-                                        className="rounded-md bg-green-600 px-6 py-3 text-sm font-medium text-white hover:bg-green-700 disabled:opacity-50"
+                                        className="rounded-md bg-blue-600 px-6 py-3 text-sm font-medium text-white hover:bg-blue-700 disabled:opacity-50"
                                     >
                                         {processing
                                             ? '保存中...'
-                                            : '予約を確定'}
+                                            : '宿泊予約を作成'}
                                     </button>
                                 </div>
                             </div>
                         </form>
-                    ))}
+                    )}
 
                     {/* 食事予約フォーム */}
                     {reservationType === 'mocca' && (
