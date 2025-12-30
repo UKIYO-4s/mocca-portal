@@ -17,6 +17,7 @@ class ModuleServiceProvider extends ServiceProvider
         'timecard' => \App\Modules\TimeCard\TimeCardModule::class,
         'announcement' => \App\Modules\Announcement\AnnouncementModule::class,
         'shift' => \App\Modules\Shift\ShiftModule::class,
+        'location' => \App\Modules\Location\LocationModule::class,
     ];
 
     /**

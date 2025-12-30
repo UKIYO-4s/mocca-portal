@@ -5,14 +5,67 @@ import ResponsiveNavLink from '@/Components/ResponsiveNavLink';
 import { Link, usePage } from '@inertiajs/react';
 import { PropsWithChildren, ReactNode, useState } from 'react';
 
+// ナビゲーションドロップダウン用コンポーネント
+function NavDropdown({
+    label,
+    active,
+    items,
+}: {
+    label: string;
+    active: boolean;
+    items: { href: string; label: string }[];
+}) {
+    return (
+        <Dropdown>
+            <Dropdown.Trigger>
+                <button
+                    className={`inline-flex items-center border-b-2 px-1 pt-1 text-sm font-medium leading-5 transition duration-150 ease-in-out focus:outline-none ${
+                        active
+                            ? 'border-blue-400 text-gray-900 focus:border-blue-700'
+                            : 'border-transparent text-gray-600 hover:border-gray-300 hover:text-gray-900 focus:border-gray-300 focus:text-gray-700'
+                    }`}
+                >
+                    {label}
+                    <svg
+                        className="ml-1 h-4 w-4"
+                        xmlns="http://www.w3.org/2000/svg"
+                        viewBox="0 0 20 20"
+                        fill="currentColor"
+                    >
+                        <path
+                            fillRule="evenodd"
+                            d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z"
+                            clipRule="evenodd"
+                        />
+                    </svg>
+                </button>
+            </Dropdown.Trigger>
+            <Dropdown.Content align="left" contentClasses="py-1 bg-white min-w-[180px]">
+                {items.map((item) => (
+                    <Dropdown.Link key={item.href} href={item.href}>
+                        {item.label}
+                    </Dropdown.Link>
+                ))}
+            </Dropdown.Content>
+        </Dropdown>
+    );
+}
+
 export default function Authenticated({
     header,
     children,
 }: PropsWithChildren<{ header?: ReactNode }>) {
     const user = usePage().props.auth.user;
+    const isAdmin = user.role === 'admin';
+    const isManager = user.role === 'admin' || user.role === 'manager';
 
     const [showingNavigationDropdown, setShowingNavigationDropdown] =
         useState(false);
+    const [expandedMobileMenu, setExpandedMobileMenu] = useState<string | null>(null);
+
+    const toggleMobileSubmenu = (menu: string) => {
+        setExpandedMobileMenu(expandedMobileMenu === menu ? null : menu);
+    };
 
     return (
         <div className="min-h-screen bg-gray-50">
@@ -26,43 +79,75 @@ export default function Authenticated({
                                 </Link>
                             </div>
 
-                            <div className="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex">
+                            <div className="hidden space-x-6 sm:-my-px sm:ms-10 sm:flex">
                                 <NavLink
                                     href={route('dashboard')}
                                     active={route().current('dashboard')}
                                 >
                                     ダッシュボード
                                 </NavLink>
-                                <NavLink
-                                    href={route('checklists.index')}
+
+                                {/* チェックリスト */}
+                                <NavDropdown
+                                    label="チェックリスト"
                                     active={route().current('checklists.*')}
-                                >
-                                    チェックリスト
-                                </NavLink>
-                                <NavLink
-                                    href={route('inventory.index')}
+                                    items={[
+                                        { href: route('checklists.index'), label: '日次一覧' },
+                                        ...(isManager ? [{ href: route('checklists.templates.index'), label: 'テンプレート管理' }] : []),
+                                    ]}
+                                />
+
+                                {/* 備品管理 */}
+                                <NavDropdown
+                                    label="備品管理"
                                     active={route().current('inventory.*')}
-                                >
-                                    備品管理
-                                </NavLink>
-                                <NavLink
-                                    href={route('timecard.index')}
+                                    items={[
+                                        { href: route('inventory.index'), label: '使用入力' },
+                                        ...(isManager ? [
+                                            { href: route('inventory.manage'), label: '在庫管理' },
+                                            { href: route('inventory.logs'), label: '履歴' },
+                                        ] : []),
+                                    ]}
+                                />
+
+                                {/* タイムカード */}
+                                <NavDropdown
+                                    label="タイムカード"
                                     active={route().current('timecard.*')}
-                                >
-                                    タイムカード
-                                </NavLink>
+                                    items={[
+                                        { href: route('timecard.index'), label: '打刻' },
+                                        { href: route('timecard.history'), label: '履歴' },
+                                        ...(isManager ? [
+                                            { href: route('timecard.manage'), label: '管理' },
+                                            { href: route('timecard.reports'), label: 'レポート' },
+                                        ] : []),
+                                    ]}
+                                />
+
                                 <NavLink
                                     href={route('announcements.index')}
                                     active={route().current('announcements.*')}
                                 >
                                     お知らせ
                                 </NavLink>
+
                                 <NavLink
                                     href={route('shifts.index')}
                                     active={route().current('shifts.*')}
                                 >
                                     シフト
                                 </NavLink>
+
+                                {/* 管理（Admin専用） */}
+                                {isAdmin && (
+                                    <NavDropdown
+                                        label="管理"
+                                        active={route().current('admin.*')}
+                                        items={[
+                                            { href: route('admin.locations.index'), label: '拠点管理' },
+                                        ]}
+                                    />
+                                )}
                             </div>
                         </div>
 
@@ -154,6 +239,7 @@ export default function Authenticated({
                     </div>
                 </div>
 
+                {/* モバイルナビゲーション */}
                 <div
                     className={
                         (showingNavigationDropdown ? 'block' : 'hidden') +
@@ -167,24 +253,107 @@ export default function Authenticated({
                         >
                             ダッシュボード
                         </ResponsiveNavLink>
-                        <ResponsiveNavLink
-                            href={route('checklists.index')}
-                            active={route().current('checklists.*')}
-                        >
-                            チェックリスト
-                        </ResponsiveNavLink>
-                        <ResponsiveNavLink
-                            href={route('inventory.index')}
-                            active={route().current('inventory.*')}
-                        >
-                            備品管理
-                        </ResponsiveNavLink>
-                        <ResponsiveNavLink
-                            href={route('timecard.index')}
-                            active={route().current('timecard.*')}
-                        >
-                            タイムカード
-                        </ResponsiveNavLink>
+
+                        {/* チェックリスト */}
+                        <div>
+                            <button
+                                onClick={() => toggleMobileSubmenu('checklists')}
+                                className={`flex w-full items-center justify-between border-l-4 py-2 pe-4 ps-3 text-start text-base font-medium transition duration-150 ease-in-out focus:outline-none ${
+                                    route().current('checklists.*')
+                                        ? 'border-blue-400 bg-blue-50 text-blue-700 focus:border-blue-700 focus:bg-blue-100 focus:text-blue-800'
+                                        : 'border-transparent text-gray-600 hover:border-gray-300 hover:bg-gray-50 hover:text-gray-800 focus:border-gray-300 focus:bg-gray-50 focus:text-gray-800'
+                                }`}
+                            >
+                                チェックリスト
+                                <svg className={`h-5 w-5 transition-transform ${expandedMobileMenu === 'checklists' ? 'rotate-180' : ''}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                                </svg>
+                            </button>
+                            {expandedMobileMenu === 'checklists' && (
+                                <div className="bg-gray-50 pl-6">
+                                    <ResponsiveNavLink href={route('checklists.index')}>
+                                        日次一覧
+                                    </ResponsiveNavLink>
+                                    {isManager && (
+                                        <ResponsiveNavLink href={route('checklists.templates.index')}>
+                                            テンプレート管理
+                                        </ResponsiveNavLink>
+                                    )}
+                                </div>
+                            )}
+                        </div>
+
+                        {/* 備品管理 */}
+                        <div>
+                            <button
+                                onClick={() => toggleMobileSubmenu('inventory')}
+                                className={`flex w-full items-center justify-between border-l-4 py-2 pe-4 ps-3 text-start text-base font-medium transition duration-150 ease-in-out focus:outline-none ${
+                                    route().current('inventory.*')
+                                        ? 'border-blue-400 bg-blue-50 text-blue-700 focus:border-blue-700 focus:bg-blue-100 focus:text-blue-800'
+                                        : 'border-transparent text-gray-600 hover:border-gray-300 hover:bg-gray-50 hover:text-gray-800 focus:border-gray-300 focus:bg-gray-50 focus:text-gray-800'
+                                }`}
+                            >
+                                備品管理
+                                <svg className={`h-5 w-5 transition-transform ${expandedMobileMenu === 'inventory' ? 'rotate-180' : ''}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                                </svg>
+                            </button>
+                            {expandedMobileMenu === 'inventory' && (
+                                <div className="bg-gray-50 pl-6">
+                                    <ResponsiveNavLink href={route('inventory.index')}>
+                                        使用入力
+                                    </ResponsiveNavLink>
+                                    {isManager && (
+                                        <>
+                                            <ResponsiveNavLink href={route('inventory.manage')}>
+                                                在庫管理
+                                            </ResponsiveNavLink>
+                                            <ResponsiveNavLink href={route('inventory.logs')}>
+                                                履歴
+                                            </ResponsiveNavLink>
+                                        </>
+                                    )}
+                                </div>
+                            )}
+                        </div>
+
+                        {/* タイムカード */}
+                        <div>
+                            <button
+                                onClick={() => toggleMobileSubmenu('timecard')}
+                                className={`flex w-full items-center justify-between border-l-4 py-2 pe-4 ps-3 text-start text-base font-medium transition duration-150 ease-in-out focus:outline-none ${
+                                    route().current('timecard.*')
+                                        ? 'border-blue-400 bg-blue-50 text-blue-700 focus:border-blue-700 focus:bg-blue-100 focus:text-blue-800'
+                                        : 'border-transparent text-gray-600 hover:border-gray-300 hover:bg-gray-50 hover:text-gray-800 focus:border-gray-300 focus:bg-gray-50 focus:text-gray-800'
+                                }`}
+                            >
+                                タイムカード
+                                <svg className={`h-5 w-5 transition-transform ${expandedMobileMenu === 'timecard' ? 'rotate-180' : ''}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                                </svg>
+                            </button>
+                            {expandedMobileMenu === 'timecard' && (
+                                <div className="bg-gray-50 pl-6">
+                                    <ResponsiveNavLink href={route('timecard.index')}>
+                                        打刻
+                                    </ResponsiveNavLink>
+                                    <ResponsiveNavLink href={route('timecard.history')}>
+                                        履歴
+                                    </ResponsiveNavLink>
+                                    {isManager && (
+                                        <>
+                                            <ResponsiveNavLink href={route('timecard.manage')}>
+                                                管理
+                                            </ResponsiveNavLink>
+                                            <ResponsiveNavLink href={route('timecard.reports')}>
+                                                レポート
+                                            </ResponsiveNavLink>
+                                        </>
+                                    )}
+                                </div>
+                            )}
+                        </div>
+
                         <ResponsiveNavLink
                             href={route('announcements.index')}
                             active={route().current('announcements.*')}
@@ -197,6 +366,32 @@ export default function Authenticated({
                         >
                             シフト
                         </ResponsiveNavLink>
+
+                        {/* 管理（Admin専用） */}
+                        {isAdmin && (
+                            <div>
+                                <button
+                                    onClick={() => toggleMobileSubmenu('admin')}
+                                    className={`flex w-full items-center justify-between border-l-4 py-2 pe-4 ps-3 text-start text-base font-medium transition duration-150 ease-in-out focus:outline-none ${
+                                        route().current('admin.*')
+                                            ? 'border-blue-400 bg-blue-50 text-blue-700 focus:border-blue-700 focus:bg-blue-100 focus:text-blue-800'
+                                            : 'border-transparent text-gray-600 hover:border-gray-300 hover:bg-gray-50 hover:text-gray-800 focus:border-gray-300 focus:bg-gray-50 focus:text-gray-800'
+                                    }`}
+                                >
+                                    管理
+                                    <svg className={`h-5 w-5 transition-transform ${expandedMobileMenu === 'admin' ? 'rotate-180' : ''}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                                    </svg>
+                                </button>
+                                {expandedMobileMenu === 'admin' && (
+                                    <div className="bg-gray-50 pl-6">
+                                        <ResponsiveNavLink href={route('admin.locations.index')}>
+                                            拠点管理
+                                        </ResponsiveNavLink>
+                                    </div>
+                                )}
+                            </div>
+                        )}
                     </div>
 
                     <div className="border-t border-gray-200 pb-1 pt-4">

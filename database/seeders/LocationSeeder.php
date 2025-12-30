@@ -13,13 +13,18 @@ class LocationSeeder extends Seeder
     public function run(): void
     {
         Location::updateOrCreate(
-            ['slug' => 'ajito'],
-            ['name' => 'アジト']
+            ['slug' => 'mocca'],
+            ['name' => 'もっか', 'is_active' => true]
         );
 
         Location::updateOrCreate(
             ['slug' => 'banshirou'],
-            ['name' => 'ばんしろう']
+            ['name' => 'ばんしろう', 'is_active' => true]
+        );
+
+        Location::updateOrCreate(
+            ['slug' => 'ajito'],
+            ['name' => 'アジト', 'is_active' => true]
         );
     }
 }

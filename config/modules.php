@@ -17,6 +17,7 @@ return [
         'timecard' => true,         // タイムカード
         'announcement' => true,     // お知らせ
         'shift' => true,            // シフト管理
+        'location' => true,         // 拠点管理（Admin専用）
         'google_calendar' => false, // Googleカレンダー（後で有効化）
         'two_factor_auth' => false, // 2FA（後で有効化）
     ],
