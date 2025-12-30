@@ -23,7 +23,17 @@ class UserController extends Controller
     public function index(): Response
     {
         $users = User::orderBy('name')
-            ->get(['id', 'name', 'email', 'role', 'avatar', 'created_at']);
+            ->get(['id', 'name', 'email', 'role', 'avatar', 'created_at'])
+            ->map(function ($user) {
+                return [
+                    'id' => $user->id,
+                    'name' => $user->name,
+                    'email' => $user->email,
+                    'role' => $user->role,
+                    'avatar_url' => $user->avatar_url, // アクセサを使用して正しいURLを返す
+                    'created_at' => $user->created_at,
+                ];
+            });
 
         $invites = Invite::with('creator:id,name')
             ->latest()
