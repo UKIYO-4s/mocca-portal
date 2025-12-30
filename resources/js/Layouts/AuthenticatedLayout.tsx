@@ -158,14 +158,12 @@ export default function Authenticated({
                                 </NavLink>
 
                                 {/* 管理（Admin専用） */}
-                                {isAdmin && routeExists('admin.hub') && (
+                                {isAdmin && (
                                     <NavDropdown
                                         label="管理"
                                         active={route().current('admin.*') || route().current('users.*')}
                                         items={[
-                                            { href: safeRoute('admin.hub'), label: '管理ハブ' },
                                             { href: safeRoute('users.index'), label: 'ユーザー管理' },
-                                            { href: safeRoute('admin.invites.index'), label: '招待リンク' },
                                             { href: safeRoute('admin.locations.index'), label: '拠点管理' },
                                             { href: safeRoute('admin.tips.index'), label: '投げ銭統計' },
                                         ]}
@@ -391,7 +389,7 @@ export default function Authenticated({
                         </ResponsiveNavLink>
 
                         {/* 管理（Admin専用） */}
-                        {isAdmin && routeExists('admin.hub') && (
+                        {isAdmin && (
                             <div>
                                 <button
                                     onClick={() => toggleMobileSubmenu('admin')}
@@ -408,14 +406,8 @@ export default function Authenticated({
                                 </button>
                                 {expandedMobileMenu === 'admin' && (
                                     <div className="bg-gray-50 pl-6">
-                                        <ResponsiveNavLink href={safeRoute('admin.hub')}>
-                                            管理ハブ
-                                        </ResponsiveNavLink>
                                         <ResponsiveNavLink href={safeRoute('users.index')}>
                                             ユーザー管理
-                                        </ResponsiveNavLink>
-                                        <ResponsiveNavLink href={safeRoute('admin.invites.index')}>
-                                            招待リンク
                                         </ResponsiveNavLink>
                                         <ResponsiveNavLink href={safeRoute('admin.locations.index')}>
                                             拠点管理

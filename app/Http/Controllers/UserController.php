@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Invite;
 use App\Models\User;
 use App\Services\ActivityLogService;
 use Illuminate\Http\Request;
@@ -24,8 +25,48 @@ class UserController extends Controller
         $users = User::orderBy('name')
             ->get(['id', 'name', 'email', 'role', 'avatar', 'created_at']);
 
+        $invites = Invite::with('creator:id,name')
+            ->latest()
+            ->get()
+            ->map(function ($invite) {
+                $roleLabels = [
+                    'admin' => '管理者',
+                    'manager' => 'マネージャー',
+                    'staff' => 'スタッフ',
+                ];
+
+                $statusLabels = [
+                    'active' => '有効',
+                    'used' => '使用済み',
+                    'expired' => '期限切れ',
+                ];
+
+                $status = 'active';
+                if ($invite->used_at) {
+                    $status = 'used';
+                } elseif ($invite->expires_at && $invite->expires_at->isPast()) {
+                    $status = 'expired';
+                }
+
+                return [
+                    'id' => $invite->id,
+                    'email' => $invite->email,
+                    'role' => $invite->role,
+                    'role_label' => $roleLabels[$invite->role] ?? $invite->role,
+                    'token' => $invite->token,
+                    'invite_url' => route('invite.show', $invite->token),
+                    'expires_at' => $invite->expires_at?->format('Y-m-d H:i'),
+                    'used_at' => $invite->used_at?->format('Y-m-d H:i'),
+                    'status' => $status,
+                    'status_label' => $statusLabels[$status],
+                    'creator' => $invite->creator,
+                    'created_at' => $invite->created_at->format('Y-m-d H:i'),
+                ];
+            });
+
         return Inertia::render('Users/Index', [
             'users' => $users,
+            'invites' => $invites,
         ]);
     }
 
