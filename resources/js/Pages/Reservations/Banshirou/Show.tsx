@@ -1,6 +1,7 @@
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
 import { Head, Link, router } from '@inertiajs/react';
 import { PageProps } from '@/types';
+import { formatDateYmd } from '@/utils/date';
 
 interface User {
     id: number;
@@ -171,11 +172,11 @@ export default function Show({ auth, reservation }: Props) {
                                 <div className="grid grid-cols-2 gap-4">
                                     <div>
                                         <dt className="text-sm font-medium text-gray-600">チェックイン</dt>
-                                        <dd className="mt-1 text-lg font-semibold text-gray-900">{reservation.checkin_date}</dd>
+                                        <dd className="mt-1 text-lg font-semibold text-gray-900">{formatDateYmd(reservation.checkin_date)}</dd>
                                     </div>
                                     <div>
                                         <dt className="text-sm font-medium text-gray-600">チェックアウト</dt>
-                                        <dd className="mt-1 text-lg font-semibold text-gray-900">{reservation.checkout_date}</dd>
+                                        <dd className="mt-1 text-lg font-semibold text-gray-900">{formatDateYmd(reservation.checkout_date)}</dd>
                                     </div>
                                 </div>
                                 <div>
@@ -295,7 +296,7 @@ export default function Show({ auth, reservation }: Props) {
                                         >
                                             <div className="flex flex-wrap items-center justify-between gap-2">
                                                 <div>
-                                                    <span className="text-base font-semibold text-gray-900">{moccaRes.reservation_date}</span>
+                                                    <span className="text-base font-semibold text-gray-900">{formatDateYmd(moccaRes.reservation_date)}</span>
                                                     <span className="ml-2 text-base text-gray-600">{moccaRes.type_label}</span>
                                                 </div>
                                                 <span className="text-base text-gray-600">{moccaRes.guest_count}名</span>

@@ -2,6 +2,7 @@ import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
 import { Head, router } from '@inertiajs/react';
 import { PageProps } from '@/types';
 import { useState, FormEvent } from 'react';
+import { formatDateYmd } from '@/utils/date';
 
 interface BanshirouReservation {
     id: number;
@@ -127,7 +128,7 @@ export default function Create({ auth, banshirouReservations, linkedReservationI
                                         <option value="">連携しない</option>
                                         {banshirouReservations.map((res) => (
                                             <option key={res.id} value={res.id}>
-                                                {res.name}様（{res.checkin_date}〜{res.checkout_date}）
+                                                {res.name}様（{formatDateYmd(res.checkin_date)}〜{formatDateYmd(res.checkout_date)}）
                                             </option>
                                         ))}
                                     </select>

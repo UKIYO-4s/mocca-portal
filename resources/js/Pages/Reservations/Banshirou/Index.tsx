@@ -2,6 +2,7 @@ import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
 import { Head, Link, router } from '@inertiajs/react';
 import { PageProps } from '@/types';
 import { useState } from 'react';
+import { formatDateYmd } from '@/utils/date';
 
 interface Reservation {
     id: number;
@@ -168,7 +169,7 @@ export default function Index({ auth, reservations, filters }: Props) {
                                                 </span>
                                             </div>
                                             <p className="mt-1 text-sm text-gray-500">
-                                                {reservation.checkin_date} 〜 {reservation.checkout_date}
+                                                {formatDateYmd(reservation.checkin_date)} 〜 {formatDateYmd(reservation.checkout_date)}
                                                 （{reservation.nights}泊）
                                             </p>
                                             <p className="mt-1 text-sm text-gray-500">

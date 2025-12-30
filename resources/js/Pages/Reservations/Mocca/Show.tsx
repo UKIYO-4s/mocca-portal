@@ -1,6 +1,7 @@
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
 import { Head, Link, router } from '@inertiajs/react';
 import { PageProps } from '@/types';
+import { formatDateYmd } from '@/utils/date';
 
 interface User {
     id: number;
@@ -133,7 +134,7 @@ export default function Show({ auth, reservation }: Props) {
                                 </div>
                                 <div>
                                     <dt className="text-sm text-gray-600">日付</dt>
-                                    <dd className="text-lg font-medium text-gray-900">{reservation.reservation_date}</dd>
+                                    <dd className="text-lg font-medium text-gray-900">{formatDateYmd(reservation.reservation_date)}</dd>
                                 </div>
                                 {reservation.formatted_arrival_time && (
                                     <div>
@@ -231,7 +232,7 @@ export default function Show({ auth, reservation }: Props) {
                                         <div>
                                             <span className="text-base font-medium text-gray-900">{reservation.banshirou_reservation.name}様</span>
                                             <span className="ml-2 text-sm text-gray-600">
-                                                {reservation.banshirou_reservation.checkin_date} 〜 {reservation.banshirou_reservation.checkout_date}
+                                                {formatDateYmd(reservation.banshirou_reservation.checkin_date)} 〜 {formatDateYmd(reservation.banshirou_reservation.checkout_date)}
                                             </span>
                                         </div>
                                         <span className="text-sm text-gray-600">

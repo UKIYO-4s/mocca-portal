@@ -2,6 +2,7 @@ import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
 import { Head, Link, router } from '@inertiajs/react';
 import { PageProps } from '@/types';
 import { useState } from 'react';
+import { formatDateYmd } from '@/utils/date';
 
 interface BanshirouReservation {
     id: number;
@@ -191,7 +192,7 @@ export default function Index({ auth, reservations, filters }: Props) {
                                                 </span>
                                             </div>
                                             <p className="mt-1 text-sm text-gray-500">
-                                                {reservation.reservation_date}
+                                                {formatDateYmd(reservation.reservation_date)}
                                                 {reservation.formatted_arrival_time && ` ${reservation.formatted_arrival_time}〜`}
                                                 ・{reservation.guest_count}名
                                             </p>
