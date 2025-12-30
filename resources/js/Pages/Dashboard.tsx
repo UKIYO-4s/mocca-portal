@@ -62,7 +62,7 @@ export default function Dashboard({
                         </Link>
 
                         <Link
-                            href={route('reservations.banshirou.index')}
+                            href={route('reservations.availability.index')}
                             className="flex min-h-[80px] flex-col items-center justify-center rounded-lg bg-white p-4 shadow-sm hover:bg-gray-50"
                         >
                             <svg
@@ -79,7 +79,7 @@ export default function Dashboard({
                                 />
                             </svg>
                             <span className="text-base font-medium text-gray-900">
-                                予約一覧
+                                予約カレンダー
                             </span>
                         </Link>
 
