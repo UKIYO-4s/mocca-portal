@@ -63,15 +63,12 @@ Route::middleware('auth')->group(function () {
     Route::delete('/profile/wallet', [StaffWalletController::class, 'destroy'])->name('profile.wallet.destroy');
 });
 
-// Tip statistics (all authenticated users)
-Route::middleware('auth')->prefix('tips')->name('tips.')->group(function () {
-    Route::get('/', [TipStatisticsController::class, 'index'])->name('index');
-    Route::get('/staff/{user}', [TipStatisticsController::class, 'show'])->name('show');
-    Route::get('/export', [TipStatisticsController::class, 'export'])->name('export');
-});
-
 // Admin routes
 Route::middleware(['auth', 'role:admin'])->prefix('admin')->name('admin.')->group(function () {
+    // Tip statistics (Admin only)
+    Route::get('/tips', [TipStatisticsController::class, 'index'])->name('tips.index');
+    Route::get('/tips/staff/{user}', [TipStatisticsController::class, 'show'])->name('tips.show');
+    Route::get('/tips/export', [TipStatisticsController::class, 'export'])->name('tips.export');
     Route::get('/staff-wallets', [StaffWalletController::class, 'adminIndex'])->name('staff-wallets');
 
     // Invite management

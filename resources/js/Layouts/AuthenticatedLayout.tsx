@@ -157,12 +157,17 @@ export default function Authenticated({
                                     シフト
                                 </NavLink>
 
-                                <NavLink
-                                    href={safeRoute('tips.index')}
-                                    active={route().current('tips.*')}
+                                <a
+                                    href="https://jpyc.jp/"
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                    className="inline-flex items-center border-b-2 border-transparent px-1 pt-1 text-sm font-medium leading-5 text-gray-600 transition duration-150 ease-in-out hover:border-gray-300 hover:text-gray-900 focus:outline-none focus:border-gray-300 focus:text-gray-700"
                                 >
-                                    投げ銭統計
-                                </NavLink>
+                                    JPYC
+                                    <svg className="ml-1 h-3 w-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+                                    </svg>
+                                </a>
 
                                 {/* 管理（Admin専用） */}
                                 {isAdmin && (
@@ -172,6 +177,7 @@ export default function Authenticated({
                                         items={[
                                             { href: safeRoute('users.index'), label: 'ユーザー管理' },
                                             { href: safeRoute('admin.locations.index'), label: '拠点管理' },
+                                            { href: safeRoute('admin.tips.index'), label: '投げ銭統計' },
                                         ]}
                                     />
                                 )}
@@ -394,12 +400,17 @@ export default function Authenticated({
                             シフト
                         </ResponsiveNavLink>
 
-                        <ResponsiveNavLink
-                            href={safeRoute('tips.index')}
-                            active={route().current('tips.*')}
+                        <a
+                            href="https://jpyc.jp/"
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="flex items-center border-l-4 border-transparent py-2 pe-4 ps-3 text-base font-medium text-gray-600 transition duration-150 ease-in-out hover:border-gray-300 hover:bg-gray-50 hover:text-gray-800 focus:border-gray-300 focus:bg-gray-50 focus:text-gray-800 focus:outline-none"
                         >
-                            投げ銭統計
-                        </ResponsiveNavLink>
+                            JPYC
+                            <svg className="ml-1 h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+                            </svg>
+                        </a>
 
                         {/* 管理（Admin専用） */}
                         {isAdmin && (
@@ -424,6 +435,9 @@ export default function Authenticated({
                                         </ResponsiveNavLink>
                                         <ResponsiveNavLink href={safeRoute('admin.locations.index')}>
                                             拠点管理
+                                        </ResponsiveNavLink>
+                                        <ResponsiveNavLink href={safeRoute('admin.tips.index')}>
+                                            投げ銭統計
                                         </ResponsiveNavLink>
                                     </div>
                                 )}
