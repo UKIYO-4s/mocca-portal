@@ -13,6 +13,28 @@ use Inertia\Response;
 class StaffWalletController extends Controller
 {
     /**
+     * Show wallet card with QR code for receiving tips.
+     */
+    public function show(): Response
+    {
+        $user = Auth::user();
+        $wallet = $user->wallet;
+
+        return Inertia::render('Profile/WalletCard', [
+            'user' => [
+                'name' => $user->name,
+                'role' => $user->role,
+            ],
+            'wallet' => $wallet ? [
+                'wallet_address' => $wallet->wallet_address,
+                'short_address' => $wallet->short_address,
+                'is_verified' => $wallet->is_verified,
+                'connected_at' => $wallet->connected_at?->format('Y-m-d H:i'),
+            ] : null,
+        ]);
+    }
+
+    /**
      * Show the wallet edit form.
      */
     public function edit(): Response

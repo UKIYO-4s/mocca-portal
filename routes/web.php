@@ -58,6 +58,7 @@ Route::prefix('api')->group(function () {
 
 // Staff wallet management (authenticated)
 Route::middleware('auth')->group(function () {
+    Route::get('/my-wallet', [StaffWalletController::class, 'show'])->name('wallet.show');
     Route::get('/profile/wallet', [StaffWalletController::class, 'edit'])->name('profile.wallet');
     Route::post('/profile/wallet', [StaffWalletController::class, 'update'])->name('profile.wallet.update');
     Route::delete('/profile/wallet', [StaffWalletController::class, 'destroy'])->name('profile.wallet.destroy');
