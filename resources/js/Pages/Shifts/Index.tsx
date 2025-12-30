@@ -1,33 +1,20 @@
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
 import { Head, Link, router } from '@inertiajs/react';
-import { User, Shift, Location } from '@/types';
+import { User, Shift } from '@/types';
 
 interface Props {
     auth: { user: User };
     shifts: Shift[];
     users: User[];
-    locations: Location[];
     currentWeek: string; // YYYY-W format like "2025-W01"
     weekStart: string; // YYYY-MM-DD (Monday)
     weekEnd: string; // YYYY-MM-DD (Sunday)
 }
 
-// Color palette for users (cycle through these colors)
-const USER_COLORS = [
-    { bg: 'bg-blue-100', text: 'text-blue-800', border: 'border-blue-300' },
-    { bg: 'bg-green-100', text: 'text-green-800', border: 'border-green-300' },
-    { bg: 'bg-purple-100', text: 'text-purple-800', border: 'border-purple-300' },
-    { bg: 'bg-orange-100', text: 'text-orange-800', border: 'border-orange-300' },
-    { bg: 'bg-pink-100', text: 'text-pink-800', border: 'border-pink-300' },
-    { bg: 'bg-teal-100', text: 'text-teal-800', border: 'border-teal-300' },
-    { bg: 'bg-indigo-100', text: 'text-indigo-800', border: 'border-indigo-300' },
-    { bg: 'bg-red-100', text: 'text-red-800', border: 'border-red-300' },
-];
-
 // Japanese day labels (Monday-Sunday)
 const DAY_LABELS = ['月', '火', '水', '木', '金', '土', '日'];
 
-export default function Index({ auth, shifts, users, locations, currentWeek, weekStart, weekEnd }: Props) {
+export default function Index({ auth, shifts, users, currentWeek, weekStart, weekEnd }: Props) {
     // Parse week string (YYYY-W format)
     const parseWeek = (weekString: string): { year: number; week: number } => {
         const [yearPart, weekPart] = weekString.split('-W');
@@ -97,29 +84,13 @@ export default function Index({ auth, shifts, users, locations, currentWeek, wee
         return `${date.getMonth() + 1}/${date.getDate()}`;
     };
 
-    // Format time as HH:MM
-    const formatTime = (timeString: string): string => {
-        const parts = timeString.split(':');
-        return `${parts[0]}:${parts[1]}`;
-    };
-
-    // Get shifts for a specific user and date
-    const getShiftsForUserDate = (userId: number, dateKey: string): Shift[] => {
-        return shifts.filter(
-            (shift) => shift.user_id === userId && shift.date === dateKey
+    // Get shift status for a specific user and date
+    const getShiftStatus = (userId: number, dateKey: string): 'working' | 'off' | null => {
+        const shift = shifts.find(
+            (s) => s.user_id === userId && s.date === dateKey
         );
+        return shift ? shift.status : null;
     };
-
-    // Get user color by index
-    const getUserColor = (userIndex: number) => {
-        return USER_COLORS[userIndex % USER_COLORS.length];
-    };
-
-    // Create a map of user id to color index
-    const userColorMap = new Map<number, number>();
-    users.forEach((user, index) => {
-        userColorMap.set(user.id, index);
-    });
 
     // Check if user can manage shifts
     const canManage = auth.user.role === 'admin' || auth.user.role === 'manager';
@@ -141,6 +112,10 @@ export default function Index({ auth, shifts, users, locations, currentWeek, wee
     const isWeekend = (dayIndex: number): boolean => {
         return dayIndex >= 5; // 5 = Saturday (土), 6 = Sunday (日)
     };
+
+    // Count working/off for summary
+    const workingCount = shifts.filter(s => s.status === 'working').length;
+    const offCount = shifts.filter(s => s.status === 'off').length;
 
     return (
         <AuthenticatedLayout
@@ -169,7 +144,7 @@ export default function Index({ auth, shifts, users, locations, currentWeek, wee
                         <div className="flex items-center justify-between">
                             <button
                                 onClick={() => navigateWeek('prev')}
-                                className="flex items-center gap-1 rounded-md bg-gray-100 px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-200:bg-gray-600"
+                                className="flex items-center gap-1 rounded-md bg-gray-100 px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-200"
                             >
                                 <svg
                                     className="h-4 w-4"
@@ -196,7 +171,7 @@ export default function Index({ auth, shifts, users, locations, currentWeek, wee
                             </div>
                             <button
                                 onClick={() => navigateWeek('next')}
-                                className="flex items-center gap-1 rounded-md bg-gray-100 px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-200:bg-gray-600"
+                                className="flex items-center gap-1 rounded-md bg-gray-100 px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-200"
                             >
                                 翌週
                                 <svg
@@ -227,7 +202,7 @@ export default function Index({ auth, shifts, users, locations, currentWeek, wee
                                     {weekDates.map((date, index) => (
                                         <th
                                             key={index}
-                                            className={`min-w-[120px] px-2 py-3 text-center text-sm font-semibold ${
+                                            className={`min-w-[80px] px-2 py-3 text-center text-sm font-semibold ${
                                                 isToday(date)
                                                     ? 'bg-blue-50 text-blue-900'
                                                     : isWeekend(index)
@@ -238,9 +213,7 @@ export default function Index({ auth, shifts, users, locations, currentWeek, wee
                                             }`}
                                         >
                                             <div className="text-xs">{formatDateShort(date)}</div>
-                                            <div className={`text-lg ${isWeekend(index) ? '' : ''}`}>
-                                                {DAY_LABELS[index]}
-                                            </div>
+                                            <div>{DAY_LABELS[index]}</div>
                                         </th>
                                     ))}
                                 </tr>
@@ -256,97 +229,65 @@ export default function Index({ auth, shifts, users, locations, currentWeek, wee
                                         </td>
                                     </tr>
                                 ) : (
-                                    users.map((user) => {
-                                        const userIndex = userColorMap.get(user.id) || 0;
-                                        const color = getUserColor(userIndex);
+                                    users.map((user) => (
+                                        <tr key={user.id}>
+                                            <td className="sticky left-0 z-10 whitespace-nowrap bg-white px-4 py-3">
+                                                <span className="text-sm font-medium text-gray-900">
+                                                    {user.name}
+                                                </span>
+                                            </td>
+                                            {weekDates.map((date, dayIndex) => {
+                                                const dateKey = formatDateKey(date);
+                                                const status = getShiftStatus(user.id, dateKey);
 
-                                        return (
-                                            <tr key={user.id}>
-                                                <td className="sticky left-0 z-10 whitespace-nowrap bg-white px-4 py-3">
-                                                    <div className="flex items-center gap-2">
-                                                        <div
-                                                            className={`h-3 w-3 rounded-full ${color.bg} ${color.border} border`}
-                                                        ></div>
-                                                        <span className="text-sm font-medium text-gray-900">
-                                                            {user.name}
-                                                        </span>
-                                                    </div>
-                                                </td>
-                                                {weekDates.map((date, dayIndex) => {
-                                                    const dateKey = formatDateKey(date);
-                                                    const dayShifts = getShiftsForUserDate(user.id, dateKey);
-
-                                                    return (
-                                                        <td
-                                                            key={dayIndex}
-                                                            className={`px-2 py-2 align-top ${
-                                                                isToday(date)
-                                                                    ? 'bg-blue-50/50'
-                                                                    : isWeekend(dayIndex)
-                                                                    ? dayIndex === 5
-                                                                        ? 'bg-blue-50/30'
-                                                                        : 'bg-red-50/30'
-                                                                    : ''
-                                                            }`}
-                                                        >
-                                                            <div className="space-y-1">
-                                                                {dayShifts.map((shift) => (
-                                                                    <div
-                                                                        key={shift.id}
-                                                                        className={`cursor-pointer rounded-md border p-2 text-xs transition-opacity hover:opacity-80 ${color.bg} ${color.text} ${color.border}`}
-                                                                        onClick={() => {
-                                                                            // Future: Open shift detail modal
-                                                                            console.log('Shift clicked:', shift);
-                                                                        }}
-                                                                    >
-                                                                        <div className="font-medium">
-                                                                            {formatTime(shift.start_time)} - {formatTime(shift.end_time)}
-                                                                        </div>
-                                                                        {shift.location && (
-                                                                            <div className="mt-1 truncate opacity-80">
-                                                                                {shift.location.name}
-                                                                            </div>
-                                                                        )}
-                                                                    </div>
-                                                                ))}
-                                                            </div>
-                                                        </td>
-                                                    );
-                                                })}
-                                            </tr>
-                                        );
-                                    })
+                                                return (
+                                                    <td
+                                                        key={dayIndex}
+                                                        className={`px-2 py-2 text-center ${
+                                                            isToday(date)
+                                                                ? 'bg-blue-50/50'
+                                                                : isWeekend(dayIndex)
+                                                                ? dayIndex === 5
+                                                                    ? 'bg-blue-50/30'
+                                                                    : 'bg-red-50/30'
+                                                                : ''
+                                                        }`}
+                                                    >
+                                                        {status === 'working' ? (
+                                                            <span className="inline-flex items-center justify-center rounded-md bg-green-100 px-2 py-1 text-xs font-medium text-green-800">
+                                                                出勤
+                                                            </span>
+                                                        ) : status === 'off' ? (
+                                                            <span className="inline-flex items-center justify-center rounded-md bg-gray-100 px-2 py-1 text-xs font-medium text-gray-600">
+                                                                休日
+                                                            </span>
+                                                        ) : (
+                                                            <span className="text-gray-300">-</span>
+                                                        )}
+                                                    </td>
+                                                );
+                                            })}
+                                        </tr>
+                                    ))
                                 )}
                             </tbody>
                         </table>
                     </div>
-
-                    {/* Legend */}
-                    {locations.length > 0 && (
-                        <div className="mt-4 rounded-lg bg-white p-4 shadow-sm">
-                            <h4 className="mb-2 text-sm font-medium text-gray-700">
-                                店舗
-                            </h4>
-                            <div className="flex flex-wrap gap-4">
-                                {locations.map((location) => (
-                                    <div
-                                        key={location.id}
-                                        className="flex items-center gap-2 text-sm text-gray-600"
-                                    >
-                                        <span>{location.name}</span>
-                                    </div>
-                                ))}
-                            </div>
-                        </div>
-                    )}
 
                     {/* Week Summary */}
                     <div className="mt-4 rounded-lg bg-white p-4 shadow-sm">
                         <h4 className="mb-2 text-sm font-medium text-gray-700">
                             今週のシフト
                         </h4>
-                        <div className="text-2xl font-bold text-gray-900">
-                            {shifts.length}件
+                        <div className="flex gap-6">
+                            <div>
+                                <span className="text-2xl font-bold text-green-600">{workingCount}</span>
+                                <span className="ml-1 text-sm text-gray-600">件出勤</span>
+                            </div>
+                            <div>
+                                <span className="text-2xl font-bold text-gray-500">{offCount}</span>
+                                <span className="ml-1 text-sm text-gray-600">件休日</span>
+                            </div>
                         </div>
                     </div>
                 </div>

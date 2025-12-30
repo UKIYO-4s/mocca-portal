@@ -6,9 +6,11 @@ interface Props {
     auth: { user: User };
     shifts: Shift[];
     currentMonth: string; // YYYY-MM format
+    workingCount: number;
+    offCount: number;
 }
 
-export default function My({ auth, shifts, currentMonth }: Props) {
+export default function My({ auth, shifts, currentMonth, workingCount, offCount }: Props) {
     const [year, month] = currentMonth.split('-');
 
     const navigateMonth = (direction: 'prev' | 'next') => {
@@ -23,7 +25,7 @@ export default function My({ auth, shifts, currentMonth }: Props) {
     };
 
     const formatDate = (dateString: string): string => {
-        const date = new Date(dateString);
+        const date = new Date(dateString + 'T00:00:00');
         const dayNames = ['日', '月', '火', '水', '木', '金', '土'];
         const dayOfWeek = dayNames[date.getDay()];
         const y = date.getFullYear();
@@ -32,41 +34,8 @@ export default function My({ auth, shifts, currentMonth }: Props) {
         return `${y}年${m}月${d}日 (${dayOfWeek})`;
     };
 
-    const formatTimeRange = (startTime: string, endTime: string): string => {
-        const formatTime = (time: string): string => {
-            // Handle HH:mm:ss or HH:mm format
-            const parts = time.split(':');
-            return `${parts[0]}:${parts[1]}`;
-        };
-        return `${formatTime(startTime)} - ${formatTime(endTime)}`;
-    };
-
-    const formatDuration = (minutes: number): string => {
-        if (minutes === 0) return '0分';
-        const hours = Math.floor(minutes / 60);
-        const mins = minutes % 60;
-        if (hours === 0) return `${mins}分`;
-        if (mins === 0) return `${hours}時間`;
-        return `${hours}時間${mins}分`;
-    };
-
-    // Group shifts by date
-    const groupedShifts = shifts.reduce<Record<string, Shift[]>>((acc, shift) => {
-        if (!acc[shift.date]) {
-            acc[shift.date] = [];
-        }
-        acc[shift.date].push(shift);
-        return acc;
-    }, {});
-
-    // Sort dates
-    const sortedDates = Object.keys(groupedShifts).sort();
-
-    // Calculate totals
-    const totalShifts = shifts.length;
-    const totalMinutes = shifts.reduce((sum, shift) => sum + shift.duration_minutes, 0);
-    const totalHours = Math.floor(totalMinutes / 60);
-    const totalMins = totalMinutes % 60;
+    // Sort shifts by date
+    const sortedShifts = [...shifts].sort((a, b) => a.date.localeCompare(b.date));
 
     const displayMonth = `${year}年${month}月`;
 
@@ -87,7 +56,7 @@ export default function My({ auth, shifts, currentMonth }: Props) {
                         <div className="flex items-center justify-between">
                             <button
                                 onClick={() => navigateMonth('prev')}
-                                className="rounded-md bg-gray-100 px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-200:bg-gray-600"
+                                className="rounded-md bg-gray-100 px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-200"
                             >
                                 前月
                             </button>
@@ -96,7 +65,7 @@ export default function My({ auth, shifts, currentMonth }: Props) {
                             </h3>
                             <button
                                 onClick={() => navigateMonth('next')}
-                                className="rounded-md bg-gray-100 px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-200:bg-gray-600"
+                                className="rounded-md bg-gray-100 px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-200"
                             >
                                 翌月
                             </button>
@@ -107,18 +76,18 @@ export default function My({ auth, shifts, currentMonth }: Props) {
                     <div className="mb-6 grid gap-4 sm:grid-cols-2">
                         <div className="rounded-lg bg-white p-4 shadow-sm">
                             <div className="text-sm font-medium text-gray-500">
-                                シフト回数
+                                出勤日数
                             </div>
-                            <div className="mt-1 text-2xl font-bold text-gray-900">
-                                {totalShifts}回
+                            <div className="mt-1 text-2xl font-bold text-green-600">
+                                {workingCount}日
                             </div>
                         </div>
                         <div className="rounded-lg bg-white p-4 shadow-sm">
                             <div className="text-sm font-medium text-gray-500">
-                                合計勤務時間
+                                休日日数
                             </div>
-                            <div className="mt-1 text-2xl font-bold text-gray-900">
-                                {totalHours}時間{totalMins > 0 && `${totalMins}分`}
+                            <div className="mt-1 text-2xl font-bold text-gray-500">
+                                {offCount}日
                             </div>
                         </div>
                     </div>
@@ -133,39 +102,21 @@ export default function My({ auth, shifts, currentMonth }: Props) {
                             </div>
                         ) : (
                             <div className="divide-y divide-gray-200">
-                                {sortedDates.map((date) => (
-                                    <div key={date} className="p-4">
-                                        <h4 className="mb-3 text-sm font-semibold text-gray-700">
-                                            {formatDate(date)}
-                                        </h4>
-                                        <div className="space-y-3">
-                                            {groupedShifts[date].map((shift) => (
-                                                <div
-                                                    key={shift.id}
-                                                    className="rounded-lg bg-gray-50 p-3"
-                                                >
-                                                    <div className="flex flex-wrap items-center justify-between gap-2">
-                                                        <div className="flex items-center gap-4">
-                                                            <span className="text-lg font-medium text-gray-900">
-                                                                {formatTimeRange(shift.start_time, shift.end_time)}
-                                                            </span>
-                                                            <span className="text-sm text-gray-600">
-                                                                ({formatDuration(shift.duration_minutes)})
-                                                            </span>
-                                                        </div>
-                                                        {shift.location && (
-                                                            <span className="rounded-full bg-blue-100 px-3 py-1 text-xs font-medium text-blue-800">
-                                                                {shift.location.name}
-                                                            </span>
-                                                        )}
-                                                    </div>
-                                                    {shift.notes && (
-                                                        <p className="mt-2 text-sm text-gray-600">
-                                                            {shift.notes}
-                                                        </p>
-                                                    )}
-                                                </div>
-                                            ))}
+                                {sortedShifts.map((shift) => (
+                                    <div key={shift.id} className="flex items-center justify-between p-4">
+                                        <div className="text-sm font-medium text-gray-900">
+                                            {formatDate(shift.date)}
+                                        </div>
+                                        <div>
+                                            {shift.status === 'working' ? (
+                                                <span className="inline-flex items-center rounded-md bg-green-100 px-3 py-1 text-sm font-medium text-green-800">
+                                                    出勤
+                                                </span>
+                                            ) : (
+                                                <span className="inline-flex items-center rounded-md bg-gray-100 px-3 py-1 text-sm font-medium text-gray-600">
+                                                    休日
+                                                </span>
+                                            )}
                                         </div>
                                     </div>
                                 ))}

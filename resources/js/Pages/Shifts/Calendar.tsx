@@ -1,10 +1,11 @@
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
-import { Head, Link, router } from '@inertiajs/react';
+import { Head, router } from '@inertiajs/react';
 import { User, Shift } from '@/types';
 
 interface Props {
     auth: { user: User };
     shifts: Shift[];
+    users: User[];
     currentMonth: string; // YYYY-MM format
 }
 
@@ -16,7 +17,7 @@ interface DayCell {
     shifts: Shift[];
 }
 
-export default function Calendar({ auth, shifts, currentMonth }: Props) {
+export default function Calendar({ auth, shifts, users, currentMonth }: Props) {
     const weekDays = ['月', '火', '水', '木', '金', '土', '日'];
 
     // Parse current month from props
@@ -122,25 +123,14 @@ export default function Calendar({ auth, shifts, currentMonth }: Props) {
         return `${y}-${m}-${d}`;
     };
 
-    // Format time for display (HH:mm)
-    const formatTime = (timeStr: string): string => {
-        // If it's already in HH:mm or HH:mm:ss format
-        if (timeStr.includes(':')) {
-            const parts = timeStr.split(':');
-            return `${parts[0]}:${parts[1]}`;
-        }
-        return timeStr;
-    };
-
-    // Format shift time range
-    const formatShiftTimeRange = (shift: Shift): string => {
-        return `${formatTime(shift.start_time)}-${formatTime(shift.end_time)}`;
-    };
-
     const calendarDays = generateCalendarDays();
 
     // Maximum shifts to show before collapsing
-    const MAX_VISIBLE_SHIFTS = 3;
+    const MAX_VISIBLE_SHIFTS = 4;
+
+    // Count summary
+    const workingShifts = shifts.filter(s => s.status === 'working');
+    const offShifts = shifts.filter(s => s.status === 'off');
 
     return (
         <AuthenticatedLayout
@@ -158,7 +148,7 @@ export default function Calendar({ auth, shifts, currentMonth }: Props) {
                     <div className="mb-6 flex items-center justify-between rounded-lg bg-white p-4 shadow-sm">
                         <button
                             onClick={() => navigateToMonth(getPrevMonth())}
-                            className="inline-flex items-center rounded-md border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50:bg-gray-600"
+                            className="inline-flex items-center rounded-md border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50"
                         >
                             <svg className="mr-2 h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
@@ -172,7 +162,7 @@ export default function Calendar({ auth, shifts, currentMonth }: Props) {
 
                         <button
                             onClick={() => navigateToMonth(getNextMonth())}
-                            className="inline-flex items-center rounded-md border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50:bg-gray-600"
+                            className="inline-flex items-center rounded-md border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50"
                         >
                             翌月
                             <svg className="ml-2 h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -207,13 +197,15 @@ export default function Calendar({ auth, shifts, currentMonth }: Props) {
                                 const dayOfWeek = index % 7;
                                 const isSaturday = dayOfWeek === 5;
                                 const isSunday = dayOfWeek === 6;
-                                const visibleShifts = day.shifts.slice(0, MAX_VISIBLE_SHIFTS);
-                                const remainingCount = day.shifts.length - MAX_VISIBLE_SHIFTS;
+                                const workingUsers = day.shifts.filter(s => s.status === 'working');
+                                const offUsers = day.shifts.filter(s => s.status === 'off');
+                                const visibleWorking = workingUsers.slice(0, MAX_VISIBLE_SHIFTS);
+                                const remainingCount = workingUsers.length - MAX_VISIBLE_SHIFTS;
 
                                 return (
                                     <div
                                         key={index}
-                                        className={`min-h-[120px] border-b border-r border-gray-200 p-2 ${
+                                        className={`min-h-[100px] border-b border-r border-gray-200 p-2 ${
                                             !day.isCurrentMonth
                                                 ? 'bg-gray-50'
                                                 : 'bg-white'
@@ -234,9 +226,9 @@ export default function Calendar({ auth, shifts, currentMonth }: Props) {
                                             {day.dayNumber}
                                         </div>
 
-                                        {/* Shifts */}
-                                        <div className="space-y-1">
-                                            {visibleShifts.map((shift) => (
+                                        {/* Working Users */}
+                                        <div className="space-y-0.5">
+                                            {visibleWorking.map((shift) => (
                                                 <div
                                                     key={shift.id}
                                                     className={`truncate rounded px-1.5 py-0.5 text-xs ${
@@ -244,21 +236,25 @@ export default function Calendar({ auth, shifts, currentMonth }: Props) {
                                                             ? 'bg-green-100 text-green-800'
                                                             : 'bg-gray-100 text-gray-500'
                                                     }`}
-                                                    title={`${shift.user?.name || 'Unknown'}: ${formatShiftTimeRange(shift)}`}
+                                                    title={`${shift.user?.name || 'Unknown'}: 出勤`}
                                                 >
-                                                    <span className="font-medium">{shift.user?.name || 'Unknown'}</span>
-                                                    <span className="ml-1">{formatShiftTimeRange(shift)}</span>
+                                                    {shift.user?.name || 'Unknown'}
                                                 </div>
                                             ))}
                                             {remainingCount > 0 && (
                                                 <div
                                                     className={`text-center text-xs ${
                                                         day.isCurrentMonth
-                                                            ? 'text-gray-600'
+                                                            ? 'text-green-600'
                                                             : 'text-gray-400'
                                                     }`}
                                                 >
-                                                    +{remainingCount}件
+                                                    +{remainingCount}名出勤
+                                                </div>
+                                            )}
+                                            {offUsers.length > 0 && day.isCurrentMonth && (
+                                                <div className="text-center text-xs text-gray-400">
+                                                    {offUsers.length}名休日
                                                 </div>
                                             )}
                                         </div>
@@ -268,15 +264,27 @@ export default function Calendar({ auth, shifts, currentMonth }: Props) {
                         </div>
                     </div>
 
-                    {/* Legend */}
-                    <div className="mt-4 flex items-center justify-end space-x-4 text-sm text-gray-600">
-                        <div className="flex items-center">
-                            <div className="mr-2 h-4 w-4 rounded bg-green-100"></div>
-                            <span>シフト</span>
+                    {/* Legend & Summary */}
+                    <div className="mt-4 flex flex-wrap items-center justify-between gap-4 rounded-lg bg-white p-4 shadow-sm">
+                        <div className="flex items-center space-x-4 text-sm text-gray-600">
+                            <div className="flex items-center">
+                                <div className="mr-2 h-4 w-4 rounded bg-green-100"></div>
+                                <span>出勤</span>
+                            </div>
+                            <div className="flex items-center">
+                                <div className="mr-2 h-4 w-4 rounded ring-2 ring-blue-500"></div>
+                                <span>今日</span>
+                            </div>
                         </div>
-                        <div className="flex items-center">
-                            <div className="mr-2 h-4 w-4 rounded ring-2 ring-blue-500"></div>
-                            <span>今日</span>
+                        <div className="flex gap-6 text-sm">
+                            <div>
+                                <span className="font-bold text-green-600">{workingShifts.length}</span>
+                                <span className="ml-1 text-gray-600">件出勤</span>
+                            </div>
+                            <div>
+                                <span className="font-bold text-gray-500">{offShifts.length}</span>
+                                <span className="ml-1 text-gray-600">件休日</span>
+                            </div>
                         </div>
                     </div>
                 </div>

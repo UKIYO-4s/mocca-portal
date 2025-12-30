@@ -209,16 +209,28 @@ export interface AnnouncementRead {
 export interface Shift {
     id: number;
     user_id: number;
-    location_id: number | null;
     date: string;
-    start_time: string;
-    end_time: string;
-    notes: string | null;
+    status: 'working' | 'off';
     created_by: number;
-    duration_minutes: number;
     created_at: string;
     updated_at: string;
     user?: User;
-    location?: Location;
     creator?: User;
+}
+
+// Shift Management Types
+export interface ShiftUserData {
+    id: number;
+    name: string;
+    role: string;
+    default_mode: 'working' | 'off';
+    exception_dates: string[];
+    working_count: number;
+    off_count: number;
+}
+
+export interface CalendarDay {
+    date: string;
+    day: number;
+    dayOfWeek: number; // 0 = Sunday, 6 = Saturday
 }

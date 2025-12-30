@@ -2,21 +2,18 @@
 
 namespace App\Modules\Shift\Models;
 
-use App\Models\Location;
 use App\Models\User;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Support\Facades\DB;
 
 class Shift extends Model
 {
     protected $fillable = [
         'user_id',
-        'location_id',
         'date',
-        'start_time',
-        'end_time',
-        'notes',
+        'status',
         'created_by',
     ];
 
@@ -24,22 +21,12 @@ class Shift extends Model
         'date' => 'date:Y-m-d',
     ];
 
-    protected $appends = ['duration_minutes'];
-
     /**
      * Get the user assigned to this shift.
      */
     public function user(): BelongsTo
     {
         return $this->belongsTo(User::class);
-    }
-
-    /**
-     * Get the location for this shift.
-     */
-    public function location(): BelongsTo
-    {
-        return $this->belongsTo(Location::class);
     }
 
     /**
@@ -79,79 +66,112 @@ class Shift extends Model
     }
 
     /**
-     * Scope to filter shifts by location ID.
+     * Scope to filter by status.
      */
-    public function scopeForLocation($query, int $locationId)
+    public function scopeWorking($query)
     {
-        return $query->where('location_id', $locationId);
+        return $query->where('status', 'working');
     }
 
     /**
-     * Get the shift duration in minutes.
-     * Returns 0 if end_time <= start_time (invalid data per spec: no day-spanning shifts).
+     * Scope to filter by off status.
      */
-    public function getDurationMinutesAttribute(): int
+    public function scopeOff($query)
     {
-        if (!$this->start_time || !$this->end_time) {
-            return 0;
-        }
-
-        $start = Carbon::parse($this->start_time);
-        $end = Carbon::parse($this->end_time);
-
-        // Day-spanning shifts are not allowed per spec.
-        // If end <= start, treat as invalid and return 0.
-        if ($end->lte($start)) {
-            return 0;
-        }
-
-        return $start->diffInMinutes($end);
+        return $query->where('status', 'off');
     }
 
     /**
-     * Check if this shift overlaps with another shift for the same user on the same date.
-     * Day-spanning shifts (end <= start) are not allowed per spec and should be rejected
-     * by validation before reaching this method.
+     * Bulk update shifts for a user in a month.
      *
-     * @return bool True if there is an overlap, false otherwise
+     * @param int $userId Target user ID
+     * @param string $yearMonth Year-month in YYYY-MM format
+     * @param string $defaultMode Default status ('working' or 'off')
+     * @param array $exceptionDates Array of exception dates (YYYY-MM-DD format)
+     * @param int $createdBy User ID who is making the update
      */
-    public function hasOverlap(): bool
+    public static function bulkUpdateMonth(
+        int $userId,
+        string $yearMonth,
+        string $defaultMode,
+        array $exceptionDates,
+        int $createdBy
+    ): void {
+        $month = Carbon::parse($yearMonth . '-01');
+        $startOfMonth = $month->copy()->startOfMonth();
+        $endOfMonth = $month->copy()->endOfMonth();
+
+        // Determine opposite status
+        $oppositeStatus = $defaultMode === 'working' ? 'off' : 'working';
+
+        // Convert exception dates to Carbon for comparison
+        $exceptionSet = collect($exceptionDates)->map(fn($d) => Carbon::parse($d)->format('Y-m-d'))->flip();
+
+        DB::transaction(function () use ($userId, $startOfMonth, $endOfMonth, $defaultMode, $oppositeStatus, $exceptionSet, $createdBy) {
+            // Delete existing shifts for this user in this month
+            static::where('user_id', $userId)
+                ->whereBetween('date', [$startOfMonth, $endOfMonth])
+                ->delete();
+
+            // Create new shifts for each day in the month
+            $shiftsToInsert = [];
+            $current = $startOfMonth->copy();
+            $now = now();
+
+            while ($current <= $endOfMonth) {
+                $dateStr = $current->format('Y-m-d');
+                $status = $exceptionSet->has($dateStr) ? $oppositeStatus : $defaultMode;
+
+                $shiftsToInsert[] = [
+                    'user_id' => $userId,
+                    'date' => $dateStr,
+                    'status' => $status,
+                    'created_by' => $createdBy,
+                    'created_at' => $now,
+                    'updated_at' => $now,
+                ];
+
+                $current->addDay();
+            }
+
+            // Bulk insert
+            static::insert($shiftsToInsert);
+        });
+    }
+
+    /**
+     * Get user's shift data for a month with default mode inference.
+     *
+     * @return array{default_mode: string, exception_dates: array}
+     */
+    public static function getMonthDataForUser(int $userId, string $yearMonth): array
     {
-        $start = Carbon::parse($this->start_time);
-        $end = Carbon::parse($this->end_time);
+        $month = Carbon::parse($yearMonth . '-01');
+        $startOfMonth = $month->copy()->startOfMonth();
+        $endOfMonth = $month->copy()->endOfMonth();
 
-        // Day-spanning shifts are invalid per spec - should not check overlap for invalid data
-        if ($end->lte($start)) {
-            return false; // Let validation handle this case
+        $shifts = static::where('user_id', $userId)
+            ->whereBetween('date', [$startOfMonth, $endOfMonth])
+            ->get()
+            ->keyBy(fn($s) => $s->date->format('Y-m-d'));
+
+        $workingDays = $shifts->where('status', 'working')->count();
+        $offDays = $shifts->where('status', 'off')->count();
+
+        // Infer default mode based on majority
+        if ($workingDays >= $offDays) {
+            $defaultMode = 'working';
+            $exceptionDates = $shifts->where('status', 'off')->keys()->values()->toArray();
+        } else {
+            $defaultMode = 'off';
+            $exceptionDates = $shifts->where('status', 'working')->keys()->values()->toArray();
         }
 
-        $query = static::query()
-            ->where('user_id', $this->user_id)
-            ->whereDate('date', $this->date);
-
-        // Exclude current shift if it already exists in DB
-        if ($this->exists) {
-            $query->where('id', '!=', $this->id);
-        }
-
-        $existingShifts = $query->get();
-
-        foreach ($existingShifts as $existing) {
-            $existingStart = Carbon::parse($existing->start_time);
-            $existingEnd = Carbon::parse($existing->end_time);
-
-            // Skip invalid existing shifts (should not exist, but defensive)
-            if ($existingEnd->lte($existingStart)) {
-                continue;
-            }
-
-            // Check for overlap: shifts overlap if one starts before the other ends
-            // and ends after the other starts
-            if ($start->lt($existingEnd) && $end->gt($existingStart)) {
-                return true;
-            }
-        }
-
-        return false;
+        return [
+            'default_mode' => $defaultMode,
+            'exception_dates' => $exceptionDates,
+            'working_count' => $workingDays,
+            'off_count' => $offDays,
+        ];
     }
 }

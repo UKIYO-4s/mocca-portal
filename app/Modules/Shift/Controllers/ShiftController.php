@@ -3,15 +3,13 @@
 namespace App\Modules\Shift\Controllers;
 
 use App\Http\Controllers\Controller;
-use App\Models\Location;
 use App\Models\User;
 use App\Modules\Shift\Models\Shift;
 use App\Services\ActivityLogService;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\DB;
-use Illuminate\Validation\ValidationException;
+use Illuminate\Validation\Rule;
 use Inertia\Inertia;
 use Inertia\Response;
 
@@ -22,7 +20,7 @@ class ShiftController extends Controller
     ) {}
 
     /**
-     * Display weekly shift view for all users.
+     * Display weekly shift view for all users (working/off only).
      */
     public function index(Request $request): Response
     {
@@ -32,31 +30,26 @@ class ShiftController extends Controller
         if ($weekParam && preg_match('/^(\d{4})-W(\d{2})$/', $weekParam, $matches)) {
             $year = (int) $matches[1];
             $week = (int) $matches[2];
-            // Get Monday of the specified ISO week
             $weekStart = Carbon::now()
                 ->setISODate($year, $week)
                 ->startOfWeek(Carbon::MONDAY);
         } else {
-            // Default to current week (start on Monday)
             $weekStart = Carbon::now()->startOfWeek(Carbon::MONDAY);
         }
 
         $weekEnd = $weekStart->copy()->endOfWeek(Carbon::SUNDAY);
         $currentWeek = $weekStart->format('Y-\\WW');
 
-        $shifts = Shift::with(['user', 'location'])
+        $shifts = Shift::with(['user'])
             ->forDateRange($weekStart, $weekEnd)
             ->orderBy('date')
-            ->orderBy('start_time')
             ->get();
 
         $users = User::orderBy('name')->get(['id', 'name', 'role']);
-        $locations = Location::active()->orderBy('name')->get(['id', 'name', 'slug']);
 
         return Inertia::render('Shifts/Index', [
             'shifts' => $shifts,
             'users' => $users,
-            'locations' => $locations,
             'currentWeek' => $currentWeek,
             'weekStart' => $weekStart->format('Y-m-d'),
             'weekEnd' => $weekEnd->format('Y-m-d'),
@@ -64,223 +57,217 @@ class ShiftController extends Controller
     }
 
     /**
-     * Display monthly calendar view.
+     * Display monthly calendar view (working/off only).
      */
     public function calendar(Request $request): Response
     {
-        // Parse month parameter (YYYY-MM format)
         [$year, $month] = $this->parseYearMonth($request);
 
         $monthStart = Carbon::createFromDate($year, $month, 1)->startOfMonth();
         $monthEnd = $monthStart->copy()->endOfMonth();
         $currentMonth = $monthStart->format('Y-m');
 
-        $shifts = Shift::with(['user', 'location'])
+        $shifts = Shift::with(['user'])
             ->forDateRange($monthStart, $monthEnd)
             ->orderBy('date')
-            ->orderBy('start_time')
             ->get();
 
         $users = User::orderBy('name')->get(['id', 'name', 'role']);
-        $locations = Location::active()->orderBy('name')->get(['id', 'name', 'slug']);
 
         return Inertia::render('Shifts/Calendar', [
             'shifts' => $shifts,
             'users' => $users,
-            'locations' => $locations,
             'currentMonth' => $currentMonth,
         ]);
     }
 
     /**
-     * Display current user's shifts only.
+     * Display current user's shifts only (working/off).
      */
     public function myShifts(Request $request): Response
     {
         $user = Auth::user();
 
-        // Parse month parameter (YYYY-MM format)
         [$year, $month] = $this->parseYearMonth($request);
 
         $monthStart = Carbon::createFromDate($year, $month, 1)->startOfMonth();
         $monthEnd = $monthStart->copy()->endOfMonth();
         $currentMonth = $monthStart->format('Y-m');
 
-        $shifts = Shift::with(['location'])
-            ->forUser($user->id)
+        $shifts = Shift::forUser($user->id)
             ->forDateRange($monthStart, $monthEnd)
             ->orderBy('date')
-            ->orderBy('start_time')
             ->get();
+
+        // Calculate summary
+        $workingCount = $shifts->where('status', 'working')->count();
+        $offCount = $shifts->where('status', 'off')->count();
 
         return Inertia::render('Shifts/My', [
             'shifts' => $shifts,
             'currentMonth' => $currentMonth,
+            'workingCount' => $workingCount,
+            'offCount' => $offCount,
         ]);
     }
 
     /**
-     * Display shift management page (Manager+).
+     * Display shift management page with per-user monthly data (Manager+).
      */
     public function manage(Request $request): Response
     {
-        // Parse month parameter (YYYY-MM format)
         [$year, $month] = $this->parseYearMonth($request);
 
         $monthStart = Carbon::createFromDate($year, $month, 1)->startOfMonth();
         $monthEnd = $monthStart->copy()->endOfMonth();
         $currentMonth = $monthStart->format('Y-m');
 
-        $shifts = Shift::with(['user', 'location', 'creator'])
-            ->forDateRange($monthStart, $monthEnd)
-            ->orderBy('date')
-            ->orderBy('start_time')
-            ->get();
-
         $users = User::orderBy('name')->get(['id', 'name', 'role']);
-        $locations = Location::active()->orderBy('name')->get(['id', 'name', 'slug']);
+
+        // Get all shifts for this month
+        $allShifts = Shift::forDateRange($monthStart, $monthEnd)
+            ->get()
+            ->groupBy('user_id');
+
+        // Build per-user data with default mode and exception dates
+        $userData = $users->map(function ($user) use ($allShifts, $currentMonth) {
+            $userShifts = $allShifts->get($user->id, collect());
+
+            $workingCount = $userShifts->where('status', 'working')->count();
+            $offCount = $userShifts->where('status', 'off')->count();
+
+            // Infer default mode based on majority
+            if ($workingCount >= $offCount) {
+                $defaultMode = 'working';
+                $exceptionDates = $userShifts->where('status', 'off')
+                    ->pluck('date')
+                    ->map(fn($d) => $d->format('Y-m-d'))
+                    ->values()
+                    ->toArray();
+            } else {
+                $defaultMode = 'off';
+                $exceptionDates = $userShifts->where('status', 'working')
+                    ->pluck('date')
+                    ->map(fn($d) => $d->format('Y-m-d'))
+                    ->values()
+                    ->toArray();
+            }
+
+            return [
+                'id' => $user->id,
+                'name' => $user->name,
+                'role' => $user->role,
+                'default_mode' => $defaultMode,
+                'exception_dates' => $exceptionDates,
+                'working_count' => $workingCount,
+                'off_count' => $offCount,
+            ];
+        });
+
+        // Generate calendar days for the month
+        $calendarDays = [];
+        $current = $monthStart->copy();
+        while ($current <= $monthEnd) {
+            $calendarDays[] = [
+                'date' => $current->format('Y-m-d'),
+                'day' => $current->day,
+                'dayOfWeek' => $current->dayOfWeek, // 0 = Sunday, 6 = Saturday
+            ];
+            $current->addDay();
+        }
 
         return Inertia::render('Shifts/Manage', [
-            'shifts' => $shifts,
-            'users' => $users,
-            'locations' => $locations,
+            'users' => $userData,
             'currentMonth' => $currentMonth,
+            'calendarDays' => $calendarDays,
+            'monthStart' => $monthStart->format('Y-m-d'),
+            'monthEnd' => $monthEnd->format('Y-m-d'),
         ]);
     }
 
     /**
-     * Store a newly created shift (Manager+).
-     * Uses transaction + lockForUpdate to prevent concurrent overlap issues.
+     * Bulk update shifts for a user in a month (Manager+).
      */
-    public function store(Request $request)
+    public function bulkUpdate(Request $request)
     {
         $validated = $request->validate([
             'user_id' => 'required|exists:users,id',
-            'location_id' => 'nullable|exists:locations,id',
-            'date' => 'required|date',
-            'start_time' => 'required|date_format:H:i',
-            'end_time' => 'required|date_format:H:i|after:start_time',
-            'notes' => 'nullable|string|max:1000',
+            'year_month' => ['required', 'regex:/^\d{4}-\d{2}$/'],
+            'default_mode' => ['required', Rule::in(['working', 'off'])],
+            'exception_dates' => 'array',
+            'exception_dates.*' => 'date',
         ]);
 
-        return DB::transaction(function () use ($validated) {
-            // Lock existing shifts for this user/date to prevent concurrent inserts
-            Shift::where('user_id', $validated['user_id'])
-                ->whereDate('date', $validated['date'])
-                ->lockForUpdate()
-                ->get();
+        $userId = $validated['user_id'];
+        $yearMonth = $validated['year_month'];
+        $defaultMode = $validated['default_mode'];
+        $exceptionDates = $validated['exception_dates'] ?? [];
 
-            // Create a temporary shift instance to check for overlaps
-            $shift = new Shift([
-                'user_id' => $validated['user_id'],
-                'location_id' => $validated['location_id'] ?? null,
-                'date' => $validated['date'],
-                'start_time' => $validated['start_time'],
-                'end_time' => $validated['end_time'],
-                'notes' => $validated['notes'] ?? null,
-                'created_by' => Auth::id(),
-            ]);
-
-            // Check for overlapping shifts
-            if ($shift->hasOverlap()) {
-                throw ValidationException::withMessages([
-                    'start_time' => '指定された時間帯に既存のシフトが存在します。',
-                ]);
-            }
-
-            $shift->save();
-
-            $user = User::find($validated['user_id']);
-            $this->activityLog->logCreated(
-                'shift',
-                $shift,
-                "シフト作成: {$user->name} {$shift->date->format('Y-m-d')} {$validated['start_time']}-{$validated['end_time']}"
-            );
-
-            return redirect()
-                ->back()
-                ->with('success', 'シフトを作成しました。');
-        });
-    }
-
-    /**
-     * Update the specified shift (Manager+).
-     * Uses transaction + lockForUpdate to prevent concurrent overlap issues.
-     */
-    public function update(Request $request, Shift $shift)
-    {
-        $validated = $request->validate([
-            'user_id' => 'required|exists:users,id',
-            'location_id' => 'nullable|exists:locations,id',
-            'date' => 'required|date',
-            'start_time' => 'required|date_format:H:i',
-            'end_time' => 'required|date_format:H:i|after:start_time',
-            'notes' => 'nullable|string|max:1000',
-        ]);
-
-        return DB::transaction(function () use ($validated, $shift) {
-            // Lock existing shifts for this user/date to prevent concurrent updates
-            Shift::where('user_id', $validated['user_id'])
-                ->whereDate('date', $validated['date'])
-                ->lockForUpdate()
-                ->get();
-
-            // Update shift attributes for overlap check
-            $shift->user_id = $validated['user_id'];
-            $shift->location_id = $validated['location_id'] ?? null;
-            $shift->date = $validated['date'];
-            $shift->start_time = $validated['start_time'];
-            $shift->end_time = $validated['end_time'];
-            $shift->notes = $validated['notes'] ?? null;
-
-            // Check for overlapping shifts (hasOverlap excludes current shift since it exists)
-            if ($shift->hasOverlap()) {
-                throw ValidationException::withMessages([
-                    'start_time' => '指定された時間帯に既存のシフトが存在します。',
-                ]);
-            }
-
-            $shift->save();
-
-            $user = User::find($validated['user_id']);
-            $this->activityLog->logUpdated(
-                'shift',
-                $shift,
-                "シフト更新: {$user->name} {$shift->date->format('Y-m-d')} {$validated['start_time']}-{$validated['end_time']}"
-            );
-
-            return redirect()
-                ->back()
-                ->with('success', 'シフトを更新しました。');
-        });
-    }
-
-    /**
-     * Remove the specified shift (Manager+).
-     */
-    public function destroy(Shift $shift)
-    {
-        $userName = $shift->user->name;
-        $shiftDate = $shift->date->format('Y-m-d');
-        $shiftTime = "{$shift->start_time}-{$shift->end_time}";
-
-        // Log before deletion to capture target_id
-        $this->activityLog->logDeleted(
-            'shift',
-            $shift,
-            "シフト削除: {$userName} {$shiftDate} {$shiftTime}"
+        // Perform bulk update
+        Shift::bulkUpdateMonth(
+            $userId,
+            $yearMonth,
+            $defaultMode,
+            $exceptionDates,
+            Auth::id()
         );
 
-        $shift->delete();
+        $user = User::find($userId);
+        $this->activityLog->log(
+            'shift',
+            'bulk_updated',
+            null,
+            "シフト一括更新: {$user->name} {$yearMonth} 基本:{$defaultMode} 例外:{$this->formatExceptionCount($exceptionDates)}日"
+        );
 
         return redirect()
             ->back()
-            ->with('success', 'シフトを削除しました。');
+            ->with('success', 'シフトを更新しました。');
+    }
+
+    /**
+     * Bulk update shifts for all users in a month (Manager+).
+     */
+    public function bulkUpdateAll(Request $request)
+    {
+        $validated = $request->validate([
+            'year_month' => ['required', 'regex:/^\d{4}-\d{2}$/'],
+            'default_mode' => ['required', Rule::in(['working', 'off'])],
+            'exception_dates' => 'array',
+            'exception_dates.*' => 'date',
+            'user_ids' => 'array',
+            'user_ids.*' => 'exists:users,id',
+        ]);
+
+        $yearMonth = $validated['year_month'];
+        $defaultMode = $validated['default_mode'];
+        $exceptionDates = $validated['exception_dates'] ?? [];
+        $userIds = $validated['user_ids'] ?? User::pluck('id')->toArray();
+
+        foreach ($userIds as $userId) {
+            Shift::bulkUpdateMonth(
+                $userId,
+                $yearMonth,
+                $defaultMode,
+                $exceptionDates,
+                Auth::id()
+            );
+        }
+
+        $this->activityLog->log(
+            'shift',
+            'bulk_updated_all',
+            null,
+            "シフト全員一括更新: {$yearMonth} 基本:{$defaultMode} 対象:" . count($userIds) . "名"
+        );
+
+        return redirect()
+            ->back()
+            ->with('success', '全員のシフトを更新しました。');
     }
 
     /**
      * Parse year and month from request.
-     * Accepts YYYY-MM format (month param) or defaults to current month.
      *
      * @return array{0: int, 1: int} [year, month]
      */
@@ -288,12 +275,18 @@ class ShiftController extends Controller
     {
         $monthParam = $request->input('month');
 
-        // If month is in YYYY-MM format, parse it
         if ($monthParam && preg_match('/^(\d{4})-(\d{2})$/', $monthParam, $matches)) {
             return [(int) $matches[1], (int) $matches[2]];
         }
 
-        // Default to current month
         return [Carbon::now()->year, Carbon::now()->month];
+    }
+
+    /**
+     * Format exception dates count for logging.
+     */
+    protected function formatExceptionCount(array $dates): int
+    {
+        return count($dates);
     }
 }

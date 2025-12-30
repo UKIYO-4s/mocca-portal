@@ -8,7 +8,7 @@ use Illuminate\Support\Facades\Route;
 class ShiftModule extends BaseModule
 {
     protected string $name = 'shift';
-    protected string $version = '1.0.0';
+    protected string $version = '2.0.0';
 
     public function boot(): void
     {
@@ -29,9 +29,8 @@ class ShiftModule extends BaseModule
                 // 管理（Manager以上）
                 Route::middleware('role:admin,manager')->group(function () {
                     Route::get('/manage', [\App\Modules\Shift\Controllers\ShiftController::class, 'manage'])->name('manage');
-                    Route::post('/', [\App\Modules\Shift\Controllers\ShiftController::class, 'store'])->name('store');
-                    Route::put('/{shift}', [\App\Modules\Shift\Controllers\ShiftController::class, 'update'])->name('update');
-                    Route::delete('/{shift}', [\App\Modules\Shift\Controllers\ShiftController::class, 'destroy'])->name('destroy');
+                    Route::post('/bulk-update', [\App\Modules\Shift\Controllers\ShiftController::class, 'bulkUpdate'])->name('bulk-update');
+                    Route::post('/bulk-update-all', [\App\Modules\Shift\Controllers\ShiftController::class, 'bulkUpdateAll'])->name('bulk-update-all');
                 });
             });
     }
