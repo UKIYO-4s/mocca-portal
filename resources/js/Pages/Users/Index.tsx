@@ -14,7 +14,8 @@ interface User {
 
 interface Invite {
     id: number;
-    email: string;
+    invitee_name: string;
+    email: string | null;
     role: string;
     role_label: string;
     token: string;
@@ -40,6 +41,7 @@ export default function Index({ auth, users, invites }: Props) {
     const [copiedId, setCopiedId] = useState<number | null>(null);
 
     const { data, setData, post, processing, errors, reset } = useForm({
+        invitee_name: '',
         email: '',
         role: 'staff',
         expires_in: '7',
@@ -293,13 +295,36 @@ export default function Index({ auth, users, invites }: Props) {
                                 >
                                     <div>
                                         <label
+                                            htmlFor="invitee_name"
+                                            className="block text-sm font-medium text-gray-700"
+                                        >
+                                            招待者名{' '}
+                                            <span className="text-red-500">*</span>
+                                        </label>
+                                        <input
+                                            type="text"
+                                            id="invitee_name"
+                                            value={data.invitee_name}
+                                            onChange={(e) =>
+                                                setData('invitee_name', e.target.value)
+                                            }
+                                            className="mt-1 block min-h-[44px] w-full rounded-md border-gray-300 text-base shadow-sm focus:border-blue-500 focus:ring-blue-500"
+                                            placeholder="山田 太郎"
+                                        />
+                                        {errors.invitee_name && (
+                                            <p className="mt-1 text-sm text-red-600">
+                                                {errors.invitee_name}
+                                            </p>
+                                        )}
+                                    </div>
+
+                                    <div>
+                                        <label
                                             htmlFor="email"
                                             className="block text-sm font-medium text-gray-700"
                                         >
-                                            招待先メールアドレス{' '}
-                                            <span className="text-red-500">
-                                                *
-                                            </span>
+                                            メールアドレス{' '}
+                                            <span className="text-gray-400 text-xs">（任意）</span>
                                         </label>
                                         <input
                                             type="email"
@@ -316,6 +341,9 @@ export default function Index({ auth, users, invites }: Props) {
                                                 {errors.email}
                                             </p>
                                         )}
+                                        <p className="mt-1 text-xs text-gray-500">
+                                            未入力の場合、登録時に入力してもらいます
+                                        </p>
                                     </div>
 
                                     <div className="grid gap-4 sm:grid-cols-2">
@@ -433,51 +461,31 @@ export default function Index({ auth, users, invites }: Props) {
                                                     <div className="min-w-0 flex-1">
                                                         <div className="flex flex-wrap items-center gap-2">
                                                             <span className="truncate text-base font-medium text-gray-900">
-                                                                {invite.email}
+                                                                {invite.invitee_name}
                                                             </span>
                                                             <span
                                                                 className={`inline-flex rounded-full px-2 py-1 text-xs font-medium ${getRoleBadgeColor(invite.role)}`}
                                                             >
-                                                                {
-                                                                    invite.role_label
-                                                                }
+                                                                {invite.role_label}
                                                             </span>
                                                             <span
                                                                 className={`inline-flex rounded-full px-2 py-1 text-xs font-medium ${getStatusColor(invite.status)}`}
                                                             >
-                                                                {
-                                                                    invite.status_label
-                                                                }
+                                                                {invite.status_label}
                                                             </span>
                                                         </div>
                                                         <div className="mt-2 space-y-1 text-sm text-gray-600">
+                                                            {invite.email && (
+                                                                <p>メール: {invite.email}</p>
+                                                            )}
                                                             <p>
-                                                                発行:{' '}
-                                                                {
-                                                                    invite.created_at
-                                                                }{' '}
-                                                                by{' '}
-                                                                {
-                                                                    invite
-                                                                        .creator
-                                                                        .name
-                                                                }
+                                                                発行: {invite.created_at} by {invite.creator.name}
                                                             </p>
                                                             {invite.expires_at && (
-                                                                <p>
-                                                                    有効期限:{' '}
-                                                                    {
-                                                                        invite.expires_at
-                                                                    }
-                                                                </p>
+                                                                <p>有効期限: {invite.expires_at}</p>
                                                             )}
                                                             {invite.used_at && (
-                                                                <p>
-                                                                    使用日時:{' '}
-                                                                    {
-                                                                        invite.used_at
-                                                                    }
-                                                                </p>
+                                                                <p>使用日時: {invite.used_at}</p>
                                                             )}
                                                         </div>
                                                     </div>
