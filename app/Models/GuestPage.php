@@ -154,7 +154,7 @@ class GuestPage extends Model
                 return [
                     'id' => $assignment->staff->id,
                     'name' => $assignment->staff->name,
-                    'avatar' => $assignment->staff->avatar,
+                    'avatar' => $assignment->staff->avatar_url,
                     'role' => $assignment->role,
                     'wallet_address' => $assignment->staff->wallet?->wallet_address,
                 ];

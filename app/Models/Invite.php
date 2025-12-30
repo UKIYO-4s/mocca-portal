@@ -9,6 +9,7 @@ use Illuminate\Support\Str;
 class Invite extends Model
 {
     protected $fillable = [
+        'invitee_name',
         'email',
         'role',
         'token',

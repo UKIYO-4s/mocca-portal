@@ -28,6 +28,7 @@ class InvitesController extends Controller
             ->map(function ($invite) {
                 return [
                     'id' => $invite->id,
+                    'invitee_name' => $invite->invitee_name,
                     'email' => $invite->email,
                     'role' => $invite->role,
                     'role_label' => $invite->role_label,
@@ -53,11 +54,12 @@ class InvitesController extends Controller
     public function store(Request $request)
     {
         $validated = $request->validate([
-            'email' => ['required', 'email', 'max:255'],
+            'invitee_name' => ['required', 'string', 'max:255'],
+            'email' => ['nullable', 'email', 'max:255'],
             'role' => ['required', Rule::in(['admin', 'manager', 'staff'])],
             'expires_in' => ['required', Rule::in(['7', '30', 'never'])],
         ], [
-            'email.required' => 'メールアドレスを入力してください',
+            'invitee_name.required' => '招待者名を入力してください',
             'email.email' => '正しいメールアドレスを入力してください',
             'role.required' => 'ロールを選択してください',
             'role.in' => '正しいロールを選択してください',
@@ -72,7 +74,8 @@ class InvitesController extends Controller
         };
 
         $invite = Invite::create([
-            'email' => $validated['email'],
+            'invitee_name' => $validated['invitee_name'],
+            'email' => $validated['email'] ?? null,
             'role' => $validated['role'],
             'token' => Invite::generateToken(),
             'expires_at' => $expiresAt,
@@ -82,10 +85,18 @@ class InvitesController extends Controller
         $this->activityLog->logCreated(
             'invite',
             $invite,
-            "招待リンク発行: {$validated['email']} ({$invite->role_label})"
+            "招待リンク発行: {$validated['invitee_name']} ({$invite->role_label})"
         );
 
-        return back()->with('success', '招待リンクを発行しました');
+        return back()->with([
+            'success' => '招待リンクを発行しました',
+            'created_invite' => [
+                'id' => $invite->id,
+                'invitee_name' => $invite->invitee_name,
+                'invite_url' => $invite->invite_url,
+                'role_label' => $invite->role_label,
+            ],
+        ]);
     }
 
     /**
@@ -98,14 +109,14 @@ class InvitesController extends Controller
             return back()->with('error', '使用済みの招待は削除できません');
         }
 
-        $email = $invite->email;
+        $inviteeName = $invite->invitee_name;
         $invite->delete();
 
         $this->activityLog->log(
             'invite',
             'deleted',
             null,
-            "招待リンク無効化: {$email}"
+            "招待リンク無効化: {$inviteeName}"
         );
 
         return back()->with('success', '招待リンクを無効化しました');

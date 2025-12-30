@@ -8,6 +8,7 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use Illuminate\Support\Facades\Storage;
 
 class User extends Authenticatable
 {
@@ -144,5 +145,24 @@ class User extends Authenticatable
             ->whereMonth('tipped_at', now()->month)
             ->whereYear('tipped_at', now()->year)
             ->sum('tip_count');
+    }
+
+    /**
+     * Get the avatar URL.
+     * Handles both external URLs (Google OAuth) and local file paths.
+     */
+    public function getAvatarUrlAttribute(): ?string
+    {
+        if (!$this->avatar) {
+            return null;
+        }
+
+        // If it's already a full URL (Google OAuth), return as-is
+        if (filter_var($this->avatar, FILTER_VALIDATE_URL)) {
+            return $this->avatar;
+        }
+
+        // Otherwise, it's a local file path - return storage URL
+        return Storage::disk('public')->url($this->avatar);
     }
 }

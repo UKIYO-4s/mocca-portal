@@ -53,6 +53,7 @@ class InviteController extends Controller
 
         return Inertia::render('Auth/InviteRegister', [
             'invite' => [
+                'invitee_name' => $invite->invitee_name,
                 'email' => $invite->email,
                 'role' => $invite->role,
                 'role_label' => $invite->role_label,
@@ -75,19 +76,32 @@ class InviteController extends Controller
             ]);
         }
 
-        $validated = $request->validate([
+        // バリデーションルール（emailは招待に無い場合のみ必須）
+        $rules = [
             'name' => ['required', 'string', 'max:255'],
             'password' => ['required', 'confirmed', Rules\Password::defaults()],
-        ], [
+        ];
+
+        $messages = [
             'name.required' => '名前を入力してください',
             'password.required' => 'パスワードを入力してください',
             'password.confirmed' => 'パスワードが一致しません',
-        ]);
+        ];
 
-        // ユーザー作成（メールとロールは招待から固定）
+        // 招待にメールが無い場合はフォームから取得
+        if (!$invite->email) {
+            $rules['email'] = ['required', 'string', 'email', 'max:255', 'unique:users,email'];
+            $messages['email.required'] = 'メールアドレスを入力してください';
+            $messages['email.email'] = '正しいメールアドレスを入力してください';
+            $messages['email.unique'] = 'このメールアドレスは既に登録されています';
+        }
+
+        $validated = $request->validate($rules, $messages);
+
+        // ユーザー作成（メールは招待から取得、無ければフォームから）
         $user = User::create([
             'name' => $validated['name'],
-            'email' => $invite->email,
+            'email' => $invite->email ?? $validated['email'],
             'password' => Hash::make($validated['password']),
             'role' => $invite->role,
         ]);

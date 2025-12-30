@@ -1,11 +1,12 @@
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
-import { Head, router, useForm } from '@inertiajs/react';
+import { Head, router, useForm, usePage } from '@inertiajs/react';
 import { PageProps } from '@/types';
-import { FormEvent, useState } from 'react';
+import { FormEvent, useState, useEffect } from 'react';
 
 interface Invite {
     id: number;
-    email: string;
+    invitee_name: string;
+    email: string | null;
     role: string;
     role_label: string;
     token: string;
@@ -18,28 +19,49 @@ interface Invite {
     created_at: string;
 }
 
+interface CreatedInvite {
+    id: number;
+    invitee_name: string;
+    invite_url: string;
+    role_label: string;
+}
+
 interface Props extends PageProps {
     invites: Invite[];
 }
 
 export default function Index({ invites }: Props) {
     const [copiedId, setCopiedId] = useState<number | null>(null);
+    const [createdInvite, setCreatedInvite] = useState<CreatedInvite | null>(null);
+    const [modalCopied, setModalCopied] = useState(false);
+
+    const { props } = usePage<Props & { flash: { created_invite?: CreatedInvite } }>();
 
     const { data, setData, post, processing, errors, reset } = useForm({
+        invitee_name: '',
         email: '',
         role: 'staff',
         expires_in: '7',
     });
 
+    // Check for created_invite in flash data
+    useEffect(() => {
+        if (props.flash?.created_invite) {
+            setCreatedInvite(props.flash.created_invite);
+        }
+    }, [props.flash]);
+
     const handleSubmit = (e: FormEvent) => {
         e.preventDefault();
         post(route('admin.invites.store'), {
-            onSuccess: () => reset(),
+            onSuccess: () => {
+                reset();
+            },
         });
     };
 
     const handleDelete = (invite: Invite) => {
-        if (confirm(`${invite.email}への招待リンクを無効化してもよろしいですか？`)) {
+        if (confirm(`${invite.invitee_name}さんへの招待リンクを無効化してもよろしいですか？`)) {
             router.delete(route('admin.invites.destroy', invite.id));
         }
     };
@@ -52,6 +74,22 @@ export default function Index({ invites }: Props) {
         } catch {
             alert('コピーに失敗しました');
         }
+    };
+
+    const copyModalUrl = async () => {
+        if (!createdInvite) return;
+        try {
+            await navigator.clipboard.writeText(createdInvite.invite_url);
+            setModalCopied(true);
+            setTimeout(() => setModalCopied(false), 2000);
+        } catch {
+            alert('コピーに失敗しました');
+        }
+    };
+
+    const closeModal = () => {
+        setCreatedInvite(null);
+        setModalCopied(false);
     };
 
     const getStatusColor = (status: string) => {
@@ -99,8 +137,25 @@ export default function Index({ invites }: Props) {
                         </h3>
                         <form onSubmit={handleSubmit} className="space-y-4">
                             <div>
+                                <label htmlFor="invitee_name" className="block text-sm font-medium text-gray-700">
+                                    招待者名 <span className="text-red-500">*</span>
+                                </label>
+                                <input
+                                    type="text"
+                                    id="invitee_name"
+                                    value={data.invitee_name}
+                                    onChange={(e) => setData('invitee_name', e.target.value)}
+                                    className="mt-1 block w-full min-h-[44px] rounded-md border-gray-300 text-base shadow-sm focus:border-blue-500 focus:ring-blue-500"
+                                    placeholder="山田太郎"
+                                />
+                                {errors.invitee_name && (
+                                    <p className="mt-1 text-sm text-red-600">{errors.invitee_name}</p>
+                                )}
+                            </div>
+
+                            <div>
                                 <label htmlFor="email" className="block text-sm font-medium text-gray-700">
-                                    招待先メールアドレス <span className="text-red-500">*</span>
+                                    メールアドレス <span className="text-gray-400">(任意)</span>
                                 </label>
                                 <input
                                     type="email"
@@ -110,6 +165,9 @@ export default function Index({ invites }: Props) {
                                     className="mt-1 block w-full min-h-[44px] rounded-md border-gray-300 text-base shadow-sm focus:border-blue-500 focus:ring-blue-500"
                                     placeholder="example@email.com"
                                 />
+                                <p className="mt-1 text-xs text-gray-500">
+                                    未入力の場合、登録時に本人が入力します
+                                </p>
                                 {errors.email && (
                                     <p className="mt-1 text-sm text-red-600">{errors.email}</p>
                                 )}
@@ -186,8 +244,8 @@ export default function Index({ invites }: Props) {
                                         <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
                                             <div className="flex-1 min-w-0">
                                                 <div className="flex flex-wrap items-center gap-2">
-                                                    <span className="text-base font-medium text-gray-900 truncate">
-                                                        {invite.email}
+                                                    <span className="text-base font-medium text-gray-900">
+                                                        {invite.invitee_name}
                                                     </span>
                                                     <span className={`inline-flex rounded-full px-2 py-1 text-xs font-medium ${getRoleColor(invite.role)}`}>
                                                         {invite.role_label}
@@ -197,6 +255,9 @@ export default function Index({ invites }: Props) {
                                                     </span>
                                                 </div>
                                                 <div className="mt-2 space-y-1 text-sm text-gray-600">
+                                                    {invite.email && (
+                                                        <p>メール: {invite.email}</p>
+                                                    )}
                                                     <p>発行: {invite.created_at} by {invite.creator.name}</p>
                                                     {invite.expires_at && (
                                                         <p>有効期限: {invite.expires_at}</p>
@@ -253,6 +314,73 @@ export default function Index({ invites }: Props) {
                     </div>
                 </div>
             </div>
+
+            {/* 作成完了モーダル */}
+            {createdInvite && (
+                <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50 p-4">
+                    <div className="w-full max-w-md rounded-lg bg-white p-6 shadow-xl">
+                        <div className="mb-4 flex items-center justify-between">
+                            <h3 className="text-lg font-semibold text-gray-900">
+                                招待リンクを発行しました
+                            </h3>
+                            <button
+                                onClick={closeModal}
+                                className="rounded-full p-1 text-gray-400 hover:bg-gray-100 hover:text-gray-600"
+                            >
+                                <svg className="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                                </svg>
+                            </button>
+                        </div>
+
+                        <div className="mb-4 rounded-lg bg-green-50 p-4">
+                            <p className="text-sm text-green-800">
+                                <span className="font-medium">{createdInvite.invitee_name}</span>さん（{createdInvite.role_label}）への招待リンクを発行しました。
+                            </p>
+                        </div>
+
+                        <div className="mb-4">
+                            <label className="mb-2 block text-sm font-medium text-gray-700">
+                                招待URL
+                            </label>
+                            <div className="rounded-md bg-gray-100 p-3">
+                                <p className="break-all text-sm text-gray-700">
+                                    {createdInvite.invite_url}
+                                </p>
+                            </div>
+                        </div>
+
+                        <div className="flex gap-3">
+                            <button
+                                onClick={copyModalUrl}
+                                className="flex-1 inline-flex min-h-[44px] items-center justify-center gap-2 rounded-md bg-blue-600 px-4 py-2 text-base font-medium text-white hover:bg-blue-700"
+                            >
+                                {modalCopied ? (
+                                    <>
+                                        <svg className="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                                        </svg>
+                                        コピーしました
+                                    </>
+                                ) : (
+                                    <>
+                                        <svg className="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z" />
+                                        </svg>
+                                        URLをコピー
+                                    </>
+                                )}
+                            </button>
+                            <button
+                                onClick={closeModal}
+                                className="inline-flex min-h-[44px] items-center justify-center rounded-md bg-gray-100 px-4 py-2 text-base font-medium text-gray-700 hover:bg-gray-200"
+                            >
+                                閉じる
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            )}
         </AuthenticatedLayout>
     );
 }
