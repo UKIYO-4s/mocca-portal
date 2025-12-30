@@ -6,6 +6,7 @@ use App\Modules\Reservation\Models\BanshirouReservation;
 use App\Modules\Reservation\Models\MoccaReservation;
 use App\Observers\BanshirouReservationObserver;
 use App\Observers\MoccaReservationObserver;
+use Illuminate\Support\Facades\URL;
 use Illuminate\Support\Facades\Vite;
 use Illuminate\Support\ServiceProvider;
 
@@ -26,6 +27,11 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
+        // 本番環境ではHTTPSを強制
+        if ($this->app->environment('production')) {
+            URL::forceScheme('https');
+        }
+
         Vite::prefetch(concurrency: 3);
 
         // Register reservation observers for automatic checklist generation
