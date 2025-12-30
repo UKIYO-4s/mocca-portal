@@ -27,7 +27,7 @@ export default function TipStatistics({
                         投げ銭統計
                     </h2>
                     <a
-                        href={route('admin.tips.export')}
+                        href={route('tips.export')}
                         className="inline-flex items-center rounded-md bg-green-600 px-4 py-2 text-sm font-medium text-white hover:bg-green-700"
                     >
                         データ出力
@@ -180,7 +180,7 @@ export default function TipStatistics({
                                                 </td>
                                                 <td className="whitespace-nowrap px-6 py-4 text-sm">
                                                     <Link
-                                                        href={route('admin.tips.show', staff.id)}
+                                                        href={route('tips.show', staff.id)}
                                                         className="text-indigo-600 hover:text-indigo-900:text-indigo-300"
                                                     >
                                                         詳細

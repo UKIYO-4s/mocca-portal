@@ -157,6 +157,13 @@ export default function Authenticated({
                                     シフト
                                 </NavLink>
 
+                                <NavLink
+                                    href={safeRoute('tips.index')}
+                                    active={route().current('tips.*')}
+                                >
+                                    投げ銭統計
+                                </NavLink>
+
                                 {/* 管理（Admin専用） */}
                                 {isAdmin && (
                                     <NavDropdown
@@ -165,7 +172,6 @@ export default function Authenticated({
                                         items={[
                                             { href: safeRoute('users.index'), label: 'ユーザー管理' },
                                             { href: safeRoute('admin.locations.index'), label: '拠点管理' },
-                                            { href: safeRoute('admin.tips.index'), label: '投げ銭統計' },
                                         ]}
                                     />
                                 )}
@@ -388,6 +394,13 @@ export default function Authenticated({
                             シフト
                         </ResponsiveNavLink>
 
+                        <ResponsiveNavLink
+                            href={safeRoute('tips.index')}
+                            active={route().current('tips.*')}
+                        >
+                            投げ銭統計
+                        </ResponsiveNavLink>
+
                         {/* 管理（Admin専用） */}
                         {isAdmin && (
                             <div>
@@ -411,9 +424,6 @@ export default function Authenticated({
                                         </ResponsiveNavLink>
                                         <ResponsiveNavLink href={safeRoute('admin.locations.index')}>
                                             拠点管理
-                                        </ResponsiveNavLink>
-                                        <ResponsiveNavLink href={safeRoute('admin.tips.index')}>
-                                            投げ銭統計
                                         </ResponsiveNavLink>
                                     </div>
                                 )}
