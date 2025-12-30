@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Models\Invite;
 use App\Models\Location;
 use App\Models\TipTransaction;
 use App\Models\User;
@@ -19,6 +20,7 @@ class AdminHubController extends Controller
             'tips_this_month' => TipTransaction::whereYear('created_at', now()->year)
                 ->whereMonth('created_at', now()->month)
                 ->sum('amount'),
+            'active_invites_count' => Invite::active()->count(),
         ];
 
         return Inertia::render('Admin/Hub', [

@@ -1,9 +1,11 @@
 <?php
 
+use App\Http\Controllers\Admin\InvitesController;
 use App\Http\Controllers\Admin\TipStatisticsController;
 use App\Http\Controllers\Api\ReviewController;
 use App\Http\Controllers\Api\TipController;
 use App\Http\Controllers\Auth\GoogleController;
+use App\Http\Controllers\Auth\InviteController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\GuestPageController;
 use App\Http\Controllers\ProfileController;
@@ -68,6 +70,17 @@ Route::middleware(['auth', 'role:admin'])->prefix('admin')->name('admin.')->grou
     Route::get('/tips/staff/{user}', [TipStatisticsController::class, 'show'])->name('tips.show');
     Route::get('/tips/export', [TipStatisticsController::class, 'export'])->name('tips.export');
     Route::get('/staff-wallets', [StaffWalletController::class, 'adminIndex'])->name('staff-wallets');
+
+    // Invite management
+    Route::get('/invites', [InvitesController::class, 'index'])->name('invites.index');
+    Route::post('/invites', [InvitesController::class, 'store'])->name('invites.store');
+    Route::delete('/invites/{invite}', [InvitesController::class, 'destroy'])->name('invites.destroy');
+});
+
+// Invite registration (guest only)
+Route::middleware('guest')->group(function () {
+    Route::get('/invite/{token}', [InviteController::class, 'show'])->name('invite.show');
+    Route::post('/invite/{token}', [InviteController::class, 'store'])->name('invite.store');
 });
 
 require __DIR__.'/auth.php';
