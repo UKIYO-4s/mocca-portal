@@ -207,26 +207,14 @@ export default function Authenticated({
                                     シフト
                                 </NavLink>
 
-                                {/* 予約管理 */}
+                                {/* 予約カレンダー */}
                                 {routeExists('reservations.availability.index') && (
-                                    <NavDropdown
-                                        label="予約管理"
+                                    <NavLink
+                                        href={safeRoute('reservations.availability.index')}
                                         active={route().current('reservations.*')}
-                                        items={[
-                                            {
-                                                href: safeRoute('reservations.availability.index'),
-                                                label: '空室カレンダー',
-                                            },
-                                            {
-                                                href: safeRoute('reservations.banshirou.index'),
-                                                label: 'ばんしろう',
-                                            },
-                                            {
-                                                href: safeRoute('reservations.mocca.index'),
-                                                label: 'もっか',
-                                            },
-                                        ]}
-                                    />
+                                    >
+                                        予約カレンダー
+                                    </NavLink>
                                 )}
 
                                 <NavLink
@@ -535,52 +523,14 @@ export default function Authenticated({
                             シフト
                         </ResponsiveNavLink>
 
-                        {/* 予約管理 */}
+                        {/* 予約カレンダー */}
                         {routeExists('reservations.availability.index') && (
-                            <div>
-                                <button
-                                    onClick={() => toggleMobileSubmenu('reservations')}
-                                    className={`flex w-full items-center justify-between border-l-4 py-2 pe-4 ps-3 text-start text-base font-medium transition duration-150 ease-in-out focus:outline-none ${
-                                        route().current('reservations.*')
-                                            ? 'border-blue-400 bg-blue-50 text-blue-700 focus:border-blue-700 focus:bg-blue-100 focus:text-blue-800'
-                                            : 'border-transparent text-gray-600 hover:border-gray-300 hover:bg-gray-50 hover:text-gray-800 focus:border-gray-300 focus:bg-gray-50 focus:text-gray-800'
-                                    }`}
-                                >
-                                    予約管理
-                                    <svg
-                                        className={`h-5 w-5 transition-transform ${expandedMobileMenu === 'reservations' ? 'rotate-180' : ''}`}
-                                        fill="none"
-                                        stroke="currentColor"
-                                        viewBox="0 0 24 24"
-                                    >
-                                        <path
-                                            strokeLinecap="round"
-                                            strokeLinejoin="round"
-                                            strokeWidth={2}
-                                            d="M19 9l-7 7-7-7"
-                                        />
-                                    </svg>
-                                </button>
-                                {expandedMobileMenu === 'reservations' && (
-                                    <div className="bg-gray-50 pl-6">
-                                        <ResponsiveNavLink
-                                            href={safeRoute('reservations.availability.index')}
-                                        >
-                                            空室カレンダー
-                                        </ResponsiveNavLink>
-                                        <ResponsiveNavLink
-                                            href={safeRoute('reservations.banshirou.index')}
-                                        >
-                                            ばんしろう
-                                        </ResponsiveNavLink>
-                                        <ResponsiveNavLink
-                                            href={safeRoute('reservations.mocca.index')}
-                                        >
-                                            もっか
-                                        </ResponsiveNavLink>
-                                    </div>
-                                )}
-                            </div>
+                            <ResponsiveNavLink
+                                href={safeRoute('reservations.availability.index')}
+                                active={route().current('reservations.*')}
+                            >
+                                予約カレンダー
+                            </ResponsiveNavLink>
                         )}
 
                         <ResponsiveNavLink

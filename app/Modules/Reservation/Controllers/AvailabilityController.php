@@ -54,6 +54,9 @@ class AvailabilityController extends Controller
             $current->addDay();
         }
 
+        // Collect all reservations for the list view
+        $reservations = [];
+
         // 1. Get internal portal reservations (BanshirouReservation)
         $internalReservations = BanshirouReservation::where('status', 'confirmed')
             ->where(function ($query) use ($startDate, $endDate) {
@@ -64,12 +67,27 @@ class AvailabilityController extends Controller
                             ->where('checkout_date', '>=', $endDate);
                     });
             })
+            ->orderBy('checkin_date')
             ->get();
 
         foreach ($internalReservations as $reservation) {
             $checkin = Carbon::parse($reservation->checkin_date);
             $checkout = Carbon::parse($reservation->checkout_date);
 
+            // Add to reservations list
+            $reservations[] = [
+                'id' => $reservation->id,
+                'source' => 'portal',
+                'name' => $reservation->name,
+                'phone' => $reservation->phone,
+                'checkin_date' => $checkin->format('Y-m-d'),
+                'checkout_date' => $checkout->format('Y-m-d'),
+                'guests' => $reservation->total_guests,
+                'meal_option' => $reservation->meal_option,
+                'notes' => $reservation->notes,
+            ];
+
+            // Mark days as booked
             $current = $checkin->copy();
             while ($current->lt($checkout)) {
                 $dateStr = $current->format('Y-m-d');
@@ -77,9 +95,12 @@ class AvailabilityController extends Controller
                     $availability[$dateStr]['status'] = 'booked';
                     $availability[$dateStr]['sources'][] = 'portal';
                     $availability[$dateStr]['details'][] = [
+                        'id' => $reservation->id,
                         'source' => 'portal',
                         'name' => $reservation->name,
                         'guests' => $reservation->total_guests,
+                        'checkin_date' => $checkin->format('Y-m-d'),
+                        'checkout_date' => $checkout->format('Y-m-d'),
                     ];
                 }
                 $current->addDay();
@@ -94,6 +115,24 @@ class AvailabilityController extends Controller
                 ? Carbon::parse($reservation['checkout_date'])
                 : $checkin->copy()->addDay();
 
+            // Check if in range
+            if ($checkout->lt($startDate) || $checkin->gt($endDate)) {
+                continue;
+            }
+
+            // Add to reservations list
+            $reservations[] = [
+                'id' => null,
+                'source' => 'form',
+                'name' => $reservation['name'],
+                'phone' => null,
+                'checkin_date' => $checkin->format('Y-m-d'),
+                'checkout_date' => $checkout->format('Y-m-d'),
+                'guests' => $reservation['guests'],
+                'meal_option' => null,
+                'notes' => null,
+            ];
+
             $current = $checkin->copy();
             while ($current->lt($checkout)) {
                 $dateStr = $current->format('Y-m-d');
@@ -101,9 +140,12 @@ class AvailabilityController extends Controller
                     $availability[$dateStr]['status'] = 'booked';
                     $availability[$dateStr]['sources'][] = 'form';
                     $availability[$dateStr]['details'][] = [
+                        'id' => null,
                         'source' => 'form',
                         'name' => $reservation['name'],
                         'guests' => $reservation['guests'],
+                        'checkin_date' => $checkin->format('Y-m-d'),
+                        'checkout_date' => $checkout->format('Y-m-d'),
                     ];
                 }
                 $current->addDay();
@@ -117,23 +159,30 @@ class AvailabilityController extends Controller
                 $availability[$dateStr]['status'] = 'booked';
                 $availability[$dateStr]['sources'][] = 'external';
                 $availability[$dateStr]['details'][] = [
+                    'id' => null,
                     'source' => 'external',
                     'name' => '外部サイト予約',
                     'guests' => null,
+                    'checkin_date' => $dateStr,
+                    'checkout_date' => null,
                 ];
             }
         }
 
         // Deduplicate sources
         foreach ($availability as $dateStr => $data) {
-            $availability[$dateStr]['sources'] = array_unique($data['sources']);
+            $availability[$dateStr]['sources'] = array_values(array_unique($data['sources']));
         }
+
+        // Sort reservations by checkin date
+        usort($reservations, fn($a, $b) => strcmp($a['checkin_date'], $b['checkin_date']));
 
         return response()->json([
             'success' => true,
             'year' => $year,
             'month' => $month,
             'data' => $availability,
+            'reservations' => $reservations,
         ]);
     }
 
