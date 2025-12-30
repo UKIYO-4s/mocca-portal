@@ -1,7 +1,7 @@
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
-import { Head, router, useForm, usePage } from '@inertiajs/react';
 import { PageProps } from '@/types';
-import { FormEvent, useState, useEffect } from 'react';
+import { Head, router, useForm, usePage } from '@inertiajs/react';
+import { FormEvent, useEffect, useState } from 'react';
 
 interface Invite {
     id: number;
@@ -32,10 +32,14 @@ interface Props extends PageProps {
 
 export default function Index({ invites }: Props) {
     const [copiedId, setCopiedId] = useState<number | null>(null);
-    const [createdInvite, setCreatedInvite] = useState<CreatedInvite | null>(null);
+    const [createdInvite, setCreatedInvite] = useState<CreatedInvite | null>(
+        null,
+    );
     const [modalCopied, setModalCopied] = useState(false);
 
-    const { props } = usePage<Props & { flash: { created_invite?: CreatedInvite } }>();
+    const { props } = usePage<
+        Props & { flash: { created_invite?: CreatedInvite } }
+    >();
 
     const { data, setData, post, processing, errors, reset } = useForm({
         invitee_name: '',
@@ -61,7 +65,11 @@ export default function Index({ invites }: Props) {
     };
 
     const handleDelete = (invite: Invite) => {
-        if (confirm(`${invite.invitee_name}さんへの招待リンクを無効化してもよろしいですか？`)) {
+        if (
+            confirm(
+                `${invite.invitee_name}さんへの招待リンクを無効化してもよろしいですか？`,
+            )
+        ) {
             router.delete(route('admin.invites.destroy', invite.id));
         }
     };
@@ -137,78 +145,117 @@ export default function Index({ invites }: Props) {
                         </h3>
                         <form onSubmit={handleSubmit} className="space-y-4">
                             <div>
-                                <label htmlFor="invitee_name" className="block text-sm font-medium text-gray-700">
-                                    招待者名 <span className="text-red-500">*</span>
+                                <label
+                                    htmlFor="invitee_name"
+                                    className="block text-sm font-medium text-gray-700"
+                                >
+                                    招待者名{' '}
+                                    <span className="text-red-500">*</span>
                                 </label>
                                 <input
                                     type="text"
                                     id="invitee_name"
                                     value={data.invitee_name}
-                                    onChange={(e) => setData('invitee_name', e.target.value)}
-                                    className="mt-1 block w-full min-h-[44px] rounded-md border-gray-300 text-base shadow-sm focus:border-blue-500 focus:ring-blue-500"
+                                    onChange={(e) =>
+                                        setData('invitee_name', e.target.value)
+                                    }
+                                    className="mt-1 block min-h-[44px] w-full rounded-md border-gray-300 text-base shadow-sm focus:border-blue-500 focus:ring-blue-500"
                                     placeholder="山田太郎"
                                 />
                                 {errors.invitee_name && (
-                                    <p className="mt-1 text-sm text-red-600">{errors.invitee_name}</p>
+                                    <p className="mt-1 text-sm text-red-600">
+                                        {errors.invitee_name}
+                                    </p>
                                 )}
                             </div>
 
                             <div>
-                                <label htmlFor="email" className="block text-sm font-medium text-gray-700">
-                                    メールアドレス <span className="text-gray-400">(任意)</span>
+                                <label
+                                    htmlFor="email"
+                                    className="block text-sm font-medium text-gray-700"
+                                >
+                                    メールアドレス{' '}
+                                    <span className="text-gray-400">
+                                        (任意)
+                                    </span>
                                 </label>
                                 <input
                                     type="email"
                                     id="email"
                                     value={data.email}
-                                    onChange={(e) => setData('email', e.target.value)}
-                                    className="mt-1 block w-full min-h-[44px] rounded-md border-gray-300 text-base shadow-sm focus:border-blue-500 focus:ring-blue-500"
+                                    onChange={(e) =>
+                                        setData('email', e.target.value)
+                                    }
+                                    className="mt-1 block min-h-[44px] w-full rounded-md border-gray-300 text-base shadow-sm focus:border-blue-500 focus:ring-blue-500"
                                     placeholder="example@email.com"
                                 />
                                 <p className="mt-1 text-xs text-gray-500">
                                     未入力の場合、登録時に本人が入力します
                                 </p>
                                 {errors.email && (
-                                    <p className="mt-1 text-sm text-red-600">{errors.email}</p>
+                                    <p className="mt-1 text-sm text-red-600">
+                                        {errors.email}
+                                    </p>
                                 )}
                             </div>
 
                             <div className="grid gap-4 sm:grid-cols-2">
                                 <div>
-                                    <label htmlFor="role" className="block text-sm font-medium text-gray-700">
-                                        ロール <span className="text-red-500">*</span>
+                                    <label
+                                        htmlFor="role"
+                                        className="block text-sm font-medium text-gray-700"
+                                    >
+                                        ロール{' '}
+                                        <span className="text-red-500">*</span>
                                     </label>
                                     <select
                                         id="role"
                                         value={data.role}
-                                        onChange={(e) => setData('role', e.target.value)}
-                                        className="mt-1 block w-full min-h-[44px] rounded-md border-gray-300 text-base shadow-sm focus:border-blue-500 focus:ring-blue-500"
+                                        onChange={(e) =>
+                                            setData('role', e.target.value)
+                                        }
+                                        className="mt-1 block min-h-[44px] w-full rounded-md border-gray-300 text-base shadow-sm focus:border-blue-500 focus:ring-blue-500"
                                     >
                                         <option value="staff">スタッフ</option>
-                                        <option value="manager">マネージャー</option>
+                                        <option value="manager">
+                                            マネージャー
+                                        </option>
                                         <option value="admin">管理者</option>
                                     </select>
                                     {errors.role && (
-                                        <p className="mt-1 text-sm text-red-600">{errors.role}</p>
+                                        <p className="mt-1 text-sm text-red-600">
+                                            {errors.role}
+                                        </p>
                                     )}
                                 </div>
 
                                 <div>
-                                    <label htmlFor="expires_in" className="block text-sm font-medium text-gray-700">
-                                        有効期限 <span className="text-red-500">*</span>
+                                    <label
+                                        htmlFor="expires_in"
+                                        className="block text-sm font-medium text-gray-700"
+                                    >
+                                        有効期限{' '}
+                                        <span className="text-red-500">*</span>
                                     </label>
                                     <select
                                         id="expires_in"
                                         value={data.expires_in}
-                                        onChange={(e) => setData('expires_in', e.target.value)}
-                                        className="mt-1 block w-full min-h-[44px] rounded-md border-gray-300 text-base shadow-sm focus:border-blue-500 focus:ring-blue-500"
+                                        onChange={(e) =>
+                                            setData(
+                                                'expires_in',
+                                                e.target.value,
+                                            )
+                                        }
+                                        className="mt-1 block min-h-[44px] w-full rounded-md border-gray-300 text-base shadow-sm focus:border-blue-500 focus:ring-blue-500"
                                     >
                                         <option value="7">7日間</option>
                                         <option value="30">30日間</option>
                                         <option value="never">無期限</option>
                                     </select>
                                     {errors.expires_in && (
-                                        <p className="mt-1 text-sm text-red-600">{errors.expires_in}</p>
+                                        <p className="mt-1 text-sm text-red-600">
+                                            {errors.expires_in}
+                                        </p>
                                     )}
                                 </div>
                             </div>
@@ -219,7 +266,9 @@ export default function Index({ invites }: Props) {
                                     disabled={processing}
                                     className="inline-flex min-h-[44px] items-center justify-center rounded-md bg-blue-600 px-6 py-2 text-base font-medium text-white hover:bg-blue-700 disabled:opacity-50"
                                 >
-                                    {processing ? '発行中...' : '招待リンクを発行'}
+                                    {processing
+                                        ? '発行中...'
+                                        : '招待リンクを発行'}
                                 </button>
                             </div>
                         </form>
@@ -235,35 +284,54 @@ export default function Index({ invites }: Props) {
 
                         {invites.length === 0 ? (
                             <div className="p-8 text-center">
-                                <p className="text-gray-600">招待リンクはまだ発行されていません</p>
+                                <p className="text-gray-600">
+                                    招待リンクはまだ発行されていません
+                                </p>
                             </div>
                         ) : (
                             <div className="divide-y divide-gray-200">
                                 {invites.map((invite) => (
                                     <div key={invite.id} className="p-4 sm:p-6">
                                         <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
-                                            <div className="flex-1 min-w-0">
+                                            <div className="min-w-0 flex-1">
                                                 <div className="flex flex-wrap items-center gap-2">
                                                     <span className="text-base font-medium text-gray-900">
                                                         {invite.invitee_name}
                                                     </span>
-                                                    <span className={`inline-flex rounded-full px-2 py-1 text-xs font-medium ${getRoleColor(invite.role)}`}>
+                                                    <span
+                                                        className={`inline-flex rounded-full px-2 py-1 text-xs font-medium ${getRoleColor(invite.role)}`}
+                                                    >
                                                         {invite.role_label}
                                                     </span>
-                                                    <span className={`inline-flex rounded-full px-2 py-1 text-xs font-medium ${getStatusColor(invite.status)}`}>
+                                                    <span
+                                                        className={`inline-flex rounded-full px-2 py-1 text-xs font-medium ${getStatusColor(invite.status)}`}
+                                                    >
                                                         {invite.status_label}
                                                     </span>
                                                 </div>
                                                 <div className="mt-2 space-y-1 text-sm text-gray-600">
                                                     {invite.email && (
-                                                        <p>メール: {invite.email}</p>
+                                                        <p>
+                                                            メール:{' '}
+                                                            {invite.email}
+                                                        </p>
                                                     )}
-                                                    <p>発行: {invite.created_at} by {invite.creator.name}</p>
+                                                    <p>
+                                                        発行:{' '}
+                                                        {invite.created_at} by{' '}
+                                                        {invite.creator.name}
+                                                    </p>
                                                     {invite.expires_at && (
-                                                        <p>有効期限: {invite.expires_at}</p>
+                                                        <p>
+                                                            有効期限:{' '}
+                                                            {invite.expires_at}
+                                                        </p>
                                                     )}
                                                     {invite.used_at && (
-                                                        <p>使用日時: {invite.used_at}</p>
+                                                        <p>
+                                                            使用日時:{' '}
+                                                            {invite.used_at}
+                                                        </p>
                                                     )}
                                                 </div>
                                             </div>
@@ -271,27 +339,58 @@ export default function Index({ invites }: Props) {
                                             {invite.status === 'active' && (
                                                 <div className="flex gap-2">
                                                     <button
-                                                        onClick={() => copyToClipboard(invite)}
+                                                        onClick={() =>
+                                                            copyToClipboard(
+                                                                invite,
+                                                            )
+                                                        }
                                                         className="inline-flex min-h-[44px] items-center justify-center gap-1 rounded-md bg-gray-100 px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-200"
                                                     >
-                                                        {copiedId === invite.id ? (
+                                                        {copiedId ===
+                                                        invite.id ? (
                                                             <>
-                                                                <svg className="h-4 w-4 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                                                                <svg
+                                                                    className="h-4 w-4 text-green-600"
+                                                                    fill="none"
+                                                                    stroke="currentColor"
+                                                                    viewBox="0 0 24 24"
+                                                                >
+                                                                    <path
+                                                                        strokeLinecap="round"
+                                                                        strokeLinejoin="round"
+                                                                        strokeWidth={
+                                                                            2
+                                                                        }
+                                                                        d="M5 13l4 4L19 7"
+                                                                    />
                                                                 </svg>
                                                                 コピー済
                                                             </>
                                                         ) : (
                                                             <>
-                                                                <svg className="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z" />
+                                                                <svg
+                                                                    className="h-4 w-4"
+                                                                    fill="none"
+                                                                    stroke="currentColor"
+                                                                    viewBox="0 0 24 24"
+                                                                >
+                                                                    <path
+                                                                        strokeLinecap="round"
+                                                                        strokeLinejoin="round"
+                                                                        strokeWidth={
+                                                                            2
+                                                                        }
+                                                                        d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"
+                                                                    />
                                                                 </svg>
                                                                 URLコピー
                                                             </>
                                                         )}
                                                     </button>
                                                     <button
-                                                        onClick={() => handleDelete(invite)}
+                                                        onClick={() =>
+                                                            handleDelete(invite)
+                                                        }
                                                         className="inline-flex min-h-[44px] items-center justify-center rounded-md bg-red-100 px-4 py-2 text-sm font-medium text-red-700 hover:bg-red-200"
                                                     >
                                                         無効化
@@ -327,15 +426,29 @@ export default function Index({ invites }: Props) {
                                 onClick={closeModal}
                                 className="rounded-full p-1 text-gray-400 hover:bg-gray-100 hover:text-gray-600"
                             >
-                                <svg className="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                                <svg
+                                    className="h-5 w-5"
+                                    fill="none"
+                                    stroke="currentColor"
+                                    viewBox="0 0 24 24"
+                                >
+                                    <path
+                                        strokeLinecap="round"
+                                        strokeLinejoin="round"
+                                        strokeWidth={2}
+                                        d="M6 18L18 6M6 6l12 12"
+                                    />
                                 </svg>
                             </button>
                         </div>
 
                         <div className="mb-4 rounded-lg bg-green-50 p-4">
                             <p className="text-sm text-green-800">
-                                <span className="font-medium">{createdInvite.invitee_name}</span>さん（{createdInvite.role_label}）への招待リンクを発行しました。
+                                <span className="font-medium">
+                                    {createdInvite.invitee_name}
+                                </span>
+                                さん（{createdInvite.role_label}
+                                ）への招待リンクを発行しました。
                             </p>
                         </div>
 
@@ -353,19 +466,39 @@ export default function Index({ invites }: Props) {
                         <div className="flex gap-3">
                             <button
                                 onClick={copyModalUrl}
-                                className="flex-1 inline-flex min-h-[44px] items-center justify-center gap-2 rounded-md bg-blue-600 px-4 py-2 text-base font-medium text-white hover:bg-blue-700"
+                                className="inline-flex min-h-[44px] flex-1 items-center justify-center gap-2 rounded-md bg-blue-600 px-4 py-2 text-base font-medium text-white hover:bg-blue-700"
                             >
                                 {modalCopied ? (
                                     <>
-                                        <svg className="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                                        <svg
+                                            className="h-5 w-5"
+                                            fill="none"
+                                            stroke="currentColor"
+                                            viewBox="0 0 24 24"
+                                        >
+                                            <path
+                                                strokeLinecap="round"
+                                                strokeLinejoin="round"
+                                                strokeWidth={2}
+                                                d="M5 13l4 4L19 7"
+                                            />
                                         </svg>
                                         コピーしました
                                     </>
                                 ) : (
                                     <>
-                                        <svg className="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z" />
+                                        <svg
+                                            className="h-5 w-5"
+                                            fill="none"
+                                            stroke="currentColor"
+                                            viewBox="0 0 24 24"
+                                        >
+                                            <path
+                                                strokeLinecap="round"
+                                                strokeLinejoin="round"
+                                                strokeWidth={2}
+                                                d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"
+                                            />
                                         </svg>
                                         URLをコピー
                                     </>

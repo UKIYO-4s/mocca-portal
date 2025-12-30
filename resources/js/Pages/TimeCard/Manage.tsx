@@ -1,7 +1,7 @@
-import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
 import Modal from '@/Components/Modal';
-import { Head, router } from '@inertiajs/react';
+import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
 import { TimeRecord, User } from '@/types';
+import { Head, router } from '@inertiajs/react';
 import { FormEvent, useState } from 'react';
 
 interface Props {
@@ -43,7 +43,7 @@ export default function Manage({
                 user_id: userId ?? undefined,
                 month: currentMonth,
             },
-            { preserveState: true, preserveScroll: true }
+            { preserveState: true, preserveScroll: true },
         );
     };
 
@@ -63,15 +63,19 @@ export default function Manage({
                 user_id: selectedUserId ?? undefined,
                 month: newMonth,
             },
-            { preserveState: true, preserveScroll: true }
+            { preserveState: true, preserveScroll: true },
         );
     };
 
     const openEditModal = (record: TimeRecord) => {
         setEditingRecord(record);
         setFormData({
-            clock_in: record.clock_in ? formatTimeForInput(record.clock_in) : '',
-            clock_out: record.clock_out ? formatTimeForInput(record.clock_out) : '',
+            clock_in: record.clock_in
+                ? formatTimeForInput(record.clock_in)
+                : '',
+            clock_out: record.clock_out
+                ? formatTimeForInput(record.clock_out)
+                : '',
             break_minutes: record.break_minutes,
             notes: record.notes ?? '',
         });
@@ -110,7 +114,7 @@ export default function Manage({
                 onFinish: () => {
                     setIsSubmitting(false);
                 },
-            }
+            },
         );
     };
 
@@ -172,7 +176,9 @@ export default function Manage({
 
         const config = statusConfig[status];
         return (
-            <span className={`inline-flex rounded-full px-2 py-1 text-xs font-medium ${config.className}`}>
+            <span
+                className={`inline-flex rounded-full px-2 py-1 text-xs font-medium ${config.className}`}
+            >
                 {config.label}
             </span>
         );
@@ -227,7 +233,10 @@ export default function Manage({
                                     >
                                         <option value="">すべて</option>
                                         {users.map((user) => (
-                                            <option key={user.id} value={user.id}>
+                                            <option
+                                                key={user.id}
+                                                value={user.id}
+                                            >
                                                 {user.name}
                                             </option>
                                         ))}
@@ -238,8 +247,10 @@ export default function Manage({
                                 <div className="flex items-center gap-2">
                                     <button
                                         type="button"
-                                        onClick={() => handleMonthChange('prev')}
-                                        className="rounded-md bg-gray-100 p-2 text-gray-600 hover:bg-gray-200:bg-gray-600"
+                                        onClick={() =>
+                                            handleMonthChange('prev')
+                                        }
+                                        className="hover:bg-gray-200:bg-gray-600 rounded-md bg-gray-100 p-2 text-gray-600"
                                     >
                                         <svg
                                             className="h-5 w-5"
@@ -260,8 +271,10 @@ export default function Manage({
                                     </span>
                                     <button
                                         type="button"
-                                        onClick={() => handleMonthChange('next')}
-                                        className="rounded-md bg-gray-100 p-2 text-gray-600 hover:bg-gray-200:bg-gray-600"
+                                        onClick={() =>
+                                            handleMonthChange('next')
+                                        }
+                                        className="hover:bg-gray-200:bg-gray-600 rounded-md bg-gray-100 p-2 text-gray-600"
                                     >
                                         <svg
                                             className="h-5 w-5"
@@ -296,7 +309,9 @@ export default function Manage({
                                             合計勤務時間
                                         </div>
                                         <div className="text-xl font-semibold text-gray-900">
-                                            {formatMinutesToTime(calculateTotalWorkMinutes())}
+                                            {formatMinutesToTime(
+                                                calculateTotalWorkMinutes(),
+                                            )}
                                         </div>
                                     </div>
                                     <div className="col-span-2 sm:col-span-1">
@@ -372,35 +387,51 @@ export default function Manage({
                                             {records.map((record) => (
                                                 <tr
                                                     key={record.id}
-                                                    onClick={() => openEditModal(record)}
-                                                    className="cursor-pointer transition-colors hover:bg-gray-50:bg-gray-700/50"
+                                                    onClick={() =>
+                                                        openEditModal(record)
+                                                    }
+                                                    className="hover:bg-gray-50:bg-gray-700/50 cursor-pointer transition-colors"
                                                 >
                                                     <td className="whitespace-nowrap px-4 py-3 text-sm font-medium text-gray-900">
-                                                        {formatDate(record.date)}
+                                                        {formatDate(
+                                                            record.date,
+                                                        )}
                                                     </td>
                                                     {!selectedUserId && (
                                                         <td className="whitespace-nowrap px-4 py-3 text-sm text-gray-700">
-                                                            {record.user?.name ?? '-'}
+                                                            {record.user
+                                                                ?.name ?? '-'}
                                                         </td>
                                                     )}
                                                     <td className="whitespace-nowrap px-4 py-3 text-center text-sm text-gray-700">
-                                                        {formatTime(record.clock_in)}
+                                                        {formatTime(
+                                                            record.clock_in,
+                                                        )}
                                                     </td>
                                                     <td className="whitespace-nowrap px-4 py-3 text-center text-sm text-gray-700">
-                                                        {formatTime(record.clock_out)}
+                                                        {formatTime(
+                                                            record.clock_out,
+                                                        )}
                                                     </td>
                                                     <td className="whitespace-nowrap px-4 py-3 text-center text-sm text-gray-700">
-                                                        {record.break_minutes > 0
-                                                            ? formatMinutesToTime(record.break_minutes)
+                                                        {record.break_minutes >
+                                                        0
+                                                            ? formatMinutesToTime(
+                                                                  record.break_minutes,
+                                                              )
                                                             : '-'}
                                                     </td>
                                                     <td className="whitespace-nowrap px-4 py-3 text-center text-sm text-gray-700">
                                                         {record.work_minutes
-                                                            ? formatMinutesToTime(record.work_minutes)
+                                                            ? formatMinutesToTime(
+                                                                  record.work_minutes,
+                                                              )
                                                             : '-'}
                                                     </td>
                                                     <td className="whitespace-nowrap px-4 py-3 text-center">
-                                                        {getStatusBadge(record.status)}
+                                                        {getStatusBadge(
+                                                            record.status,
+                                                        )}
                                                     </td>
                                                     <td className="max-w-[200px] truncate px-4 py-3 text-sm text-gray-500">
                                                         {record.notes ?? '-'}
@@ -440,8 +471,12 @@ export default function Manage({
                     <div className="mt-4 rounded-lg bg-blue-50 p-4 text-sm text-blue-800">
                         <p className="font-medium">勤怠管理について:</p>
                         <ul className="mt-2 list-inside list-disc space-y-1">
-                            <li>テーブルの行をクリックすると、勤怠記録を編集できます</li>
-                            <li>出勤・退勤時刻、休憩時間、備考を修正できます</li>
+                            <li>
+                                テーブルの行をクリックすると、勤怠記録を編集できます
+                            </li>
+                            <li>
+                                出勤・退勤時刻、休憩時間、備考を修正できます
+                            </li>
                             <li>修正履歴は自動的に記録されます</li>
                         </ul>
                     </div>
@@ -457,7 +492,8 @@ export default function Manage({
 
                     {editingRecord && (
                         <div className="mt-2 text-sm text-gray-500">
-                            {editingRecord.user?.name} - {formatDate(editingRecord.date)}
+                            {editingRecord.user?.name} -{' '}
+                            {formatDate(editingRecord.date)}
                         </div>
                     )}
 
@@ -475,7 +511,10 @@ export default function Manage({
                                 id="clock_in"
                                 value={formData.clock_in}
                                 onChange={(e) =>
-                                    setFormData({ ...formData, clock_in: e.target.value })
+                                    setFormData({
+                                        ...formData,
+                                        clock_in: e.target.value,
+                                    })
                                 }
                                 className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm"
                             />
@@ -494,7 +533,10 @@ export default function Manage({
                                 id="clock_out"
                                 value={formData.clock_out}
                                 onChange={(e) =>
-                                    setFormData({ ...formData, clock_out: e.target.value })
+                                    setFormData({
+                                        ...formData,
+                                        clock_out: e.target.value,
+                                    })
                                 }
                                 className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm"
                             />
@@ -517,7 +559,8 @@ export default function Manage({
                                 onChange={(e) =>
                                     setFormData({
                                         ...formData,
-                                        break_minutes: parseInt(e.target.value, 10) || 0,
+                                        break_minutes:
+                                            parseInt(e.target.value, 10) || 0,
                                     })
                                 }
                                 className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm"
@@ -537,7 +580,10 @@ export default function Manage({
                                 rows={3}
                                 value={formData.notes}
                                 onChange={(e) =>
-                                    setFormData({ ...formData, notes: e.target.value })
+                                    setFormData({
+                                        ...formData,
+                                        notes: e.target.value,
+                                    })
                                 }
                                 className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm"
                                 placeholder="修正理由など..."
@@ -548,9 +594,15 @@ export default function Manage({
                     {/* Modified Info */}
                     {editingRecord?.modified_at && (
                         <div className="mt-4 text-xs text-gray-500">
-                            最終修正: {new Date(editingRecord.modified_at).toLocaleString('ja-JP')}
+                            最終修正:{' '}
+                            {new Date(editingRecord.modified_at).toLocaleString(
+                                'ja-JP',
+                            )}
                             {editingRecord.modified_by_user && (
-                                <span> ({editingRecord.modified_by_user.name})</span>
+                                <span>
+                                    {' '}
+                                    ({editingRecord.modified_by_user.name})
+                                </span>
                             )}
                         </div>
                     )}
@@ -560,7 +612,7 @@ export default function Manage({
                         <button
                             type="button"
                             onClick={closeModal}
-                            className="rounded-md border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-700 shadow-sm hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2:bg-gray-600"
+                            className="focus:ring-offset-2:bg-gray-600 rounded-md border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-700 shadow-sm hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-blue-500"
                         >
                             キャンセル
                         </button>

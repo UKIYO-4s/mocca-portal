@@ -10,7 +10,11 @@ export default function Edit({
     mustVerifyEmail,
     status,
     avatarUrl,
-}: PageProps<{ mustVerifyEmail: boolean; status?: string; avatarUrl?: string }>) {
+}: PageProps<{
+    mustVerifyEmail: boolean;
+    status?: string;
+    avatarUrl?: string;
+}>) {
     return (
         <AuthenticatedLayout
             header={
@@ -53,7 +57,7 @@ export default function Edit({
                             <div className="mt-4">
                                 <Link
                                     href={route('two-factor.setup')}
-                                    className="inline-flex items-center rounded-md border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-700 shadow-sm hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2:bg-gray-600"
+                                    className="focus:ring-offset-2:bg-gray-600 inline-flex items-center rounded-md border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-700 shadow-sm hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-blue-500"
                                 >
                                     二要素認証を設定
                                 </Link>

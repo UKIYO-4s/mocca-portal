@@ -1,12 +1,12 @@
-import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
 import InputError from '@/Components/InputError';
 import InputLabel from '@/Components/InputLabel';
 import PrimaryButton from '@/Components/PrimaryButton';
 import SecondaryButton from '@/Components/SecondaryButton';
 import TextInput from '@/Components/TextInput';
+import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
+import { User } from '@/types';
 import { Head, Link, useForm } from '@inertiajs/react';
 import { FormEventHandler } from 'react';
-import { User } from '@/types';
 
 interface Props {
     auth: { user: User };
@@ -20,12 +20,13 @@ interface AnnouncementFormData {
 }
 
 export default function Create({ auth }: Props) {
-    const { data, setData, post, processing, errors } = useForm<AnnouncementFormData>({
-        title: '',
-        content: '',
-        priority: 'normal',
-        published_at: '',
-    });
+    const { data, setData, post, processing, errors } =
+        useForm<AnnouncementFormData>({
+            title: '',
+            content: '',
+            priority: 'normal',
+            published_at: '',
+        });
 
     const submit: FormEventHandler = (e) => {
         e.preventDefault();
@@ -55,11 +56,16 @@ export default function Create({ auth }: Props) {
                                     value={data.title}
                                     className="mt-1 block w-full"
                                     isFocused={true}
-                                    onChange={(e) => setData('title', e.target.value)}
+                                    onChange={(e) =>
+                                        setData('title', e.target.value)
+                                    }
                                     required
                                     placeholder="お知らせのタイトルを入力"
                                 />
-                                <InputError message={errors.title} className="mt-2" />
+                                <InputError
+                                    message={errors.title}
+                                    className="mt-2"
+                                />
                             </div>
 
                             {/* 内容 */}
@@ -69,13 +75,18 @@ export default function Create({ auth }: Props) {
                                     id="content"
                                     name="content"
                                     value={data.content}
-                                    onChange={(e) => setData('content', e.target.value)}
-                                    className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500:border-indigo-600:ring-indigo-600"
+                                    onChange={(e) =>
+                                        setData('content', e.target.value)
+                                    }
+                                    className="focus:ring-indigo-500:border-indigo-600:ring-indigo-600 mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500"
                                     rows={6}
                                     required
                                     placeholder="お知らせの内容を入力"
                                 />
-                                <InputError message={errors.content} className="mt-2" />
+                                <InputError
+                                    message={errors.content}
+                                    className="mt-2"
+                                />
                             </div>
 
                             {/* 優先度 */}
@@ -85,31 +96,49 @@ export default function Create({ auth }: Props) {
                                     id="priority"
                                     name="priority"
                                     value={data.priority}
-                                    onChange={(e) => setData('priority', e.target.value as 'normal' | 'important')}
-                                    className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500:border-indigo-600:ring-indigo-600"
+                                    onChange={(e) =>
+                                        setData(
+                                            'priority',
+                                            e.target.value as
+                                                | 'normal'
+                                                | 'important',
+                                        )
+                                    }
+                                    className="focus:ring-indigo-500:border-indigo-600:ring-indigo-600 mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500"
                                     required
                                 >
                                     <option value="normal">通常</option>
                                     <option value="important">重要</option>
                                 </select>
-                                <InputError message={errors.priority} className="mt-2" />
+                                <InputError
+                                    message={errors.priority}
+                                    className="mt-2"
+                                />
                             </div>
 
                             {/* 公開日時 */}
                             <div className="mt-4">
-                                <InputLabel htmlFor="published_at" value="公開日時" />
+                                <InputLabel
+                                    htmlFor="published_at"
+                                    value="公開日時"
+                                />
                                 <input
                                     type="datetime-local"
                                     id="published_at"
                                     name="published_at"
                                     value={data.published_at}
-                                    onChange={(e) => setData('published_at', e.target.value)}
-                                    className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500:border-indigo-600:ring-indigo-600"
+                                    onChange={(e) =>
+                                        setData('published_at', e.target.value)
+                                    }
+                                    className="focus:ring-indigo-500:border-indigo-600:ring-indigo-600 mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500"
                                 />
                                 <p className="mt-1 text-sm text-gray-500">
                                     公開日時を空にすると下書きとして保存されます
                                 </p>
-                                <InputError message={errors.published_at} className="mt-2" />
+                                <InputError
+                                    message={errors.published_at}
+                                    className="mt-2"
+                                />
                             </div>
 
                             {/* ボタン */}

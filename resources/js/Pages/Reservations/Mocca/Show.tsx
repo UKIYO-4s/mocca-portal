@@ -1,7 +1,7 @@
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
-import { Head, Link, router } from '@inertiajs/react';
 import { PageProps } from '@/types';
 import { formatDateYmd } from '@/utils/date';
+import { Head, Link, router } from '@inertiajs/react';
 
 // 電話番号からハイフンを除去してtel:リンクを生成
 const createTelLink = (phone: string | null): string | null => {
@@ -50,7 +50,8 @@ interface Props extends PageProps {
 }
 
 export default function Show({ auth, reservation }: Props) {
-    const canDelete = auth.user.role === 'admin' || auth.user.role === 'manager';
+    const canDelete =
+        auth.user.role === 'admin' || auth.user.role === 'manager';
 
     const handleDelete = () => {
         if (confirm('この予約を削除してもよろしいですか？')) {
@@ -88,7 +89,10 @@ export default function Show({ auth, reservation }: Props) {
                     </h2>
                     <div className="flex w-full flex-col gap-2 sm:w-auto sm:flex-row sm:items-center">
                         <Link
-                            href={route('reservations.mocca.edit', reservation.id)}
+                            href={route(
+                                'reservations.mocca.edit',
+                                reservation.id,
+                            )}
                             className="inline-flex min-h-[44px] w-full items-center justify-center rounded-md bg-blue-600 px-4 py-2 text-base font-medium text-white hover:bg-blue-700 sm:w-auto"
                         >
                             編集
@@ -132,35 +136,58 @@ export default function Show({ auth, reservation }: Props) {
                             </h3>
                             <dl className="space-y-3">
                                 <div>
-                                    <dt className="text-sm text-gray-600">種別</dt>
+                                    <dt className="text-sm text-gray-600">
+                                        種別
+                                    </dt>
                                     <dd>
-                                        <span className={`inline-flex rounded-full px-3 py-1 text-sm font-medium ${getTypeColor(reservation.reservation_type)}`}>
+                                        <span
+                                            className={`inline-flex rounded-full px-3 py-1 text-sm font-medium ${getTypeColor(reservation.reservation_type)}`}
+                                        >
                                             {reservation.type_label}
                                         </span>
                                     </dd>
                                 </div>
                                 <div>
-                                    <dt className="text-sm text-gray-600">日付</dt>
-                                    <dd className="text-lg font-medium text-gray-900">{formatDateYmd(reservation.reservation_date)}</dd>
+                                    <dt className="text-sm text-gray-600">
+                                        日付
+                                    </dt>
+                                    <dd className="text-lg font-medium text-gray-900">
+                                        {formatDateYmd(
+                                            reservation.reservation_date,
+                                        )}
+                                    </dd>
                                 </div>
                                 {reservation.formatted_arrival_time && (
                                     <div>
-                                        <dt className="text-sm text-gray-600">到着予定時間</dt>
-                                        <dd className="text-lg font-medium text-gray-900">{reservation.formatted_arrival_time}</dd>
+                                        <dt className="text-sm text-gray-600">
+                                            到着予定時間
+                                        </dt>
+                                        <dd className="text-lg font-medium text-gray-900">
+                                            {reservation.formatted_arrival_time}
+                                        </dd>
                                     </div>
                                 )}
                                 <div>
-                                    <dt className="text-sm text-gray-600">人数</dt>
-                                    <dd className="text-lg font-medium text-gray-900">{reservation.guest_count}名</dd>
+                                    <dt className="text-sm text-gray-600">
+                                        人数
+                                    </dt>
+                                    <dd className="text-lg font-medium text-gray-900">
+                                        {reservation.guest_count}名
+                                    </dd>
                                 </div>
                                 <div>
-                                    <dt className="text-sm text-gray-600">ステータス</dt>
+                                    <dt className="text-sm text-gray-600">
+                                        ステータス
+                                    </dt>
                                     <dd>
-                                        <span className={`inline-flex rounded-full px-3 py-1 text-sm font-medium ${
-                                            reservation.status === 'confirmed'
-                                                ? 'bg-green-100 text-green-800'
-                                                : 'bg-red-100 text-red-800'
-                                        }`}>
+                                        <span
+                                            className={`inline-flex rounded-full px-3 py-1 text-sm font-medium ${
+                                                reservation.status ===
+                                                'confirmed'
+                                                    ? 'bg-green-100 text-green-800'
+                                                    : 'bg-red-100 text-red-800'
+                                            }`}
+                                        >
                                             {reservation.status_label}
                                         </span>
                                     </dd>
@@ -175,19 +202,39 @@ export default function Show({ auth, reservation }: Props) {
                             </h3>
                             <dl className="space-y-3">
                                 <div>
-                                    <dt className="text-sm text-gray-600">お名前</dt>
-                                    <dd className="text-lg font-medium text-gray-900">{reservation.name}様</dd>
+                                    <dt className="text-sm text-gray-600">
+                                        お名前
+                                    </dt>
+                                    <dd className="text-lg font-medium text-gray-900">
+                                        {reservation.name}様
+                                    </dd>
                                 </div>
                                 {reservation.phone && (
                                     <div>
-                                        <dt className="text-sm text-gray-600">電話番号</dt>
+                                        <dt className="text-sm text-gray-600">
+                                            電話番号
+                                        </dt>
                                         <dd>
                                             <a
-                                                href={createTelLink(reservation.phone) || '#'}
+                                                href={
+                                                    createTelLink(
+                                                        reservation.phone,
+                                                    ) || '#'
+                                                }
                                                 className="inline-flex min-h-[44px] items-center gap-2 rounded-md bg-green-600 px-4 py-2 text-base font-medium text-white hover:bg-green-700"
                                             >
-                                                <svg className="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z" />
+                                                <svg
+                                                    className="h-5 w-5"
+                                                    fill="none"
+                                                    stroke="currentColor"
+                                                    viewBox="0 0 24 24"
+                                                >
+                                                    <path
+                                                        strokeLinecap="round"
+                                                        strokeLinejoin="round"
+                                                        strokeWidth={2}
+                                                        d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z"
+                                                    />
                                                 </svg>
                                                 {reservation.formatted_phone}
                                             </a>
@@ -195,8 +242,12 @@ export default function Show({ auth, reservation }: Props) {
                                     </div>
                                 )}
                                 <div>
-                                    <dt className="text-sm text-gray-600">入力者</dt>
-                                    <dd className="text-base text-gray-900">{reservation.creator.name}</dd>
+                                    <dt className="text-sm text-gray-600">
+                                        入力者
+                                    </dt>
+                                    <dd className="text-base text-gray-900">
+                                        {reservation.creator.name}
+                                    </dd>
                                 </div>
                             </dl>
                         </div>
@@ -232,19 +283,55 @@ export default function Show({ auth, reservation }: Props) {
                                     関連するばんしろう予約
                                 </h3>
                                 <Link
-                                    href={route('reservations.banshirou.show', reservation.banshirou_reservation.id)}
+                                    href={route(
+                                        'reservations.banshirou.show',
+                                        reservation.banshirou_reservation.id,
+                                    )}
                                     className="block min-h-[44px] rounded-lg border border-gray-200 bg-gray-50 p-4 hover:bg-gray-100"
                                 >
                                     <div className="flex items-center justify-between">
                                         <div>
-                                            <span className="text-base font-medium text-gray-900">{reservation.banshirou_reservation.name}様</span>
+                                            <span className="text-base font-medium text-gray-900">
+                                                {
+                                                    reservation
+                                                        .banshirou_reservation
+                                                        .name
+                                                }
+                                                様
+                                            </span>
                                             <span className="ml-2 text-sm text-gray-600">
-                                                {formatDateYmd(reservation.banshirou_reservation.checkin_date)} 〜 {formatDateYmd(reservation.banshirou_reservation.checkout_date)}
+                                                {formatDateYmd(
+                                                    reservation
+                                                        .banshirou_reservation
+                                                        .checkin_date,
+                                                )}{' '}
+                                                〜{' '}
+                                                {formatDateYmd(
+                                                    reservation
+                                                        .banshirou_reservation
+                                                        .checkout_date,
+                                                )}
                                             </span>
                                         </div>
                                         <span className="text-sm text-gray-600">
-                                            {reservation.banshirou_reservation.guest_count_adults + reservation.banshirou_reservation.guest_count_children}名
-                                            （大人{reservation.banshirou_reservation.guest_count_adults}・子供{reservation.banshirou_reservation.guest_count_children}）
+                                            {reservation.banshirou_reservation
+                                                .guest_count_adults +
+                                                reservation
+                                                    .banshirou_reservation
+                                                    .guest_count_children}
+                                            名 （大人
+                                            {
+                                                reservation
+                                                    .banshirou_reservation
+                                                    .guest_count_adults
+                                            }
+                                            ・子供
+                                            {
+                                                reservation
+                                                    .banshirou_reservation
+                                                    .guest_count_children
+                                            }
+                                            ）
                                         </span>
                                     </div>
                                 </Link>

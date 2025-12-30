@@ -1,7 +1,7 @@
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
-import { Head, Link, router } from '@inertiajs/react';
 import { PageProps } from '@/types';
 import { formatDateYmd } from '@/utils/date';
+import { Head, Link, router } from '@inertiajs/react';
 
 // 電話番号からハイフンを除去してtel:リンクを生成
 const createTelLink = (phone: string): string => {
@@ -66,12 +66,16 @@ interface Props extends PageProps {
 }
 
 export default function Show({ auth, reservation }: Props) {
-    const canManageAssignments = auth.user.role === 'admin' || auth.user.role === 'manager';
-    const canDelete = auth.user.role === 'admin' || auth.user.role === 'manager';
+    const canManageAssignments =
+        auth.user.role === 'admin' || auth.user.role === 'manager';
+    const canDelete =
+        auth.user.role === 'admin' || auth.user.role === 'manager';
 
     const handleDelete = () => {
         if (confirm('この予約を削除してもよろしいですか？')) {
-            router.delete(route('reservations.banshirou.destroy', reservation.id));
+            router.delete(
+                route('reservations.banshirou.destroy', reservation.id),
+            );
         }
     };
 
@@ -92,7 +96,10 @@ export default function Show({ auth, reservation }: Props) {
                     </h2>
                     <div className="flex flex-col gap-3 sm:flex-row sm:items-center">
                         <Link
-                            href={route('reservations.banshirou.edit', reservation.id)}
+                            href={route(
+                                'reservations.banshirou.edit',
+                                reservation.id,
+                            )}
                             className="flex min-h-[44px] w-full items-center justify-center rounded-md bg-blue-600 px-4 py-3 text-base font-medium text-white hover:bg-blue-700 sm:w-auto sm:py-2"
                         >
                             編集
@@ -136,19 +143,39 @@ export default function Show({ auth, reservation }: Props) {
                             </h3>
                             <dl className="space-y-4">
                                 <div>
-                                    <dt className="text-sm font-medium text-gray-600">お名前</dt>
-                                    <dd className="mt-1 text-lg font-semibold text-gray-900">{reservation.name}様</dd>
-                                    <dd className="text-sm text-gray-600">（{reservation.name_kana}）</dd>
+                                    <dt className="text-sm font-medium text-gray-600">
+                                        お名前
+                                    </dt>
+                                    <dd className="mt-1 text-lg font-semibold text-gray-900">
+                                        {reservation.name}様
+                                    </dd>
+                                    <dd className="text-sm text-gray-600">
+                                        （{reservation.name_kana}）
+                                    </dd>
                                 </div>
                                 <div>
-                                    <dt className="text-sm font-medium text-gray-600">電話番号</dt>
+                                    <dt className="text-sm font-medium text-gray-600">
+                                        電話番号
+                                    </dt>
                                     <dd className="mt-1">
                                         <a
-                                            href={createTelLink(reservation.phone)}
+                                            href={createTelLink(
+                                                reservation.phone,
+                                            )}
                                             className="inline-flex min-h-[44px] items-center gap-2 rounded-md bg-green-600 px-4 py-2 text-base font-medium text-white hover:bg-green-700"
                                         >
-                                            <svg className="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z" />
+                                            <svg
+                                                className="h-5 w-5"
+                                                fill="none"
+                                                stroke="currentColor"
+                                                viewBox="0 0 24 24"
+                                            >
+                                                <path
+                                                    strokeLinecap="round"
+                                                    strokeLinejoin="round"
+                                                    strokeWidth={2}
+                                                    d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z"
+                                                />
                                             </svg>
                                             {reservation.formatted_phone}
                                         </a>
@@ -156,12 +183,18 @@ export default function Show({ auth, reservation }: Props) {
                                 </div>
                                 {reservation.email && (
                                     <div>
-                                        <dt className="text-sm font-medium text-gray-600">メールアドレス</dt>
-                                        <dd className="mt-1 text-base text-gray-900">{reservation.email}</dd>
+                                        <dt className="text-sm font-medium text-gray-600">
+                                            メールアドレス
+                                        </dt>
+                                        <dd className="mt-1 text-base text-gray-900">
+                                            {reservation.email}
+                                        </dd>
                                     </div>
                                 )}
                                 <div>
-                                    <dt className="text-sm font-medium text-gray-600">住所</dt>
+                                    <dt className="text-sm font-medium text-gray-600">
+                                        住所
+                                    </dt>
                                     <dd className="mt-1 whitespace-pre-wrap text-base leading-relaxed text-gray-900">
                                         {reservation.address}
                                     </dd>
@@ -177,24 +210,45 @@ export default function Show({ auth, reservation }: Props) {
                             <dl className="space-y-4">
                                 <div className="grid grid-cols-2 gap-4">
                                     <div>
-                                        <dt className="text-sm font-medium text-gray-600">チェックイン</dt>
-                                        <dd className="mt-1 text-lg font-semibold text-gray-900">{formatDateYmd(reservation.checkin_date)}</dd>
+                                        <dt className="text-sm font-medium text-gray-600">
+                                            チェックイン
+                                        </dt>
+                                        <dd className="mt-1 text-lg font-semibold text-gray-900">
+                                            {formatDateYmd(
+                                                reservation.checkin_date,
+                                            )}
+                                        </dd>
                                     </div>
                                     <div>
-                                        <dt className="text-sm font-medium text-gray-600">チェックアウト</dt>
-                                        <dd className="mt-1 text-lg font-semibold text-gray-900">{formatDateYmd(reservation.checkout_date)}</dd>
+                                        <dt className="text-sm font-medium text-gray-600">
+                                            チェックアウト
+                                        </dt>
+                                        <dd className="mt-1 text-lg font-semibold text-gray-900">
+                                            {formatDateYmd(
+                                                reservation.checkout_date,
+                                            )}
+                                        </dd>
                                     </div>
                                 </div>
                                 <div>
-                                    <dt className="text-sm font-medium text-gray-600">宿泊日数</dt>
-                                    <dd className="mt-1 text-lg font-semibold text-gray-900">{reservation.nights}泊</dd>
+                                    <dt className="text-sm font-medium text-gray-600">
+                                        宿泊日数
+                                    </dt>
+                                    <dd className="mt-1 text-lg font-semibold text-gray-900">
+                                        {reservation.nights}泊
+                                    </dd>
                                 </div>
                                 <div>
-                                    <dt className="text-sm font-medium text-gray-600">人数</dt>
+                                    <dt className="text-sm font-medium text-gray-600">
+                                        人数
+                                    </dt>
                                     <dd className="mt-1 text-lg font-semibold text-gray-900">
                                         {reservation.total_guests}名
                                         <span className="ml-2 text-base font-normal text-gray-600">
-                                            （大人{reservation.guest_count_adults}・子供{reservation.guest_count_children}）
+                                            （大人
+                                            {reservation.guest_count_adults}
+                                            ・子供
+                                            {reservation.guest_count_children}）
                                         </span>
                                     </dd>
                                 </div>
@@ -208,13 +262,21 @@ export default function Show({ auth, reservation }: Props) {
                             </h3>
                             <dl className="space-y-4">
                                 <div>
-                                    <dt className="text-sm font-medium text-gray-600">お食事</dt>
-                                    <dd className="mt-1 text-lg font-semibold text-gray-900">{reservation.meal_option_label}</dd>
+                                    <dt className="text-sm font-medium text-gray-600">
+                                        お食事
+                                    </dt>
+                                    <dd className="mt-1 text-lg font-semibold text-gray-900">
+                                        {reservation.meal_option_label}
+                                    </dd>
                                 </div>
                                 <div>
-                                    <dt className="text-sm font-medium text-gray-600">送迎</dt>
+                                    <dt className="text-sm font-medium text-gray-600">
+                                        送迎
+                                    </dt>
                                     <dd className="mt-1 text-lg font-semibold text-gray-900">
-                                        {reservation.pickup_required ? 'あり' : 'なし'}
+                                        {reservation.pickup_required
+                                            ? 'あり'
+                                            : 'なし'}
                                     </dd>
                                 </div>
                             </dl>
@@ -227,24 +289,37 @@ export default function Show({ auth, reservation }: Props) {
                             </h3>
                             <dl className="space-y-4">
                                 <div>
-                                    <dt className="text-sm font-medium text-gray-600">お支払い方法</dt>
-                                    <dd className="mt-1 text-lg font-semibold text-gray-900">{reservation.payment_method_label}</dd>
+                                    <dt className="text-sm font-medium text-gray-600">
+                                        お支払い方法
+                                    </dt>
+                                    <dd className="mt-1 text-lg font-semibold text-gray-900">
+                                        {reservation.payment_method_label}
+                                    </dd>
                                 </div>
                                 <div>
-                                    <dt className="text-sm font-medium text-gray-600">ステータス</dt>
+                                    <dt className="text-sm font-medium text-gray-600">
+                                        ステータス
+                                    </dt>
                                     <dd className="mt-1">
-                                        <span className={`inline-flex rounded-full px-3 py-1 text-base font-medium ${
-                                            reservation.status === 'confirmed'
-                                                ? 'bg-green-100 text-green-800'
-                                                : 'bg-red-100 text-red-800'
-                                        }`}>
+                                        <span
+                                            className={`inline-flex rounded-full px-3 py-1 text-base font-medium ${
+                                                reservation.status ===
+                                                'confirmed'
+                                                    ? 'bg-green-100 text-green-800'
+                                                    : 'bg-red-100 text-red-800'
+                                            }`}
+                                        >
                                             {reservation.status_label}
                                         </span>
                                     </dd>
                                 </div>
                                 <div>
-                                    <dt className="text-sm font-medium text-gray-600">入力者</dt>
-                                    <dd className="mt-1 text-base text-gray-900">{reservation.creator.name}</dd>
+                                    <dt className="text-sm font-medium text-gray-600">
+                                        入力者
+                                    </dt>
+                                    <dd className="mt-1 text-base text-gray-900">
+                                        {reservation.creator.name}
+                                    </dd>
                                 </div>
                             </dl>
                         </div>
@@ -268,18 +343,24 @@ export default function Show({ auth, reservation }: Props) {
                             </h3>
                             <div className="grid gap-4 sm:grid-cols-2">
                                 <div className="rounded-lg border border-gray-200 p-4">
-                                    <dt className="text-sm font-medium text-gray-600">掃除担当</dt>
+                                    <dt className="text-sm font-medium text-gray-600">
+                                        掃除担当
+                                    </dt>
                                     <dd className="mt-1 text-lg font-semibold text-gray-900">
                                         {reservation.cleaning_assignment
-                                            ? reservation.cleaning_assignment.user.name
+                                            ? reservation.cleaning_assignment
+                                                  .user.name
                                             : '未割当'}
                                     </dd>
                                 </div>
                                 <div className="rounded-lg border border-gray-200 p-4">
-                                    <dt className="text-sm font-medium text-gray-600">セット担当</dt>
+                                    <dt className="text-sm font-medium text-gray-600">
+                                        セット担当
+                                    </dt>
                                     <dd className="mt-1 text-lg font-semibold text-gray-900">
                                         {reservation.setup_assignment
-                                            ? reservation.setup_assignment.user.name
+                                            ? reservation.setup_assignment.user
+                                                  .name
                                             : '未割当'}
                                     </dd>
                                 </div>
@@ -293,21 +374,36 @@ export default function Show({ auth, reservation }: Props) {
                                     関連する食事予約
                                 </h3>
                                 <div className="space-y-3">
-                                    {reservation.mocca_reservations.map((moccaRes) => (
-                                        <Link
-                                            key={moccaRes.id}
-                                            href={route('reservations.mocca.show', moccaRes.id)}
-                                            className="block min-h-[44px] rounded-lg border border-gray-200 p-4 hover:bg-gray-50"
-                                        >
-                                            <div className="flex flex-wrap items-center justify-between gap-2">
-                                                <div>
-                                                    <span className="text-base font-semibold text-gray-900">{formatDateYmd(moccaRes.reservation_date)}</span>
-                                                    <span className="ml-2 text-base text-gray-600">{moccaRes.type_label}</span>
+                                    {reservation.mocca_reservations.map(
+                                        (moccaRes) => (
+                                            <Link
+                                                key={moccaRes.id}
+                                                href={route(
+                                                    'reservations.mocca.show',
+                                                    moccaRes.id,
+                                                )}
+                                                className="block min-h-[44px] rounded-lg border border-gray-200 p-4 hover:bg-gray-50"
+                                            >
+                                                <div className="flex flex-wrap items-center justify-between gap-2">
+                                                    <div>
+                                                        <span className="text-base font-semibold text-gray-900">
+                                                            {formatDateYmd(
+                                                                moccaRes.reservation_date,
+                                                            )}
+                                                        </span>
+                                                        <span className="ml-2 text-base text-gray-600">
+                                                            {
+                                                                moccaRes.type_label
+                                                            }
+                                                        </span>
+                                                    </div>
+                                                    <span className="text-base text-gray-600">
+                                                        {moccaRes.guest_count}名
+                                                    </span>
                                                 </div>
-                                                <span className="text-base text-gray-600">{moccaRes.guest_count}名</span>
-                                            </div>
-                                        </Link>
-                                    ))}
+                                            </Link>
+                                        ),
+                                    )}
                                 </div>
                             </div>
                         )}

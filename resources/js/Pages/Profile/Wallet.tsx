@@ -1,6 +1,6 @@
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
-import { Head, useForm } from '@inertiajs/react';
 import { PageProps, StaffWallet } from '@/types';
+import { Head, useForm } from '@inertiajs/react';
 import { FormEventHandler } from 'react';
 
 interface WalletProps extends PageProps {
@@ -8,7 +8,14 @@ interface WalletProps extends PageProps {
 }
 
 export default function Wallet({ wallet }: WalletProps) {
-    const { data, setData, post, delete: destroy, processing, errors } = useForm({
+    const {
+        data,
+        setData,
+        post,
+        delete: destroy,
+        processing,
+        errors,
+    } = useForm({
         wallet_address: wallet?.wallet_address || '',
     });
 
@@ -56,12 +63,19 @@ export default function Wallet({ wallet }: WalletProps) {
                                         type="text"
                                         id="wallet_address"
                                         value={data.wallet_address}
-                                        onChange={(e) => setData('wallet_address', e.target.value)}
+                                        onChange={(e) =>
+                                            setData(
+                                                'wallet_address',
+                                                e.target.value,
+                                            )
+                                        }
                                         placeholder="0x..."
                                         className="mt-1 block w-full rounded-md border-gray-300 font-mono text-sm shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
                                     />
                                     {errors.wallet_address && (
-                                        <p className="mt-2 text-sm text-red-600">{errors.wallet_address}</p>
+                                        <p className="mt-2 text-sm text-red-600">
+                                            {errors.wallet_address}
+                                        </p>
                                     )}
                                 </div>
 
@@ -83,7 +97,9 @@ export default function Wallet({ wallet }: WalletProps) {
                                                         : 'bg-yellow-100 text-yellow-800'
                                                 }`}
                                             >
-                                                {wallet.is_verified ? '検証済み' : '未検証'}
+                                                {wallet.is_verified
+                                                    ? '検証済み'
+                                                    : '未検証'}
                                             </span>
                                         </div>
                                         {wallet.connected_at && (

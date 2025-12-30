@@ -1,6 +1,6 @@
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
-import { Head, router } from '@inertiajs/react';
 import { PageProps } from '@/types';
+import { Head, router } from '@inertiajs/react';
 
 interface MonthlyTimeReport {
     user_id: number;
@@ -47,13 +47,21 @@ export default function Reports({ auth, reports, currentMonth }: Props) {
         const newDate = new Date(currentDate);
         newDate.setMonth(newDate.getMonth() + offset);
         const newMonth = `${newDate.getFullYear()}-${(newDate.getMonth() + 1).toString().padStart(2, '0')}`;
-        router.get(route('timecard.reports'), { month: newMonth }, { preserveState: true });
+        router.get(
+            route('timecard.reports'),
+            { month: newMonth },
+            { preserveState: true },
+        );
     };
 
     const goToCurrentMonth = () => {
         const now = new Date();
         const thisMonth = `${now.getFullYear()}-${(now.getMonth() + 1).toString().padStart(2, '0')}`;
-        router.get(route('timecard.reports'), { month: thisMonth }, { preserveState: true });
+        router.get(
+            route('timecard.reports'),
+            { month: thisMonth },
+            { preserveState: true },
+        );
     };
 
     // Format month display (e.g., "2025年1月")
@@ -67,15 +75,17 @@ export default function Reports({ auth, reports, currentMonth }: Props) {
         (acc, report) => ({
             totalWorkDays: acc.totalWorkDays + report.work_days,
             totalWorkMinutes: acc.totalWorkMinutes + report.total_work_minutes,
-            totalBreakMinutes: acc.totalBreakMinutes + report.total_break_minutes,
+            totalBreakMinutes:
+                acc.totalBreakMinutes + report.total_break_minutes,
         }),
-        { totalWorkDays: 0, totalWorkMinutes: 0, totalBreakMinutes: 0 }
+        { totalWorkDays: 0, totalWorkMinutes: 0, totalBreakMinutes: 0 },
     );
 
     // Calculate overall average (total work minutes / total work days)
-    const overallAverageMinutes = summaryTotals.totalWorkDays > 0
-        ? summaryTotals.totalWorkMinutes / summaryTotals.totalWorkDays
-        : 0;
+    const overallAverageMinutes =
+        summaryTotals.totalWorkDays > 0
+            ? summaryTotals.totalWorkMinutes / summaryTotals.totalWorkDays
+            : 0;
 
     return (
         <AuthenticatedLayout
@@ -93,10 +103,20 @@ export default function Reports({ auth, reports, currentMonth }: Props) {
                     <div className="mb-6 flex items-center justify-center gap-4">
                         <button
                             onClick={() => navigateMonth(-1)}
-                            className="inline-flex items-center rounded-md bg-gray-200 px-3 py-2 text-sm font-medium text-gray-700 hover:bg-gray-300:bg-gray-600"
+                            className="hover:bg-gray-300:bg-gray-600 inline-flex items-center rounded-md bg-gray-200 px-3 py-2 text-sm font-medium text-gray-700"
                         >
-                            <svg className="mr-1 h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
+                            <svg
+                                className="mr-1 h-4 w-4"
+                                fill="none"
+                                stroke="currentColor"
+                                viewBox="0 0 24 24"
+                            >
+                                <path
+                                    strokeLinecap="round"
+                                    strokeLinejoin="round"
+                                    strokeWidth={2}
+                                    d="M15 19l-7-7 7-7"
+                                />
                             </svg>
                             前月
                         </button>
@@ -107,7 +127,7 @@ export default function Reports({ auth, reports, currentMonth }: Props) {
                             </span>
                             <button
                                 onClick={goToCurrentMonth}
-                                className="rounded-md bg-blue-100 px-2 py-1 text-xs font-medium text-blue-700 hover:bg-blue-200:bg-blue-800"
+                                className="hover:bg-blue-200:bg-blue-800 rounded-md bg-blue-100 px-2 py-1 text-xs font-medium text-blue-700"
                             >
                                 今月
                             </button>
@@ -115,11 +135,21 @@ export default function Reports({ auth, reports, currentMonth }: Props) {
 
                         <button
                             onClick={() => navigateMonth(1)}
-                            className="inline-flex items-center rounded-md bg-gray-200 px-3 py-2 text-sm font-medium text-gray-700 hover:bg-gray-300:bg-gray-600"
+                            className="hover:bg-gray-300:bg-gray-600 inline-flex items-center rounded-md bg-gray-200 px-3 py-2 text-sm font-medium text-gray-700"
                         >
                             翌月
-                            <svg className="ml-1 h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                            <svg
+                                className="ml-1 h-4 w-4"
+                                fill="none"
+                                stroke="currentColor"
+                                viewBox="0 0 24 24"
+                            >
+                                <path
+                                    strokeLinecap="round"
+                                    strokeLinejoin="round"
+                                    strokeWidth={2}
+                                    d="M9 5l7 7-7 7"
+                                />
                             </svg>
                         </button>
                     </div>
@@ -129,7 +159,8 @@ export default function Reports({ auth, reports, currentMonth }: Props) {
                         {reports.length === 0 ? (
                             <div className="p-8 text-center">
                                 <p className="text-gray-500">
-                                    {formatMonthDisplay(currentMonth)}の勤怠データがありません
+                                    {formatMonthDisplay(currentMonth)}
+                                    の勤怠データがありません
                                 </p>
                             </div>
                         ) : (
@@ -156,7 +187,10 @@ export default function Reports({ auth, reports, currentMonth }: Props) {
                                     </thead>
                                     <tbody className="divide-y divide-gray-200 bg-white">
                                         {reports.map((report) => (
-                                            <tr key={report.user_id} className="hover:bg-gray-50:bg-gray-700">
+                                            <tr
+                                                key={report.user_id}
+                                                className="hover:bg-gray-50:bg-gray-700"
+                                            >
                                                 <td className="whitespace-nowrap px-6 py-4 text-sm font-medium text-gray-900">
                                                     {report.user_name}
                                                 </td>
@@ -164,18 +198,36 @@ export default function Reports({ auth, reports, currentMonth }: Props) {
                                                     {report.work_days}日
                                                 </td>
                                                 <td className="whitespace-nowrap px-6 py-4 text-right text-sm text-gray-900">
-                                                    <span title={formatMinutesToHHMM(report.total_work_minutes)}>
-                                                        {formatMinutesToJapanese(report.total_work_minutes)}
+                                                    <span
+                                                        title={formatMinutesToHHMM(
+                                                            report.total_work_minutes,
+                                                        )}
+                                                    >
+                                                        {formatMinutesToJapanese(
+                                                            report.total_work_minutes,
+                                                        )}
                                                     </span>
                                                 </td>
                                                 <td className="whitespace-nowrap px-6 py-4 text-right text-sm text-gray-900">
-                                                    <span title={formatMinutesToHHMM(report.total_break_minutes)}>
-                                                        {formatMinutesToJapanese(report.total_break_minutes)}
+                                                    <span
+                                                        title={formatMinutesToHHMM(
+                                                            report.total_break_minutes,
+                                                        )}
+                                                    >
+                                                        {formatMinutesToJapanese(
+                                                            report.total_break_minutes,
+                                                        )}
                                                     </span>
                                                 </td>
                                                 <td className="whitespace-nowrap px-6 py-4 text-right text-sm text-gray-900">
-                                                    <span title={formatMinutesToHHMM(report.average_work_minutes_per_day)}>
-                                                        {formatMinutesToJapanese(report.average_work_minutes_per_day)}
+                                                    <span
+                                                        title={formatMinutesToHHMM(
+                                                            report.average_work_minutes_per_day,
+                                                        )}
+                                                    >
+                                                        {formatMinutesToJapanese(
+                                                            report.average_work_minutes_per_day,
+                                                        )}
                                                     </span>
                                                 </td>
                                             </tr>
@@ -191,18 +243,36 @@ export default function Reports({ auth, reports, currentMonth }: Props) {
                                                 {summaryTotals.totalWorkDays}日
                                             </td>
                                             <td className="whitespace-nowrap px-6 py-4 text-right text-sm text-gray-900">
-                                                <span title={formatMinutesToHHMM(summaryTotals.totalWorkMinutes)}>
-                                                    {formatMinutesToJapanese(summaryTotals.totalWorkMinutes)}
+                                                <span
+                                                    title={formatMinutesToHHMM(
+                                                        summaryTotals.totalWorkMinutes,
+                                                    )}
+                                                >
+                                                    {formatMinutesToJapanese(
+                                                        summaryTotals.totalWorkMinutes,
+                                                    )}
                                                 </span>
                                             </td>
                                             <td className="whitespace-nowrap px-6 py-4 text-right text-sm text-gray-900">
-                                                <span title={formatMinutesToHHMM(summaryTotals.totalBreakMinutes)}>
-                                                    {formatMinutesToJapanese(summaryTotals.totalBreakMinutes)}
+                                                <span
+                                                    title={formatMinutesToHHMM(
+                                                        summaryTotals.totalBreakMinutes,
+                                                    )}
+                                                >
+                                                    {formatMinutesToJapanese(
+                                                        summaryTotals.totalBreakMinutes,
+                                                    )}
                                                 </span>
                                             </td>
                                             <td className="whitespace-nowrap px-6 py-4 text-right text-sm text-gray-900">
-                                                <span title={formatMinutesToHHMM(overallAverageMinutes)}>
-                                                    {formatMinutesToJapanese(overallAverageMinutes)}
+                                                <span
+                                                    title={formatMinutesToHHMM(
+                                                        overallAverageMinutes,
+                                                    )}
+                                                >
+                                                    {formatMinutesToJapanese(
+                                                        overallAverageMinutes,
+                                                    )}
                                                 </span>
                                             </td>
                                         </tr>

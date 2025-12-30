@@ -1,6 +1,6 @@
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
-import { Head, Link, router } from '@inertiajs/react';
 import { InventoryItem, Location, User } from '@/types';
+import { Head, Link, router } from '@inertiajs/react';
 import { useState } from 'react';
 
 interface Props {
@@ -11,9 +11,9 @@ interface Props {
 }
 
 export default function Manage({ auth, items, locations, filters }: Props) {
-    const [selectedLocation, setSelectedLocation] = useState<number | undefined>(
-        filters.location_id
-    );
+    const [selectedLocation, setSelectedLocation] = useState<
+        number | undefined
+    >(filters.location_id);
 
     const handleLocationChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
         const value = e.target.value;
@@ -23,7 +23,7 @@ export default function Manage({ auth, items, locations, filters }: Props) {
         router.get(
             route('inventory.manage'),
             locationId ? { location_id: locationId } : {},
-            { preserveState: true, preserveScroll: true }
+            { preserveState: true, preserveScroll: true },
         );
     };
 
@@ -57,7 +57,7 @@ export default function Manage({ auth, items, locations, filters }: Props) {
     };
 
     const lowStockCount = items.filter(
-        (item) => item.current_stock <= item.reorder_point
+        (item) => item.current_stock <= item.reorder_point,
     ).length;
 
     return (
@@ -70,7 +70,7 @@ export default function Manage({ auth, items, locations, filters }: Props) {
                     <div className="flex items-center gap-3">
                         <Link
                             href={route('inventory.logs')}
-                            className="inline-flex items-center rounded-md bg-gray-100 px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-200:bg-gray-600"
+                            className="hover:bg-gray-200:bg-gray-600 inline-flex items-center rounded-md bg-gray-100 px-4 py-2 text-sm font-medium text-gray-700"
                         >
                             <svg
                                 className="-ml-1 mr-2 h-4 w-4"
@@ -118,7 +118,7 @@ export default function Manage({ auth, items, locations, filters }: Props) {
                     <div className="mb-4">
                         <Link
                             href={route('inventory.index')}
-                            className="inline-flex items-center text-sm text-gray-600 hover:text-gray-900:text-gray-200"
+                            className="hover:text-gray-900:text-gray-200 inline-flex items-center text-sm text-gray-600"
                         >
                             <svg
                                 className="mr-1 h-4 w-4"
@@ -181,7 +181,10 @@ export default function Manage({ auth, items, locations, filters }: Props) {
                                     >
                                         <option value="">すべて</option>
                                         {locations.map((location) => (
-                                            <option key={location.id} value={location.id}>
+                                            <option
+                                                key={location.id}
+                                                value={location.id}
+                                            >
                                                 {location.name}
                                             </option>
                                         ))}
@@ -242,7 +245,8 @@ export default function Manage({ auth, items, locations, filters }: Props) {
                                                             ? 'bg-gray-50'
                                                             : ''
                                                     } ${
-                                                        item.current_stock <= item.reorder_point
+                                                        item.current_stock <=
+                                                        item.reorder_point
                                                             ? 'bg-yellow-50'
                                                             : ''
                                                     }`}
@@ -260,7 +264,11 @@ export default function Manage({ auth, items, locations, filters }: Props) {
                                                         </div>
                                                         {item.location && (
                                                             <div className="text-sm text-gray-500">
-                                                                {item.location.name}
+                                                                {
+                                                                    item
+                                                                        .location
+                                                                        .name
+                                                                }
                                                             </div>
                                                         )}
                                                     </td>
@@ -270,7 +278,8 @@ export default function Manage({ auth, items, locations, filters }: Props) {
                                                     <td className="whitespace-nowrap px-6 py-4 text-right">
                                                         <span
                                                             className={`text-sm font-medium ${
-                                                                item.current_stock <= item.reorder_point
+                                                                item.current_stock <=
+                                                                item.reorder_point
                                                                     ? 'text-yellow-600'
                                                                     : 'text-gray-900'
                                                             }`}
@@ -287,20 +296,35 @@ export default function Manage({ auth, items, locations, filters }: Props) {
                                                     <td className="whitespace-nowrap px-6 py-4 text-right">
                                                         <div className="flex items-center justify-end gap-2">
                                                             <Link
-                                                                href={route('inventory.edit', item.id)}
-                                                                className="rounded-md bg-gray-100 px-3 py-1.5 text-sm font-medium text-gray-700 hover:bg-gray-200:bg-gray-600"
+                                                                href={route(
+                                                                    'inventory.edit',
+                                                                    item.id,
+                                                                )}
+                                                                className="hover:bg-gray-200:bg-gray-600 rounded-md bg-gray-100 px-3 py-1.5 text-sm font-medium text-gray-700"
                                                             >
                                                                 編集
                                                             </Link>
                                                             <Link
-                                                                href={route('inventory.edit', item.id) + '?action=restock'}
-                                                                className="rounded-md bg-green-100 px-3 py-1.5 text-sm font-medium text-green-700 hover:bg-green-200:bg-green-900/50"
+                                                                href={
+                                                                    route(
+                                                                        'inventory.edit',
+                                                                        item.id,
+                                                                    ) +
+                                                                    '?action=restock'
+                                                                }
+                                                                className="hover:bg-green-200:bg-green-900/50 rounded-md bg-green-100 px-3 py-1.5 text-sm font-medium text-green-700"
                                                             >
                                                                 補充
                                                             </Link>
                                                             <Link
-                                                                href={route('inventory.edit', item.id) + '?action=adjust'}
-                                                                className="rounded-md bg-blue-100 px-3 py-1.5 text-sm font-medium text-blue-700 hover:bg-blue-200:bg-blue-900/50"
+                                                                href={
+                                                                    route(
+                                                                        'inventory.edit',
+                                                                        item.id,
+                                                                    ) +
+                                                                    '?action=adjust'
+                                                                }
+                                                                className="hover:bg-blue-200:bg-blue-900/50 rounded-md bg-blue-100 px-3 py-1.5 text-sm font-medium text-blue-700"
                                                             >
                                                                 調整
                                                             </Link>
@@ -365,15 +389,11 @@ export default function Manage({ auth, items, locations, filters }: Props) {
                             <li>
                                 「要発注」は現在在庫が発注点以下になった品目です
                             </li>
-                            <li>
-                                「補充」で入荷・仕入れを記録できます
-                            </li>
+                            <li>「補充」で入荷・仕入れを記録できます</li>
                             <li>
                                 「調整」で棚卸し結果などの在庫調整ができます
                             </li>
-                            <li>
-                                履歴から過去の在庫変動を確認できます
-                            </li>
+                            <li>履歴から過去の在庫変動を確認できます</li>
                         </ul>
                     </div>
                 </div>

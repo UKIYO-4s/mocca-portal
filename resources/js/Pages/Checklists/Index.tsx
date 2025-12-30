@@ -1,6 +1,6 @@
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
-import { Head, Link, router } from '@inertiajs/react';
 import { DailyChecklist, User } from '@/types';
+import { Head, Link, router } from '@inertiajs/react';
 import { useState } from 'react';
 
 interface Props {
@@ -32,10 +32,14 @@ export default function Index({ auth, checklists, filters }: Props) {
     const [isGenerating, setIsGenerating] = useState(false);
 
     const handleFilter = () => {
-        router.get(route('checklists.index'), {
-            date: selectedDate || undefined,
-            type: selectedType || undefined,
-        }, { preserveState: true });
+        router.get(
+            route('checklists.index'),
+            {
+                date: selectedDate || undefined,
+                type: selectedType || undefined,
+            },
+            { preserveState: true },
+        );
     };
 
     const clearFilters = () => {
@@ -49,22 +53,31 @@ export default function Index({ auth, checklists, filters }: Props) {
 
     const handleGenerate = () => {
         setIsGenerating(true);
-        router.post(route('checklists.generate'), {
-            date: selectedDate,
-        }, {
-            preserveState: true,
-            onFinish: () => setIsGenerating(false),
-        });
+        router.post(
+            route('checklists.generate'),
+            {
+                date: selectedDate,
+            },
+            {
+                preserveState: true,
+                onFinish: () => setIsGenerating(false),
+            },
+        );
     };
 
-    const isAdminOrManager = auth.user.role === 'admin' || auth.user.role === 'manager';
+    const isAdminOrManager =
+        auth.user.role === 'admin' || auth.user.role === 'manager';
 
     const getCompletedCount = (checklist: DailyChecklist): number => {
-        return checklist.entries?.filter(entry => entry.is_completed).length ?? 0;
+        return (
+            checklist.entries?.filter((entry) => entry.is_completed).length ?? 0
+        );
     };
 
     const getTotalCount = (checklist: DailyChecklist): number => {
-        return checklist.entries?.length ?? checklist.template?.items_count ?? 0;
+        return (
+            checklist.entries?.length ?? checklist.template?.items_count ?? 0
+        );
     };
 
     return (
@@ -86,13 +99,28 @@ export default function Index({ auth, checklists, filters }: Props) {
                         <button
                             onClick={handleGenerate}
                             disabled={isGenerating}
-                            className="inline-flex items-center rounded-md bg-blue-600 px-4 py-2 text-sm font-medium text-white hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed"
+                            className="inline-flex items-center rounded-md bg-blue-600 px-4 py-2 text-sm font-medium text-white hover:bg-blue-700 disabled:cursor-not-allowed disabled:opacity-50"
                         >
                             {isGenerating ? (
                                 <>
-                                    <svg className="mr-2 h-4 w-4 animate-spin" viewBox="0 0 24 24">
-                                        <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" fill="none" />
-                                        <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z" />
+                                    <svg
+                                        className="mr-2 h-4 w-4 animate-spin"
+                                        viewBox="0 0 24 24"
+                                    >
+                                        <circle
+                                            className="opacity-25"
+                                            cx="12"
+                                            cy="12"
+                                            r="10"
+                                            stroke="currentColor"
+                                            strokeWidth="4"
+                                            fill="none"
+                                        />
+                                        <path
+                                            className="opacity-75"
+                                            fill="currentColor"
+                                            d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+                                        />
                                     </svg>
                                     生成中...
                                 </>
@@ -118,7 +146,9 @@ export default function Index({ auth, checklists, filters }: Props) {
                                 <input
                                     type="date"
                                     value={selectedDate}
-                                    onChange={(e) => setSelectedDate(e.target.value)}
+                                    onChange={(e) =>
+                                        setSelectedDate(e.target.value)
+                                    }
                                     className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
                                 />
                             </div>
@@ -128,12 +158,18 @@ export default function Index({ auth, checklists, filters }: Props) {
                                 </label>
                                 <select
                                     value={selectedType}
-                                    onChange={(e) => setSelectedType(e.target.value)}
+                                    onChange={(e) =>
+                                        setSelectedType(e.target.value)
+                                    }
                                     className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
                                 >
                                     <option value="">すべて</option>
-                                    <option value="lunch_prep">ランチ準備</option>
-                                    <option value="dinner_prep">ディナー準備</option>
+                                    <option value="lunch_prep">
+                                        ランチ準備
+                                    </option>
+                                    <option value="dinner_prep">
+                                        ディナー準備
+                                    </option>
                                     <option value="cleaning">清掃</option>
                                     <option value="other">その他</option>
                                 </select>
@@ -147,7 +183,7 @@ export default function Index({ auth, checklists, filters }: Props) {
                                 </button>
                                 <button
                                     onClick={clearFilters}
-                                    className="rounded-md bg-gray-300 px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-400:bg-gray-500"
+                                    className="hover:bg-gray-400:bg-gray-500 rounded-md bg-gray-300 px-4 py-2 text-sm font-medium text-gray-700"
                                 >
                                     クリア
                                 </button>
@@ -181,32 +217,59 @@ export default function Index({ auth, checklists, filters }: Props) {
                             </div>
                         ) : (
                             checklists.map((checklist) => {
-                                const completedCount = getCompletedCount(checklist);
+                                const completedCount =
+                                    getCompletedCount(checklist);
                                 const totalCount = getTotalCount(checklist);
-                                const completionRate = totalCount > 0 ? Math.round((completedCount / totalCount) * 100) : 0;
+                                const completionRate =
+                                    totalCount > 0
+                                        ? Math.round(
+                                              (completedCount / totalCount) *
+                                                  100,
+                                          )
+                                        : 0;
 
                                 return (
                                     <Link
                                         key={checklist.id}
-                                        href={route('checklists.show', checklist.id)}
+                                        href={route(
+                                            'checklists.show',
+                                            checklist.id,
+                                        )}
                                         className="block rounded-lg bg-white p-4 shadow-sm transition-shadow hover:shadow-md"
                                     >
                                         <div className="flex items-start justify-between">
-                                            <div className="flex-1 min-w-0">
+                                            <div className="min-w-0 flex-1">
                                                 <h3 className="truncate text-lg font-medium text-gray-900">
-                                                    {checklist.template?.name ?? 'チェックリスト'}
+                                                    {checklist.template?.name ??
+                                                        'チェックリスト'}
                                                 </h3>
                                                 <span
                                                     className={`mt-1 inline-flex rounded-full px-2 py-1 text-xs font-medium ${
-                                                        typeBadgeColors[checklist.template?.type ?? 'other'] ?? typeBadgeColors.other
+                                                        typeBadgeColors[
+                                                            checklist.template
+                                                                ?.type ??
+                                                                'other'
+                                                        ] ??
+                                                        typeBadgeColors.other
                                                     }`}
                                                 >
-                                                    {checklist.template?.type_label ?? typeLabels[checklist.template?.type ?? 'other'] ?? 'その他'}
+                                                    {checklist.template
+                                                        ?.type_label ??
+                                                        typeLabels[
+                                                            checklist.template
+                                                                ?.type ??
+                                                                'other'
+                                                        ] ??
+                                                        'その他'}
                                                 </span>
                                             </div>
                                             {checklist.is_completed && (
                                                 <span className="ml-2 flex-shrink-0 rounded-full bg-green-100 p-1 text-green-600">
-                                                    <svg className="h-5 w-5" fill="currentColor" viewBox="0 0 20 20">
+                                                    <svg
+                                                        className="h-5 w-5"
+                                                        fill="currentColor"
+                                                        viewBox="0 0 20 20"
+                                                    >
                                                         <path
                                                             fillRule="evenodd"
                                                             d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
@@ -221,7 +284,8 @@ export default function Index({ auth, checklists, filters }: Props) {
                                         <div className="mt-4">
                                             <div className="flex items-center justify-between text-sm">
                                                 <span className="text-gray-600">
-                                                    {completedCount}/{totalCount} 完了
+                                                    {completedCount}/
+                                                    {totalCount} 完了
                                                 </span>
                                                 <span className="font-medium text-gray-900">
                                                     {completionRate}%
@@ -232,11 +296,14 @@ export default function Index({ auth, checklists, filters }: Props) {
                                                     className={`h-full rounded-full transition-all duration-300 ${
                                                         completionRate === 100
                                                             ? 'bg-green-500'
-                                                            : completionRate >= 50
-                                                            ? 'bg-blue-500'
-                                                            : 'bg-yellow-500'
+                                                            : completionRate >=
+                                                                50
+                                                              ? 'bg-blue-500'
+                                                              : 'bg-yellow-500'
                                                     }`}
-                                                    style={{ width: `${completionRate}%` }}
+                                                    style={{
+                                                        width: `${completionRate}%`,
+                                                    }}
                                                 />
                                             </div>
                                         </div>

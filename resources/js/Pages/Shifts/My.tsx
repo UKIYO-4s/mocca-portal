@@ -1,6 +1,6 @@
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
+import { Shift, User } from '@/types';
 import { Head, router } from '@inertiajs/react';
-import { User, Shift } from '@/types';
 
 interface Props {
     auth: { user: User };
@@ -10,7 +10,13 @@ interface Props {
     offCount: number;
 }
 
-export default function My({ auth, shifts, currentMonth, workingCount, offCount }: Props) {
+export default function My({
+    auth,
+    shifts,
+    currentMonth,
+    workingCount,
+    offCount,
+}: Props) {
     const [year, month] = currentMonth.split('-');
 
     const navigateMonth = (direction: 'prev' | 'next') => {
@@ -21,7 +27,11 @@ export default function My({ auth, shifts, currentMonth, workingCount, offCount 
             date.setMonth(date.getMonth() + 1);
         }
         const newMonth = `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}`;
-        router.get(route('shifts.my'), { month: newMonth }, { preserveState: true });
+        router.get(
+            route('shifts.my'),
+            { month: newMonth },
+            { preserveState: true },
+        );
     };
 
     const formatDate = (dateString: string): string => {
@@ -35,7 +45,9 @@ export default function My({ auth, shifts, currentMonth, workingCount, offCount 
     };
 
     // Sort shifts by date
-    const sortedShifts = [...shifts].sort((a, b) => a.date.localeCompare(b.date));
+    const sortedShifts = [...shifts].sort((a, b) =>
+        a.date.localeCompare(b.date),
+    );
 
     const displayMonth = `${year}年${month}月`;
 
@@ -103,7 +115,10 @@ export default function My({ auth, shifts, currentMonth, workingCount, offCount 
                         ) : (
                             <div className="divide-y divide-gray-200">
                                 {sortedShifts.map((shift) => (
-                                    <div key={shift.id} className="flex items-center justify-between p-4">
+                                    <div
+                                        key={shift.id}
+                                        className="flex items-center justify-between p-4"
+                                    >
                                         <div className="text-sm font-medium text-gray-900">
                                             {formatDate(shift.date)}
                                         </div>

@@ -1,9 +1,7 @@
 import { PageProps } from '@/types';
 import { Head, Link } from '@inertiajs/react';
 
-export default function Welcome({
-    auth,
-}: PageProps) {
+export default function Welcome({ auth }: PageProps) {
     return (
         <>
             <Head title="ようこそ" />
@@ -34,7 +32,7 @@ export default function Welcome({
                                         </Link>
                                         <Link
                                             href={route('register')}
-                                            className="rounded-md border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-700 transition hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2:bg-gray-700"
+                                            className="focus:ring-offset-2:bg-gray-700 rounded-md border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-700 transition hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-blue-500"
                                         >
                                             新規登録
                                         </Link>

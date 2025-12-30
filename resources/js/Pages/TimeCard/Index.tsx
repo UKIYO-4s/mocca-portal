@@ -1,6 +1,6 @@
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
 import { Head, router } from '@inertiajs/react';
-import { useState, useEffect } from 'react';
+import { useEffect, useState } from 'react';
 
 interface TimeRecord {
     id: number;
@@ -115,7 +115,8 @@ export default function Index({ todayRecord }: Props) {
     };
 
     const buttonStates = getButtonStates();
-    const isCompleted = todayRecord?.clock_out !== null && todayRecord?.clock_out !== undefined;
+    const isCompleted =
+        todayRecord?.clock_out !== null && todayRecord?.clock_out !== undefined;
 
     const handleAction = (action: string, routeName: string) => {
         if (isSubmitting) return;
@@ -129,7 +130,7 @@ export default function Index({ todayRecord }: Props) {
                 onFinish: () => {
                     setIsSubmitting(false);
                 },
-            }
+            },
         );
     };
 
@@ -162,27 +163,43 @@ export default function Index({ todayRecord }: Props) {
                         </h3>
                         <div className="grid grid-cols-2 gap-4 sm:grid-cols-4">
                             <div className="rounded-lg bg-gray-50 p-4 text-center">
-                                <p className="text-sm text-gray-500">出勤時刻</p>
+                                <p className="text-sm text-gray-500">
+                                    出勤時刻
+                                </p>
                                 <p className="mt-1 text-xl font-semibold text-gray-900">
-                                    {formatRecordedTime(todayRecord?.clock_in ?? null)}
+                                    {formatRecordedTime(
+                                        todayRecord?.clock_in ?? null,
+                                    )}
                                 </p>
                             </div>
                             <div className="rounded-lg bg-gray-50 p-4 text-center">
-                                <p className="text-sm text-gray-500">休憩開始</p>
+                                <p className="text-sm text-gray-500">
+                                    休憩開始
+                                </p>
                                 <p className="mt-1 text-xl font-semibold text-gray-900">
-                                    {formatRecordedTime(todayRecord?.break_start ?? null)}
+                                    {formatRecordedTime(
+                                        todayRecord?.break_start ?? null,
+                                    )}
                                 </p>
                             </div>
                             <div className="rounded-lg bg-gray-50 p-4 text-center">
-                                <p className="text-sm text-gray-500">休憩終了</p>
+                                <p className="text-sm text-gray-500">
+                                    休憩終了
+                                </p>
                                 <p className="mt-1 text-xl font-semibold text-gray-900">
-                                    {formatRecordedTime(todayRecord?.break_end ?? null)}
+                                    {formatRecordedTime(
+                                        todayRecord?.break_end ?? null,
+                                    )}
                                 </p>
                             </div>
                             <div className="rounded-lg bg-gray-50 p-4 text-center">
-                                <p className="text-sm text-gray-500">退勤時刻</p>
+                                <p className="text-sm text-gray-500">
+                                    退勤時刻
+                                </p>
                                 <p className="mt-1 text-xl font-semibold text-gray-900">
-                                    {formatRecordedTime(todayRecord?.clock_out ?? null)}
+                                    {formatRecordedTime(
+                                        todayRecord?.clock_out ?? null,
+                                    )}
                                 </p>
                             </div>
                         </div>
@@ -217,7 +234,9 @@ export default function Index({ todayRecord }: Props) {
                     <div className="grid grid-cols-2 gap-4 sm:grid-cols-4">
                         {/* Clock In Button */}
                         <button
-                            onClick={() => handleAction('clock-in', 'timecard.clock-in')}
+                            onClick={() =>
+                                handleAction('clock-in', 'timecard.clock-in')
+                            }
                             disabled={!buttonStates.clockIn || isSubmitting}
                             className={`flex flex-col items-center justify-center rounded-lg p-6 text-white transition-colors ${
                                 buttonStates.clockIn && !isSubmitting
@@ -238,12 +257,19 @@ export default function Index({ todayRecord }: Props) {
                                     d="M11 16l-4-4m0 0l4-4m-4 4h14m-5 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h7a3 3 0 013 3v1"
                                 />
                             </svg>
-                            <span className="mt-2 text-lg font-medium">出勤</span>
+                            <span className="mt-2 text-lg font-medium">
+                                出勤
+                            </span>
                         </button>
 
                         {/* Break Start Button */}
                         <button
-                            onClick={() => handleAction('break-start', 'timecard.break-start')}
+                            onClick={() =>
+                                handleAction(
+                                    'break-start',
+                                    'timecard.break-start',
+                                )
+                            }
                             disabled={!buttonStates.breakStart || isSubmitting}
                             className={`flex flex-col items-center justify-center rounded-lg p-6 text-white transition-colors ${
                                 buttonStates.breakStart && !isSubmitting
@@ -264,12 +290,16 @@ export default function Index({ todayRecord }: Props) {
                                     d="M10 9v6m4-6v6m7-3a9 9 0 11-18 0 9 9 0 0118 0z"
                                 />
                             </svg>
-                            <span className="mt-2 text-lg font-medium">休憩開始</span>
+                            <span className="mt-2 text-lg font-medium">
+                                休憩開始
+                            </span>
                         </button>
 
                         {/* Break End Button */}
                         <button
-                            onClick={() => handleAction('break-end', 'timecard.break-end')}
+                            onClick={() =>
+                                handleAction('break-end', 'timecard.break-end')
+                            }
                             disabled={!buttonStates.breakEnd || isSubmitting}
                             className={`flex flex-col items-center justify-center rounded-lg p-6 text-white transition-colors ${
                                 buttonStates.breakEnd && !isSubmitting
@@ -296,12 +326,16 @@ export default function Index({ todayRecord }: Props) {
                                     d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
                                 />
                             </svg>
-                            <span className="mt-2 text-lg font-medium">休憩終了</span>
+                            <span className="mt-2 text-lg font-medium">
+                                休憩終了
+                            </span>
                         </button>
 
                         {/* Clock Out Button */}
                         <button
-                            onClick={() => handleAction('clock-out', 'timecard.clock-out')}
+                            onClick={() =>
+                                handleAction('clock-out', 'timecard.clock-out')
+                            }
                             disabled={!buttonStates.clockOut || isSubmitting}
                             className={`flex flex-col items-center justify-center rounded-lg p-6 text-white transition-colors ${
                                 buttonStates.clockOut && !isSubmitting
@@ -322,7 +356,9 @@ export default function Index({ todayRecord }: Props) {
                                     d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"
                                 />
                             </svg>
-                            <span className="mt-2 text-lg font-medium">退勤</span>
+                            <span className="mt-2 text-lg font-medium">
+                                退勤
+                            </span>
                         </button>
                     </div>
                 </div>

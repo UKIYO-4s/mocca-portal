@@ -139,7 +139,7 @@ export default function Login({
                     {canResetPassword && (
                         <Link
                             href={route('password.request')}
-                            className="rounded-md text-sm text-gray-600 underline hover:text-gray-900 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2:text-gray-100:ring-offset-gray-800"
+                            className="focus:ring-offset-2:text-gray-100:ring-offset-gray-800 rounded-md text-sm text-gray-600 underline hover:text-gray-900 focus:outline-none focus:ring-2 focus:ring-indigo-500"
                         >
                             パスワードを忘れた方
                         </Link>

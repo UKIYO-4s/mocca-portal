@@ -1,6 +1,6 @@
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
-import { Head, Link } from '@inertiajs/react';
 import { PageProps, StaffWallet } from '@/types';
+import { Head, Link } from '@inertiajs/react';
 import { QRCodeSVG } from 'qrcode.react';
 
 interface WalletCardProps extends PageProps {
@@ -47,8 +47,12 @@ export default function WalletCard({ user, wallet }: WalletCardProps) {
                                             {user.name.charAt(0)}
                                         </span>
                                     </div>
-                                    <h3 className="text-xl font-bold text-gray-900">{user.name}</h3>
-                                    <p className="text-sm text-gray-500">{roleLabels[user.role] || user.role}</p>
+                                    <h3 className="text-xl font-bold text-gray-900">
+                                        {user.name}
+                                    </h3>
+                                    <p className="text-sm text-gray-500">
+                                        {roleLabels[user.role] || user.role}
+                                    </p>
                                 </div>
 
                                 {/* QR Code */}
@@ -77,8 +81,18 @@ export default function WalletCard({ user, wallet }: WalletCardProps) {
                                             className="rounded-lg bg-gray-100 p-2 text-gray-600 hover:bg-gray-200 hover:text-gray-900"
                                             title="コピー"
                                         >
-                                            <svg className="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z" />
+                                            <svg
+                                                className="h-5 w-5"
+                                                fill="none"
+                                                stroke="currentColor"
+                                                viewBox="0 0 24 24"
+                                            >
+                                                <path
+                                                    strokeLinecap="round"
+                                                    strokeLinejoin="round"
+                                                    strokeWidth={2}
+                                                    d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"
+                                                />
                                             </svg>
                                         </button>
                                     </div>
@@ -86,12 +100,16 @@ export default function WalletCard({ user, wallet }: WalletCardProps) {
 
                                 {/* Status */}
                                 <div className="mb-6 flex items-center justify-center gap-2">
-                                    <span className={`inline-flex items-center rounded-full px-3 py-1 text-sm font-medium ${
-                                        wallet.is_verified
-                                            ? 'bg-green-100 text-green-800'
-                                            : 'bg-yellow-100 text-yellow-800'
-                                    }`}>
-                                        {wallet.is_verified ? '検証済み' : '未検証'}
+                                    <span
+                                        className={`inline-flex items-center rounded-full px-3 py-1 text-sm font-medium ${
+                                            wallet.is_verified
+                                                ? 'bg-green-100 text-green-800'
+                                                : 'bg-yellow-100 text-yellow-800'
+                                        }`}
+                                    >
+                                        {wallet.is_verified
+                                            ? '検証済み'
+                                            : '未検証'}
                                     </span>
                                     {wallet.connected_at && (
                                         <span className="text-sm text-gray-500">
@@ -104,10 +122,14 @@ export default function WalletCard({ user, wallet }: WalletCardProps) {
                                 <div className="rounded-lg bg-gradient-to-r from-purple-50 to-blue-50 p-4">
                                     <div className="flex items-start gap-3">
                                         <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-purple-100">
-                                            <span className="text-lg font-bold text-purple-600">¥</span>
+                                            <span className="text-lg font-bold text-purple-600">
+                                                ¥
+                                            </span>
                                         </div>
                                         <div>
-                                            <p className="font-medium text-gray-900">JPYC投げ銭</p>
+                                            <p className="font-medium text-gray-900">
+                                                JPYC投げ銭
+                                            </p>
                                             <p className="text-sm text-gray-600">
                                                 このQRコードをスキャンして、Polygon上のJPYCを送金できます。
                                             </p>
@@ -129,8 +151,18 @@ export default function WalletCard({ user, wallet }: WalletCardProps) {
                     ) : (
                         <div className="rounded-2xl bg-white p-8 text-center shadow-lg">
                             <div className="mb-4 inline-flex h-16 w-16 items-center justify-center rounded-full bg-gray-100">
-                                <svg className="h-8 w-8 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z" />
+                                <svg
+                                    className="h-8 w-8 text-gray-400"
+                                    fill="none"
+                                    stroke="currentColor"
+                                    viewBox="0 0 24 24"
+                                >
+                                    <path
+                                        strokeLinecap="round"
+                                        strokeLinejoin="round"
+                                        strokeWidth={2}
+                                        d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z"
+                                    />
                                 </svg>
                             </div>
                             <h3 className="mb-2 text-lg font-semibold text-gray-900">
@@ -157,8 +189,18 @@ export default function WalletCard({ user, wallet }: WalletCardProps) {
                             className="inline-flex items-center text-sm text-gray-500 hover:text-gray-700"
                         >
                             JPYCについて詳しく
-                            <svg className="ml-1 h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+                            <svg
+                                className="ml-1 h-4 w-4"
+                                fill="none"
+                                stroke="currentColor"
+                                viewBox="0 0 24 24"
+                            >
+                                <path
+                                    strokeLinecap="round"
+                                    strokeLinejoin="round"
+                                    strokeWidth={2}
+                                    d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"
+                                />
                             </svg>
                         </a>
                     </div>

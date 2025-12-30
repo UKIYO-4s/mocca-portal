@@ -1,8 +1,8 @@
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
-import { Head, Link, router } from '@inertiajs/react';
 import { PageProps } from '@/types';
-import { useState, useMemo } from 'react';
 import { formatDateYmd } from '@/utils/date';
+import { Head, Link, router } from '@inertiajs/react';
+import { useMemo, useState } from 'react';
 
 interface BanshirouReservation {
     id: number;
@@ -90,7 +90,9 @@ const getMonthEnd = (date: Date): Date => {
 };
 
 export default function Index({ reservations, filters }: Props) {
-    const [viewMode, setViewMode] = useState<ViewMode>((filters.view as ViewMode) || 'week');
+    const [viewMode, setViewMode] = useState<ViewMode>(
+        (filters.view as ViewMode) || 'week',
+    );
     const [type, setType] = useState(filters.type || '');
     const [status, setStatus] = useState(filters.status || '');
     const [baseDate, setBaseDate] = useState(() => new Date());
@@ -128,13 +130,17 @@ export default function Index({ reservations, filters }: Props) {
     // 表示モード変更
     const handleViewChange = (mode: ViewMode) => {
         setViewMode(mode);
-        router.get(route('reservations.mocca.index'), {
-            view: mode,
-            from: fromDate,
-            to: toDate,
-            type: type || undefined,
-            status: status || undefined,
-        }, { preserveState: true });
+        router.get(
+            route('reservations.mocca.index'),
+            {
+                view: mode,
+                from: fromDate,
+                to: toDate,
+                type: type || undefined,
+                status: status || undefined,
+            },
+            { preserveState: true },
+        );
     };
 
     // 前の期間へ
@@ -178,13 +184,17 @@ export default function Index({ reservations, filters }: Props) {
 
     // フィルター適用
     const handleFilter = () => {
-        router.get(route('reservations.mocca.index'), {
-            view: viewMode,
-            from: fromDate,
-            to: toDate,
-            type: type || undefined,
-            status: status || undefined,
-        }, { preserveState: true });
+        router.get(
+            route('reservations.mocca.index'),
+            {
+                view: viewMode,
+                from: fromDate,
+                to: toDate,
+                type: type || undefined,
+                status: status || undefined,
+            },
+            { preserveState: true },
+        );
     };
 
     const getTypeColor = (resType: string) => {
@@ -230,7 +240,9 @@ export default function Index({ reservations, filters }: Props) {
                             ].map((tab) => (
                                 <button
                                     key={tab.key}
-                                    onClick={() => handleViewChange(tab.key as ViewMode)}
+                                    onClick={() =>
+                                        handleViewChange(tab.key as ViewMode)
+                                    }
                                     className={`min-h-[44px] min-w-[60px] rounded-md px-4 py-2 text-base font-medium transition-colors ${
                                         viewMode === tab.key
                                             ? 'bg-white text-gray-900 shadow-sm'
@@ -249,12 +261,24 @@ export default function Index({ reservations, filters }: Props) {
                             onClick={goPrev}
                             className="flex min-h-[44px] min-w-[44px] items-center justify-center rounded-md bg-gray-100 text-gray-600 hover:bg-gray-200"
                         >
-                            <svg className="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
+                            <svg
+                                className="h-5 w-5"
+                                fill="none"
+                                stroke="currentColor"
+                                viewBox="0 0 24 24"
+                            >
+                                <path
+                                    strokeLinecap="round"
+                                    strokeLinejoin="round"
+                                    strokeWidth={2}
+                                    d="M15 19l-7-7 7-7"
+                                />
                             </svg>
                         </button>
                         <div className="flex items-center gap-3">
-                            <span className="text-lg font-semibold text-gray-900">{periodLabel}</span>
+                            <span className="text-lg font-semibold text-gray-900">
+                                {periodLabel}
+                            </span>
                             <button
                                 onClick={goToday}
                                 className="rounded-md bg-blue-100 px-3 py-1 text-sm font-medium text-blue-700 hover:bg-blue-200"
@@ -266,8 +290,18 @@ export default function Index({ reservations, filters }: Props) {
                             onClick={goNext}
                             className="flex min-h-[44px] min-w-[44px] items-center justify-center rounded-md bg-gray-100 text-gray-600 hover:bg-gray-200"
                         >
-                            <svg className="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                            <svg
+                                className="h-5 w-5"
+                                fill="none"
+                                stroke="currentColor"
+                                viewBox="0 0 24 24"
+                            >
+                                <path
+                                    strokeLinecap="round"
+                                    strokeLinejoin="round"
+                                    strokeWidth={2}
+                                    d="M9 5l7 7-7 7"
+                                />
                             </svg>
                         </button>
                     </div>
@@ -305,7 +339,9 @@ export default function Index({ reservations, filters }: Props) {
                     <div className="space-y-3">
                         {reservations.data.length === 0 ? (
                             <div className="rounded-lg bg-white p-8 text-center shadow-sm">
-                                <p className="text-gray-600">この期間に予約はありません</p>
+                                <p className="text-gray-600">
+                                    この期間に予約はありません
+                                </p>
                             </div>
                         ) : (
                             reservations.data.map((reservation) => (
@@ -318,28 +354,43 @@ export default function Index({ reservations, filters }: Props) {
                                         <div className="flex-1">
                                             <div className="flex flex-wrap items-center gap-2">
                                                 <Link
-                                                    href={route('reservations.mocca.show', reservation.id)}
+                                                    href={route(
+                                                        'reservations.mocca.show',
+                                                        reservation.id,
+                                                    )}
                                                     className="text-lg font-semibold text-gray-900 hover:text-blue-600"
                                                 >
                                                     {reservation.name}様
                                                 </Link>
-                                                <span className={`inline-flex rounded-full px-2 py-1 text-xs font-medium ${getTypeColor(reservation.reservation_type)}`}>
+                                                <span
+                                                    className={`inline-flex rounded-full px-2 py-1 text-xs font-medium ${getTypeColor(reservation.reservation_type)}`}
+                                                >
                                                     {reservation.type_label}
                                                 </span>
-                                                <span className={`inline-flex rounded-full px-2 py-1 text-xs font-medium ${
-                                                    reservation.status === 'confirmed'
-                                                        ? 'bg-green-100 text-green-800'
-                                                        : 'bg-red-100 text-red-800'
-                                                }`}>
+                                                <span
+                                                    className={`inline-flex rounded-full px-2 py-1 text-xs font-medium ${
+                                                        reservation.status ===
+                                                        'confirmed'
+                                                            ? 'bg-green-100 text-green-800'
+                                                            : 'bg-red-100 text-red-800'
+                                                    }`}
+                                                >
                                                     {reservation.status_label}
                                                 </span>
                                             </div>
 
                                             {/* 日時・人数 */}
                                             <p className="mt-2 text-base text-gray-900">
-                                                {formatDateYmd(reservation.reservation_date)}
+                                                {formatDateYmd(
+                                                    reservation.reservation_date,
+                                                )}
                                                 {reservation.formatted_arrival_time && (
-                                                    <span className="ml-2 text-gray-600">{reservation.formatted_arrival_time}〜</span>
+                                                    <span className="ml-2 text-gray-600">
+                                                        {
+                                                            reservation.formatted_arrival_time
+                                                        }
+                                                        〜
+                                                    </span>
                                                 )}
                                             </p>
                                             <p className="mt-1 text-base text-gray-600">
@@ -349,10 +400,21 @@ export default function Index({ reservations, filters }: Props) {
                                             {/* ばんしろう連携 */}
                                             {reservation.banshirou_reservation && (
                                                 <Link
-                                                    href={route('reservations.banshirou.show', reservation.banshirou_reservation.id)}
+                                                    href={route(
+                                                        'reservations.banshirou.show',
+                                                        reservation
+                                                            .banshirou_reservation
+                                                            .id,
+                                                    )}
                                                     className="mt-2 inline-block text-sm text-gray-600 hover:text-blue-600"
                                                 >
-                                                    ばんしろう: {reservation.banshirou_reservation.name}様
+                                                    ばんしろう:{' '}
+                                                    {
+                                                        reservation
+                                                            .banshirou_reservation
+                                                            .name
+                                                    }
+                                                    様
                                                 </Link>
                                             )}
                                         </div>
@@ -363,23 +425,43 @@ export default function Index({ reservations, filters }: Props) {
                                         {/* 電話ボタン（大きなタップ領域） */}
                                         {reservation.phone && (
                                             <a
-                                                href={createTelLink(reservation.phone) || '#'}
+                                                href={
+                                                    createTelLink(
+                                                        reservation.phone,
+                                                    ) || '#'
+                                                }
                                                 className="inline-flex min-h-[44px] flex-1 items-center justify-center gap-2 rounded-md bg-green-600 px-4 py-2 text-base font-medium text-white hover:bg-green-700 sm:flex-none"
                                             >
-                                                <svg className="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z" />
+                                                <svg
+                                                    className="h-5 w-5"
+                                                    fill="none"
+                                                    stroke="currentColor"
+                                                    viewBox="0 0 24 24"
+                                                >
+                                                    <path
+                                                        strokeLinecap="round"
+                                                        strokeLinejoin="round"
+                                                        strokeWidth={2}
+                                                        d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z"
+                                                    />
                                                 </svg>
                                                 電話
                                             </a>
                                         )}
                                         <Link
-                                            href={route('reservations.mocca.show', reservation.id)}
+                                            href={route(
+                                                'reservations.mocca.show',
+                                                reservation.id,
+                                            )}
                                             className="inline-flex min-h-[44px] flex-1 items-center justify-center rounded-md bg-gray-100 px-4 py-2 text-base font-medium text-gray-900 hover:bg-gray-200 sm:flex-none"
                                         >
                                             詳細
                                         </Link>
                                         <Link
-                                            href={route('reservations.mocca.edit', reservation.id)}
+                                            href={route(
+                                                'reservations.mocca.edit',
+                                                reservation.id,
+                                            )}
                                             className="inline-flex min-h-[44px] flex-1 items-center justify-center rounded-md bg-blue-100 px-4 py-2 text-base font-medium text-blue-700 hover:bg-blue-200 sm:flex-none"
                                         >
                                             編集
@@ -402,10 +484,12 @@ export default function Index({ reservations, filters }: Props) {
                                             link.active
                                                 ? 'bg-blue-600 text-white'
                                                 : link.url
-                                                ? 'bg-white text-gray-900 hover:bg-gray-50'
-                                                : 'bg-gray-100 text-gray-400 cursor-not-allowed'
+                                                  ? 'bg-white text-gray-900 hover:bg-gray-50'
+                                                  : 'cursor-not-allowed bg-gray-100 text-gray-400'
                                         }`}
-                                        dangerouslySetInnerHTML={{ __html: link.label }}
+                                        dangerouslySetInnerHTML={{
+                                            __html: link.label,
+                                        }}
                                     />
                                 ))}
                             </nav>

@@ -1,6 +1,6 @@
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
-import { Head, router } from '@inertiajs/react';
 import { PageProps } from '@/types';
+import { Head, router } from '@inertiajs/react';
 import { useState } from 'react';
 
 interface TimeRecord {
@@ -22,8 +22,12 @@ interface Props extends PageProps {
 }
 
 export default function History({ records, currentMonth }: Props) {
-    const [selectedYear, setSelectedYear] = useState(currentMonth.split('-')[0]);
-    const [selectedMonth, setSelectedMonth] = useState(currentMonth.split('-')[1]);
+    const [selectedYear, setSelectedYear] = useState(
+        currentMonth.split('-')[0],
+    );
+    const [selectedMonth, setSelectedMonth] = useState(
+        currentMonth.split('-')[1],
+    );
 
     // Generate year options (current year and 2 years back)
     const currentYear = new Date().getFullYear();
@@ -37,7 +41,11 @@ export default function History({ records, currentMonth }: Props) {
 
     const handleMonthChange = () => {
         const month = `${selectedYear}-${selectedMonth}`;
-        router.get(route('timecard.history'), { month }, { preserveState: true });
+        router.get(
+            route('timecard.history'),
+            { month },
+            { preserveState: true },
+        );
     };
 
     const formatTime = (timeString: string | null): string => {
@@ -73,15 +81,23 @@ export default function History({ records, currentMonth }: Props) {
     };
 
     // Calculate total work hours for the month
-    const totalWorkMinutes = records.reduce((sum, record) => sum + record.work_minutes, 0);
+    const totalWorkMinutes = records.reduce(
+        (sum, record) => sum + record.work_minutes,
+        0,
+    );
     const totalWorkHours = Math.floor(totalWorkMinutes / 60);
     const totalWorkMins = totalWorkMinutes % 60;
 
     // Calculate total break time for the month
-    const totalBreakMinutes = records.reduce((sum, record) => sum + record.break_minutes, 0);
+    const totalBreakMinutes = records.reduce(
+        (sum, record) => sum + record.break_minutes,
+        0,
+    );
 
     // Count working days
-    const workingDays = records.filter(record => record.work_minutes > 0).length;
+    const workingDays = records.filter(
+        (record) => record.work_minutes > 0,
+    ).length;
 
     return (
         <AuthenticatedLayout
@@ -104,7 +120,9 @@ export default function History({ records, currentMonth }: Props) {
                                 </label>
                                 <select
                                     value={selectedYear}
-                                    onChange={(e) => setSelectedYear(e.target.value)}
+                                    onChange={(e) =>
+                                        setSelectedYear(e.target.value)
+                                    }
                                     className="rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
                                 >
                                     {years.map((year) => (
@@ -115,11 +133,16 @@ export default function History({ records, currentMonth }: Props) {
                                 </select>
                                 <select
                                     value={selectedMonth}
-                                    onChange={(e) => setSelectedMonth(e.target.value)}
+                                    onChange={(e) =>
+                                        setSelectedMonth(e.target.value)
+                                    }
                                     className="rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
                                 >
                                     {months.map((month) => (
-                                        <option key={month.value} value={month.value}>
+                                        <option
+                                            key={month.value}
+                                            value={month.value}
+                                        >
                                             {month.label}
                                         </option>
                                     ))}
@@ -141,7 +164,8 @@ export default function History({ records, currentMonth }: Props) {
                                 合計勤務時間
                             </div>
                             <div className="mt-1 text-2xl font-bold text-gray-900">
-                                {totalWorkHours}時間{totalWorkMins > 0 && `${totalWorkMins}分`}
+                                {totalWorkHours}時間
+                                {totalWorkMins > 0 && `${totalWorkMins}分`}
                             </div>
                         </div>
                         <div className="rounded-lg bg-white p-4 shadow-sm">
@@ -205,16 +229,24 @@ export default function History({ records, currentMonth }: Props) {
                                                     {formatDate(record.date)}
                                                 </td>
                                                 <td className="whitespace-nowrap px-6 py-4 text-sm text-gray-900">
-                                                    {formatTime(record.clock_in)}
+                                                    {formatTime(
+                                                        record.clock_in,
+                                                    )}
                                                 </td>
                                                 <td className="whitespace-nowrap px-6 py-4 text-sm text-gray-900">
-                                                    {formatTime(record.clock_out)}
+                                                    {formatTime(
+                                                        record.clock_out,
+                                                    )}
                                                 </td>
                                                 <td className="whitespace-nowrap px-6 py-4 text-sm text-gray-900">
-                                                    {formatMinutes(record.break_minutes)}
+                                                    {formatMinutes(
+                                                        record.break_minutes,
+                                                    )}
                                                 </td>
                                                 <td className="whitespace-nowrap px-6 py-4 text-sm font-medium text-gray-900">
-                                                    {formatMinutes(record.work_minutes)}
+                                                    {formatMinutes(
+                                                        record.work_minutes,
+                                                    )}
                                                 </td>
                                                 <td className="px-6 py-4 text-sm text-gray-500">
                                                     {record.notes || '-'}

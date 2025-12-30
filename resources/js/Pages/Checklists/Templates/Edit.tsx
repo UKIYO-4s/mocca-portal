@@ -1,6 +1,6 @@
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
-import { Head, useForm, router } from '@inertiajs/react';
-import { ChecklistTemplate, ChecklistItem, Location, User } from '@/types';
+import { ChecklistTemplate, Location, User } from '@/types';
+import { Head, router, useForm } from '@inertiajs/react';
 import { FormEvent, useState } from 'react';
 
 interface Props {
@@ -74,7 +74,10 @@ export default function Edit({ auth, template, locations }: Props) {
     const moveItemUp = (index: number) => {
         if (index === 0) return;
         const newItems = [...data.items];
-        [newItems[index - 1], newItems[index]] = [newItems[index], newItems[index - 1]];
+        [newItems[index - 1], newItems[index]] = [
+            newItems[index],
+            newItems[index - 1],
+        ];
         // Re-assign sort_order
         const reorderedItems = newItems.map((item, i) => ({
             ...item,
@@ -86,7 +89,10 @@ export default function Edit({ auth, template, locations }: Props) {
     const moveItemDown = (index: number) => {
         if (index === data.items.length - 1) return;
         const newItems = [...data.items];
-        [newItems[index], newItems[index + 1]] = [newItems[index + 1], newItems[index]];
+        [newItems[index], newItems[index + 1]] = [
+            newItems[index + 1],
+            newItems[index],
+        ];
         // Re-assign sort_order
         const reorderedItems = newItems.map((item, i) => ({
             ...item,
@@ -117,28 +123,34 @@ export default function Edit({ auth, template, locations }: Props) {
             <div className="py-6">
                 <div className="mx-auto max-w-2xl px-4 sm:px-6 lg:px-8">
                     <form onSubmit={handleSubmit}>
-                        <div className="rounded-lg bg-white p-6 shadow-sm space-y-6">
+                        <div className="space-y-6 rounded-lg bg-white p-6 shadow-sm">
                             {/* テンプレート名 */}
                             <div>
                                 <label className="block text-sm font-medium text-gray-700">
-                                    テンプレート名 <span className="text-red-500">*</span>
+                                    テンプレート名{' '}
+                                    <span className="text-red-500">*</span>
                                 </label>
                                 <input
                                     type="text"
                                     value={data.name}
-                                    onChange={(e) => setData('name', e.target.value)}
+                                    onChange={(e) =>
+                                        setData('name', e.target.value)
+                                    }
                                     className="mt-1 block w-full rounded-md border-gray-300 text-lg shadow-sm focus:border-blue-500 focus:ring-blue-500"
                                     placeholder="例: 朝の清掃チェックリスト"
                                 />
                                 {errors.name && (
-                                    <p className="mt-1 text-sm text-red-500">{errors.name}</p>
+                                    <p className="mt-1 text-sm text-red-500">
+                                        {errors.name}
+                                    </p>
                                 )}
                             </div>
 
                             {/* タイプ */}
                             <div>
-                                <label className="block text-sm font-medium text-gray-700 mb-2">
-                                    タイプ <span className="text-red-500">*</span>
+                                <label className="mb-2 block text-sm font-medium text-gray-700">
+                                    タイプ{' '}
+                                    <span className="text-red-500">*</span>
                                 </label>
                                 <div className="grid grid-cols-2 gap-3">
                                     {typeOptions.map((option) => (
@@ -154,9 +166,15 @@ export default function Edit({ auth, template, locations }: Props) {
                                                 type="radio"
                                                 name="type"
                                                 value={option.value}
-                                                checked={data.type === option.value}
+                                                checked={
+                                                    data.type === option.value
+                                                }
                                                 onChange={(e) =>
-                                                    setData('type', e.target.value as FormData['type'])
+                                                    setData(
+                                                        'type',
+                                                        e.target
+                                                            .value as FormData['type'],
+                                                    )
                                                 }
                                                 className="sr-only"
                                             />
@@ -167,7 +185,9 @@ export default function Edit({ auth, template, locations }: Props) {
                                     ))}
                                 </div>
                                 {errors.type && (
-                                    <p className="mt-1 text-sm text-red-500">{errors.type}</p>
+                                    <p className="mt-1 text-sm text-red-500">
+                                        {errors.type}
+                                    </p>
                                 )}
                             </div>
 
@@ -181,20 +201,27 @@ export default function Edit({ auth, template, locations }: Props) {
                                     onChange={(e) =>
                                         setData(
                                             'location_id',
-                                            e.target.value ? Number(e.target.value) : ''
+                                            e.target.value
+                                                ? Number(e.target.value)
+                                                : '',
                                         )
                                     }
                                     className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
                                 >
                                     <option value="">選択してください</option>
                                     {locations.map((location) => (
-                                        <option key={location.id} value={location.id}>
+                                        <option
+                                            key={location.id}
+                                            value={location.id}
+                                        >
                                             {location.name}
                                         </option>
                                     ))}
                                 </select>
                                 {errors.location_id && (
-                                    <p className="mt-1 text-sm text-red-500">{errors.location_id}</p>
+                                    <p className="mt-1 text-sm text-red-500">
+                                        {errors.location_id}
+                                    </p>
                                 )}
                             </div>
 
@@ -204,7 +231,12 @@ export default function Edit({ auth, template, locations }: Props) {
                                     <input
                                         type="checkbox"
                                         checked={data.is_active}
-                                        onChange={(e) => setData('is_active', e.target.checked)}
+                                        onChange={(e) =>
+                                            setData(
+                                                'is_active',
+                                                e.target.checked,
+                                            )
+                                        }
                                         className="h-5 w-5 rounded border-gray-300 text-blue-600 focus:ring-blue-500"
                                     />
                                     <span className="text-lg font-medium text-gray-700">
@@ -215,7 +247,7 @@ export default function Edit({ auth, template, locations }: Props) {
 
                             {/* チェック項目 */}
                             <div className="border-t border-gray-200 pt-6">
-                                <div className="flex items-center justify-between mb-4">
+                                <div className="mb-4 flex items-center justify-between">
                                     <h3 className="text-lg font-medium text-gray-900">
                                         チェック項目
                                     </h3>
@@ -243,7 +275,7 @@ export default function Edit({ auth, template, locations }: Props) {
 
                                 <div className="space-y-3">
                                     {data.items.length === 0 ? (
-                                        <p className="text-center text-gray-500 py-4">
+                                        <p className="py-4 text-center text-gray-500">
                                             項目がありません。「項目追加」ボタンで追加してください。
                                         </p>
                                     ) : (
@@ -252,22 +284,29 @@ export default function Edit({ auth, template, locations }: Props) {
                                                 key={item.id ?? `new-${index}`}
                                                 className="flex items-center gap-2 rounded-lg border border-gray-200 p-3"
                                             >
-                                                <span className="flex-shrink-0 w-8 text-center text-sm font-medium text-gray-500">
+                                                <span className="w-8 flex-shrink-0 text-center text-sm font-medium text-gray-500">
                                                     {index + 1}
                                                 </span>
                                                 <input
                                                     type="text"
                                                     value={item.description}
-                                                    onChange={(e) => updateItem(index, e.target.value)}
+                                                    onChange={(e) =>
+                                                        updateItem(
+                                                            index,
+                                                            e.target.value,
+                                                        )
+                                                    }
                                                     className="flex-1 rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
                                                     placeholder="チェック項目を入力"
                                                 />
-                                                <div className="flex-shrink-0 flex items-center gap-1">
+                                                <div className="flex flex-shrink-0 items-center gap-1">
                                                     <button
                                                         type="button"
-                                                        onClick={() => moveItemUp(index)}
+                                                        onClick={() =>
+                                                            moveItemUp(index)
+                                                        }
                                                         disabled={index === 0}
-                                                        className="p-1 text-gray-400 hover:text-gray-600 disabled:opacity-30 disabled:cursor-not-allowed"
+                                                        className="p-1 text-gray-400 hover:text-gray-600 disabled:cursor-not-allowed disabled:opacity-30"
                                                         title="上へ移動"
                                                     >
                                                         <svg
@@ -286,9 +325,15 @@ export default function Edit({ auth, template, locations }: Props) {
                                                     </button>
                                                     <button
                                                         type="button"
-                                                        onClick={() => moveItemDown(index)}
-                                                        disabled={index === data.items.length - 1}
-                                                        className="p-1 text-gray-400 hover:text-gray-600 disabled:opacity-30 disabled:cursor-not-allowed"
+                                                        onClick={() =>
+                                                            moveItemDown(index)
+                                                        }
+                                                        disabled={
+                                                            index ===
+                                                            data.items.length -
+                                                                1
+                                                        }
+                                                        className="p-1 text-gray-400 hover:text-gray-600 disabled:cursor-not-allowed disabled:opacity-30"
                                                         title="下へ移動"
                                                     >
                                                         <svg
@@ -307,7 +352,9 @@ export default function Edit({ auth, template, locations }: Props) {
                                                     </button>
                                                     <button
                                                         type="button"
-                                                        onClick={() => removeItem(index)}
+                                                        onClick={() =>
+                                                            removeItem(index)
+                                                        }
                                                         className="p-1 text-red-400 hover:text-red-600"
                                                         title="削除"
                                                     >
@@ -331,7 +378,9 @@ export default function Edit({ auth, template, locations }: Props) {
                                     )}
                                 </div>
                                 {errors.items && (
-                                    <p className="mt-2 text-sm text-red-500">{errors.items}</p>
+                                    <p className="mt-2 text-sm text-red-500">
+                                        {errors.items}
+                                    </p>
                                 )}
                             </div>
 
@@ -348,9 +397,13 @@ export default function Edit({ auth, template, locations }: Props) {
                                     <button
                                         type="button"
                                         onClick={() =>
-                                            router.get(route('checklists.templates.index'))
+                                            router.get(
+                                                route(
+                                                    'checklists.templates.index',
+                                                ),
+                                            )
                                         }
-                                        className="rounded-md bg-gray-200 px-6 py-3 text-sm font-medium text-gray-700 hover:bg-gray-300:bg-gray-600"
+                                        className="hover:bg-gray-300:bg-gray-600 rounded-md bg-gray-200 px-6 py-3 text-sm font-medium text-gray-700"
                                     >
                                         キャンセル
                                     </button>
@@ -376,14 +429,15 @@ export default function Edit({ auth, template, locations }: Props) {
                             テンプレートを削除しますか？
                         </h3>
                         <p className="mt-2 text-sm text-gray-500">
-                            この操作は取り消せません。テンプレート「{template.name}
+                            この操作は取り消せません。テンプレート「
+                            {template.name}
                             」を削除すると、関連するチェック項目もすべて削除されます。
                         </p>
                         <div className="mt-6 flex justify-end gap-3">
                             <button
                                 type="button"
                                 onClick={() => setShowDeleteConfirm(false)}
-                                className="rounded-md bg-gray-200 px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-300:bg-gray-600"
+                                className="hover:bg-gray-300:bg-gray-600 rounded-md bg-gray-200 px-4 py-2 text-sm font-medium text-gray-700"
                             >
                                 キャンセル
                             </button>

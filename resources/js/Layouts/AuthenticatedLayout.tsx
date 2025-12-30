@@ -59,7 +59,10 @@ function NavDropdown({
                     </svg>
                 </button>
             </Dropdown.Trigger>
-            <Dropdown.Content align="left" contentClasses="py-1 bg-white min-w-[180px]">
+            <Dropdown.Content
+                align="left"
+                contentClasses="py-1 bg-white min-w-[180px]"
+            >
                 {items.map((item) => (
                     <Dropdown.Link key={item.href} href={item.href}>
                         {item.label}
@@ -80,7 +83,9 @@ export default function Authenticated({
 
     const [showingNavigationDropdown, setShowingNavigationDropdown] =
         useState(false);
-    const [expandedMobileMenu, setExpandedMobileMenu] = useState<string | null>(null);
+    const [expandedMobileMenu, setExpandedMobileMenu] = useState<string | null>(
+        null,
+    );
 
     const toggleMobileSubmenu = (menu: string) => {
         setExpandedMobileMenu(expandedMobileMenu === menu ? null : menu);
@@ -111,8 +116,20 @@ export default function Authenticated({
                                     label="チェックリスト"
                                     active={route().current('checklists.*')}
                                     items={[
-                                        { href: route('checklists.index'), label: '日次一覧' },
-                                        ...(isManager ? [{ href: route('checklists.templates.index'), label: 'テンプレート管理' }] : []),
+                                        {
+                                            href: route('checklists.index'),
+                                            label: '日次一覧',
+                                        },
+                                        ...(isManager
+                                            ? [
+                                                  {
+                                                      href: route(
+                                                          'checklists.templates.index',
+                                                      ),
+                                                      label: 'テンプレート管理',
+                                                  },
+                                              ]
+                                            : []),
                                     ]}
                                 />
 
@@ -121,11 +138,26 @@ export default function Authenticated({
                                     label="備品管理"
                                     active={route().current('inventory.*')}
                                     items={[
-                                        { href: route('inventory.index'), label: '使用入力' },
-                                        ...(isManager ? [
-                                            { href: route('inventory.manage'), label: '在庫管理' },
-                                            { href: route('inventory.logs'), label: '履歴' },
-                                        ] : []),
+                                        {
+                                            href: route('inventory.index'),
+                                            label: '使用入力',
+                                        },
+                                        ...(isManager
+                                            ? [
+                                                  {
+                                                      href: route(
+                                                          'inventory.manage',
+                                                      ),
+                                                      label: '在庫管理',
+                                                  },
+                                                  {
+                                                      href: route(
+                                                          'inventory.logs',
+                                                      ),
+                                                      label: '履歴',
+                                                  },
+                                              ]
+                                            : []),
                                     ]}
                                 />
 
@@ -134,12 +166,30 @@ export default function Authenticated({
                                     label="タイムカード"
                                     active={route().current('timecard.*')}
                                     items={[
-                                        { href: route('timecard.index'), label: '打刻' },
-                                        { href: route('timecard.history'), label: '履歴' },
-                                        ...(isManager ? [
-                                            { href: route('timecard.manage'), label: '管理' },
-                                            { href: route('timecard.reports'), label: 'レポート' },
-                                        ] : []),
+                                        {
+                                            href: route('timecard.index'),
+                                            label: '打刻',
+                                        },
+                                        {
+                                            href: route('timecard.history'),
+                                            label: '履歴',
+                                        },
+                                        ...(isManager
+                                            ? [
+                                                  {
+                                                      href: route(
+                                                          'timecard.manage',
+                                                      ),
+                                                      label: '管理',
+                                                  },
+                                                  {
+                                                      href: route(
+                                                          'timecard.reports',
+                                                      ),
+                                                      label: 'レポート',
+                                                  },
+                                              ]
+                                            : []),
                                     ]}
                                 />
 
@@ -168,11 +218,27 @@ export default function Authenticated({
                                 {isAdmin && (
                                     <NavDropdown
                                         label="管理"
-                                        active={route().current('admin.*') || route().current('users.*')}
+                                        active={
+                                            route().current('admin.*') ||
+                                            route().current('users.*')
+                                        }
                                         items={[
-                                            { href: safeRoute('users.index'), label: 'ユーザー管理' },
-                                            { href: safeRoute('admin.locations.index'), label: '拠点管理' },
-                                            { href: safeRoute('admin.tips.index'), label: '投げ銭統計' },
+                                            {
+                                                href: safeRoute('users.index'),
+                                                label: 'ユーザー管理',
+                                            },
+                                            {
+                                                href: safeRoute(
+                                                    'admin.locations.index',
+                                                ),
+                                                label: '拠点管理',
+                                            },
+                                            {
+                                                href: safeRoute(
+                                                    'admin.tips.index',
+                                                ),
+                                                label: '投げ銭統計',
+                                            },
                                         ]}
                                     />
                                 )}
@@ -285,7 +351,9 @@ export default function Authenticated({
                         {/* チェックリスト */}
                         <div>
                             <button
-                                onClick={() => toggleMobileSubmenu('checklists')}
+                                onClick={() =>
+                                    toggleMobileSubmenu('checklists')
+                                }
                                 className={`flex w-full items-center justify-between border-l-4 py-2 pe-4 ps-3 text-start text-base font-medium transition duration-150 ease-in-out focus:outline-none ${
                                     route().current('checklists.*')
                                         ? 'border-blue-400 bg-blue-50 text-blue-700 focus:border-blue-700 focus:bg-blue-100 focus:text-blue-800'
@@ -293,17 +361,33 @@ export default function Authenticated({
                                 }`}
                             >
                                 チェックリスト
-                                <svg className={`h-5 w-5 transition-transform ${expandedMobileMenu === 'checklists' ? 'rotate-180' : ''}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                                <svg
+                                    className={`h-5 w-5 transition-transform ${expandedMobileMenu === 'checklists' ? 'rotate-180' : ''}`}
+                                    fill="none"
+                                    stroke="currentColor"
+                                    viewBox="0 0 24 24"
+                                >
+                                    <path
+                                        strokeLinecap="round"
+                                        strokeLinejoin="round"
+                                        strokeWidth={2}
+                                        d="M19 9l-7 7-7-7"
+                                    />
                                 </svg>
                             </button>
                             {expandedMobileMenu === 'checklists' && (
                                 <div className="bg-gray-50 pl-6">
-                                    <ResponsiveNavLink href={route('checklists.index')}>
+                                    <ResponsiveNavLink
+                                        href={route('checklists.index')}
+                                    >
                                         日次一覧
                                     </ResponsiveNavLink>
                                     {isManager && (
-                                        <ResponsiveNavLink href={route('checklists.templates.index')}>
+                                        <ResponsiveNavLink
+                                            href={route(
+                                                'checklists.templates.index',
+                                            )}
+                                        >
                                             テンプレート管理
                                         </ResponsiveNavLink>
                                     )}
@@ -322,21 +406,37 @@ export default function Authenticated({
                                 }`}
                             >
                                 備品管理
-                                <svg className={`h-5 w-5 transition-transform ${expandedMobileMenu === 'inventory' ? 'rotate-180' : ''}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                                <svg
+                                    className={`h-5 w-5 transition-transform ${expandedMobileMenu === 'inventory' ? 'rotate-180' : ''}`}
+                                    fill="none"
+                                    stroke="currentColor"
+                                    viewBox="0 0 24 24"
+                                >
+                                    <path
+                                        strokeLinecap="round"
+                                        strokeLinejoin="round"
+                                        strokeWidth={2}
+                                        d="M19 9l-7 7-7-7"
+                                    />
                                 </svg>
                             </button>
                             {expandedMobileMenu === 'inventory' && (
                                 <div className="bg-gray-50 pl-6">
-                                    <ResponsiveNavLink href={route('inventory.index')}>
+                                    <ResponsiveNavLink
+                                        href={route('inventory.index')}
+                                    >
                                         使用入力
                                     </ResponsiveNavLink>
                                     {isManager && (
                                         <>
-                                            <ResponsiveNavLink href={route('inventory.manage')}>
+                                            <ResponsiveNavLink
+                                                href={route('inventory.manage')}
+                                            >
                                                 在庫管理
                                             </ResponsiveNavLink>
-                                            <ResponsiveNavLink href={route('inventory.logs')}>
+                                            <ResponsiveNavLink
+                                                href={route('inventory.logs')}
+                                            >
                                                 履歴
                                             </ResponsiveNavLink>
                                         </>
@@ -356,24 +456,42 @@ export default function Authenticated({
                                 }`}
                             >
                                 タイムカード
-                                <svg className={`h-5 w-5 transition-transform ${expandedMobileMenu === 'timecard' ? 'rotate-180' : ''}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                                <svg
+                                    className={`h-5 w-5 transition-transform ${expandedMobileMenu === 'timecard' ? 'rotate-180' : ''}`}
+                                    fill="none"
+                                    stroke="currentColor"
+                                    viewBox="0 0 24 24"
+                                >
+                                    <path
+                                        strokeLinecap="round"
+                                        strokeLinejoin="round"
+                                        strokeWidth={2}
+                                        d="M19 9l-7 7-7-7"
+                                    />
                                 </svg>
                             </button>
                             {expandedMobileMenu === 'timecard' && (
                                 <div className="bg-gray-50 pl-6">
-                                    <ResponsiveNavLink href={route('timecard.index')}>
+                                    <ResponsiveNavLink
+                                        href={route('timecard.index')}
+                                    >
                                         打刻
                                     </ResponsiveNavLink>
-                                    <ResponsiveNavLink href={route('timecard.history')}>
+                                    <ResponsiveNavLink
+                                        href={route('timecard.history')}
+                                    >
                                         履歴
                                     </ResponsiveNavLink>
                                     {isManager && (
                                         <>
-                                            <ResponsiveNavLink href={route('timecard.manage')}>
+                                            <ResponsiveNavLink
+                                                href={route('timecard.manage')}
+                                            >
                                                 管理
                                             </ResponsiveNavLink>
-                                            <ResponsiveNavLink href={route('timecard.reports')}>
+                                            <ResponsiveNavLink
+                                                href={route('timecard.reports')}
+                                            >
                                                 レポート
                                             </ResponsiveNavLink>
                                         </>
@@ -408,25 +526,44 @@ export default function Authenticated({
                                 <button
                                     onClick={() => toggleMobileSubmenu('admin')}
                                     className={`flex w-full items-center justify-between border-l-4 py-2 pe-4 ps-3 text-start text-base font-medium transition duration-150 ease-in-out focus:outline-none ${
-                                        route().current('admin.*') || route().current('users.*')
+                                        route().current('admin.*') ||
+                                        route().current('users.*')
                                             ? 'border-blue-400 bg-blue-50 text-blue-700 focus:border-blue-700 focus:bg-blue-100 focus:text-blue-800'
                                             : 'border-transparent text-gray-600 hover:border-gray-300 hover:bg-gray-50 hover:text-gray-800 focus:border-gray-300 focus:bg-gray-50 focus:text-gray-800'
                                     }`}
                                 >
                                     管理
-                                    <svg className={`h-5 w-5 transition-transform ${expandedMobileMenu === 'admin' ? 'rotate-180' : ''}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                                    <svg
+                                        className={`h-5 w-5 transition-transform ${expandedMobileMenu === 'admin' ? 'rotate-180' : ''}`}
+                                        fill="none"
+                                        stroke="currentColor"
+                                        viewBox="0 0 24 24"
+                                    >
+                                        <path
+                                            strokeLinecap="round"
+                                            strokeLinejoin="round"
+                                            strokeWidth={2}
+                                            d="M19 9l-7 7-7-7"
+                                        />
                                     </svg>
                                 </button>
                                 {expandedMobileMenu === 'admin' && (
                                     <div className="bg-gray-50 pl-6">
-                                        <ResponsiveNavLink href={safeRoute('users.index')}>
+                                        <ResponsiveNavLink
+                                            href={safeRoute('users.index')}
+                                        >
                                             ユーザー管理
                                         </ResponsiveNavLink>
-                                        <ResponsiveNavLink href={safeRoute('admin.locations.index')}>
+                                        <ResponsiveNavLink
+                                            href={safeRoute(
+                                                'admin.locations.index',
+                                            )}
+                                        >
                                             拠点管理
                                         </ResponsiveNavLink>
-                                        <ResponsiveNavLink href={safeRoute('admin.tips.index')}>
+                                        <ResponsiveNavLink
+                                            href={safeRoute('admin.tips.index')}
+                                        >
                                             投げ銭統計
                                         </ResponsiveNavLink>
                                     </div>

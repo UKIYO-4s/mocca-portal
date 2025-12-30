@@ -1,6 +1,6 @@
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
-import { Head, Link, router } from '@inertiajs/react';
 import { PageProps, User } from '@/types';
+import { Head, Link, router } from '@inertiajs/react';
 import { useState } from 'react';
 
 interface InventoryItem {
@@ -50,12 +50,16 @@ export default function Logs({ auth, logs, items, filters }: Props) {
     const [dateTo, setDateTo] = useState(filters.date_to || '');
 
     const handleFilter = () => {
-        router.get(route('inventory.logs'), {
-            item_id: itemId || undefined,
-            type: type || undefined,
-            date_from: dateFrom || undefined,
-            date_to: dateTo || undefined,
-        }, { preserveState: true });
+        router.get(
+            route('inventory.logs'),
+            {
+                item_id: itemId || undefined,
+                type: type || undefined,
+                date_from: dateFrom || undefined,
+                date_to: dateTo || undefined,
+            },
+            { preserveState: true },
+        );
     };
 
     const clearFilters = () => {
@@ -144,7 +148,9 @@ export default function Logs({ auth, logs, items, filters }: Props) {
                                 <input
                                     type="date"
                                     value={dateFrom}
-                                    onChange={(e) => setDateFrom(e.target.value)}
+                                    onChange={(e) =>
+                                        setDateFrom(e.target.value)
+                                    }
                                     className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
                                 />
                             </div>
@@ -180,7 +186,9 @@ export default function Logs({ auth, logs, items, filters }: Props) {
                     <div className="overflow-hidden rounded-lg bg-white shadow-sm">
                         {logs.length === 0 ? (
                             <div className="p-8 text-center">
-                                <p className="text-gray-500">操作履歴がありません</p>
+                                <p className="text-gray-500">
+                                    操作履歴がありません
+                                </p>
                             </div>
                         ) : (
                             <div className="overflow-x-auto">
@@ -209,21 +217,33 @@ export default function Logs({ auth, logs, items, filters }: Props) {
                                     </thead>
                                     <tbody className="divide-y divide-gray-200 bg-white">
                                         {logs.map((log) => (
-                                            <tr key={log.id} className="hover:bg-gray-50:bg-gray-700">
+                                            <tr
+                                                key={log.id}
+                                                className="hover:bg-gray-50:bg-gray-700"
+                                            >
                                                 <td className="whitespace-nowrap px-6 py-4 text-sm text-gray-900">
-                                                    {formatDateTime(log.created_at)}
+                                                    {formatDateTime(
+                                                        log.created_at,
+                                                    )}
                                                 </td>
                                                 <td className="whitespace-nowrap px-6 py-4 text-sm text-gray-900">
                                                     {log.item.name}
                                                 </td>
                                                 <td className="whitespace-nowrap px-6 py-4 text-sm">
-                                                    <span className={`inline-flex rounded-full px-2 py-1 text-xs font-medium ${typeColors[log.type]}`}>
+                                                    <span
+                                                        className={`inline-flex rounded-full px-2 py-1 text-xs font-medium ${typeColors[log.type]}`}
+                                                    >
                                                         {typeLabels[log.type]}
                                                     </span>
                                                 </td>
                                                 <td className="whitespace-nowrap px-6 py-4 text-sm">
-                                                    <span className={`font-medium ${log.quantity_change > 0 ? 'text-green-600' : 'text-red-600'}`}>
-                                                        {formatQuantityChange(log.quantity_change, log.item.unit)}
+                                                    <span
+                                                        className={`font-medium ${log.quantity_change > 0 ? 'text-green-600' : 'text-red-600'}`}
+                                                    >
+                                                        {formatQuantityChange(
+                                                            log.quantity_change,
+                                                            log.item.unit,
+                                                        )}
                                                     </span>
                                                 </td>
                                                 <td className="px-6 py-4 text-sm text-gray-500">

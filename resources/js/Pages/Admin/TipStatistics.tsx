@@ -1,6 +1,12 @@
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
+import {
+    MonthlyTipTrend,
+    PageProps,
+    RoleStats,
+    StaffTipStats,
+    TipTotals,
+} from '@/types';
 import { Head, Link } from '@inertiajs/react';
-import { PageProps, StaffTipStats, MonthlyTipTrend, RoleStats, TipTotals } from '@/types';
 
 interface TipStatisticsProps extends PageProps {
     staffStats: StaffTipStats[];
@@ -74,13 +80,25 @@ export default function TipStatistics({
                         </h3>
                         <div className="flex h-48 items-end space-x-2">
                             {monthlyTrend.map((item) => {
-                                const maxTotal = Math.max(...monthlyTrend.map((t) => t.total), 1);
+                                const maxTotal = Math.max(
+                                    ...monthlyTrend.map((t) => t.total),
+                                    1,
+                                );
                                 const height = (item.total / maxTotal) * 100;
                                 return (
-                                    <div key={item.label} className="flex flex-1 flex-col items-center">
+                                    <div
+                                        key={item.label}
+                                        className="flex flex-1 flex-col items-center"
+                                    >
                                         <div
                                             className="w-full rounded-t bg-blue-500"
-                                            style={{ height: `${height}%`, minHeight: item.total > 0 ? '4px' : '0' }}
+                                            style={{
+                                                height: `${height}%`,
+                                                minHeight:
+                                                    item.total > 0
+                                                        ? '4px'
+                                                        : '0',
+                                            }}
                                         />
                                         <div className="mt-2 text-xs text-gray-500">
                                             {item.label}
@@ -180,8 +198,11 @@ export default function TipStatistics({
                                                 </td>
                                                 <td className="whitespace-nowrap px-6 py-4 text-sm">
                                                     <Link
-                                                        href={route('admin.tips.show', staff.id)}
-                                                        className="text-indigo-600 hover:text-indigo-900:text-indigo-300"
+                                                        href={route(
+                                                            'admin.tips.show',
+                                                            staff.id,
+                                                        )}
+                                                        className="hover:text-indigo-900:text-indigo-300 text-indigo-600"
                                                     >
                                                         詳細
                                                     </Link>

@@ -1,6 +1,6 @@
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
-import { Head, Link } from '@inertiajs/react';
 import { Announcement, User } from '@/types';
+import { Head, Link } from '@inertiajs/react';
 
 interface Props {
     announcements: Announcement[];
@@ -8,7 +8,8 @@ interface Props {
 }
 
 export default function Index({ auth, announcements }: Props) {
-    const isAdminOrManager = auth.user.role === 'admin' || auth.user.role === 'manager';
+    const isAdminOrManager =
+        auth.user.role === 'admin' || auth.user.role === 'manager';
 
     const formatDate = (dateString: string | null) => {
         if (!dateString) return '';
@@ -83,30 +84,46 @@ export default function Index({ auth, announcements }: Props) {
                                         {/* Priority badge */}
                                         <span
                                             className={`inline-flex shrink-0 rounded-full px-2 py-1 text-xs font-medium ${
-                                                announcement.priority === 'important'
+                                                announcement.priority ===
+                                                'important'
                                                     ? 'bg-red-100 text-red-800'
                                                     : 'bg-gray-100 text-gray-800'
                                             }`}
                                         >
-                                            {announcement.priority === 'important' ? '重要' : '通常'}
+                                            {announcement.priority ===
+                                            'important'
+                                                ? '重要'
+                                                : '通常'}
                                         </span>
 
                                         <div className="min-w-0 flex-1">
                                             {/* Title */}
                                             <Link
-                                                href={route('announcements.show', announcement.id)}
-                                                className="block text-lg font-medium text-gray-900 hover:text-blue-600:text-blue-400"
+                                                href={route(
+                                                    'announcements.show',
+                                                    announcement.id,
+                                                )}
+                                                className="hover:text-blue-600:text-blue-400 block text-lg font-medium text-gray-900"
                                             >
                                                 {announcement.title}
                                             </Link>
 
                                             {/* Meta info */}
                                             <div className="mt-1 flex flex-wrap items-center gap-2 text-sm text-gray-500">
-                                                <span>{formatDate(announcement.published_at)}</span>
+                                                <span>
+                                                    {formatDate(
+                                                        announcement.published_at,
+                                                    )}
+                                                </span>
                                                 {announcement.author && (
                                                     <>
                                                         <span>|</span>
-                                                        <span>{announcement.author.name}</span>
+                                                        <span>
+                                                            {
+                                                                announcement
+                                                                    .author.name
+                                                            }
+                                                        </span>
                                                     </>
                                                 )}
                                             </div>

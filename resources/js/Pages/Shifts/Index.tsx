@@ -1,6 +1,6 @@
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
+import { Shift, User } from '@/types';
 import { Head, Link, router } from '@inertiajs/react';
-import { User, Shift } from '@/types';
 
 interface Props {
     auth: { user: User };
@@ -14,7 +14,14 @@ interface Props {
 // Japanese day labels (Monday-Sunday)
 const DAY_LABELS = ['月', '火', '水', '木', '金', '土', '日'];
 
-export default function Index({ auth, shifts, users, currentWeek, weekStart, weekEnd }: Props) {
+export default function Index({
+    auth,
+    shifts,
+    users,
+    currentWeek,
+    weekStart,
+    weekEnd,
+}: Props) {
     // Parse week string (YYYY-W format)
     const parseWeek = (weekString: string): { year: number; week: number } => {
         const [yearPart, weekPart] = weekString.split('-W');
@@ -45,7 +52,11 @@ export default function Index({ auth, shifts, users, currentWeek, weekStart, wee
         }
 
         const newWeekString = `${newYear}-W${String(newWeek).padStart(2, '0')}`;
-        router.get(route('shifts.index'), { week: newWeekString }, { preserveState: true });
+        router.get(
+            route('shifts.index'),
+            { week: newWeekString },
+            { preserveState: true },
+        );
     };
 
     // Get number of ISO weeks in a year
@@ -54,7 +65,9 @@ export default function Index({ auth, shifts, users, currentWeek, weekStart, wee
         const dayOfDec28 = dec28.getDay() || 7;
         dec28.setDate(dec28.getDate() + (4 - dayOfDec28));
         const yearStart = new Date(dec28.getFullYear(), 0, 1);
-        return Math.ceil((((dec28.getTime() - yearStart.getTime()) / 86400000) + 1) / 7);
+        return Math.ceil(
+            ((dec28.getTime() - yearStart.getTime()) / 86400000 + 1) / 7,
+        );
     };
 
     // Generate array of 7 dates for the week (Monday-Sunday)
@@ -85,15 +98,19 @@ export default function Index({ auth, shifts, users, currentWeek, weekStart, wee
     };
 
     // Get shift status for a specific user and date
-    const getShiftStatus = (userId: number, dateKey: string): 'working' | 'off' | null => {
+    const getShiftStatus = (
+        userId: number,
+        dateKey: string,
+    ): 'working' | 'off' | null => {
         const shift = shifts.find(
-            (s) => s.user_id === userId && s.date === dateKey
+            (s) => s.user_id === userId && s.date === dateKey,
         );
         return shift ? shift.status : null;
     };
 
     // Check if user can manage shifts
-    const canManage = auth.user.role === 'admin' || auth.user.role === 'manager';
+    const canManage =
+        auth.user.role === 'admin' || auth.user.role === 'manager';
 
     // Display week as "YYYY年 第W週"
     const displayWeek = `${year}年 第${week}週`;
@@ -114,8 +131,8 @@ export default function Index({ auth, shifts, users, currentWeek, weekStart, wee
     };
 
     // Count working/off for summary
-    const workingCount = shifts.filter(s => s.status === 'working').length;
-    const offCount = shifts.filter(s => s.status === 'off').length;
+    const workingCount = shifts.filter((s) => s.status === 'working').length;
+    const offCount = shifts.filter((s) => s.status === 'off').length;
 
     return (
         <AuthenticatedLayout
@@ -206,13 +223,15 @@ export default function Index({ auth, shifts, users, currentWeek, weekStart, wee
                                                 isToday(date)
                                                     ? 'bg-blue-50 text-blue-900'
                                                     : isWeekend(index)
-                                                    ? index === 5
-                                                        ? 'bg-blue-50/50 text-blue-700'
-                                                        : 'bg-red-50/50 text-red-700'
-                                                    : 'text-gray-900'
+                                                      ? index === 5
+                                                          ? 'bg-blue-50/50 text-blue-700'
+                                                          : 'bg-red-50/50 text-red-700'
+                                                      : 'text-gray-900'
                                             }`}
                                         >
-                                            <div className="text-xs">{formatDateShort(date)}</div>
+                                            <div className="text-xs">
+                                                {formatDateShort(date)}
+                                            </div>
                                             <div>{DAY_LABELS[index]}</div>
                                         </th>
                                     ))}
@@ -237,8 +256,12 @@ export default function Index({ auth, shifts, users, currentWeek, weekStart, wee
                                                 </span>
                                             </td>
                                             {weekDates.map((date, dayIndex) => {
-                                                const dateKey = formatDateKey(date);
-                                                const status = getShiftStatus(user.id, dateKey);
+                                                const dateKey =
+                                                    formatDateKey(date);
+                                                const status = getShiftStatus(
+                                                    user.id,
+                                                    dateKey,
+                                                );
 
                                                 return (
                                                     <td
@@ -246,14 +269,18 @@ export default function Index({ auth, shifts, users, currentWeek, weekStart, wee
                                                         className={`px-2 py-2 text-center ${
                                                             isToday(date)
                                                                 ? 'bg-blue-50/50'
-                                                                : isWeekend(dayIndex)
-                                                                ? dayIndex === 5
-                                                                    ? 'bg-blue-50/30'
-                                                                    : 'bg-red-50/30'
-                                                                : ''
+                                                                : isWeekend(
+                                                                        dayIndex,
+                                                                    )
+                                                                  ? dayIndex ===
+                                                                    5
+                                                                      ? 'bg-blue-50/30'
+                                                                      : 'bg-red-50/30'
+                                                                  : ''
                                                         }`}
                                                     >
-                                                        {status === 'working' ? (
+                                                        {status ===
+                                                        'working' ? (
                                                             <span className="inline-flex items-center justify-center rounded-md bg-green-100 px-2 py-1 text-xs font-medium text-green-800">
                                                                 出勤
                                                             </span>
@@ -262,7 +289,9 @@ export default function Index({ auth, shifts, users, currentWeek, weekStart, wee
                                                                 休日
                                                             </span>
                                                         ) : (
-                                                            <span className="text-gray-300">-</span>
+                                                            <span className="text-gray-300">
+                                                                -
+                                                            </span>
                                                         )}
                                                     </td>
                                                 );
@@ -281,12 +310,20 @@ export default function Index({ auth, shifts, users, currentWeek, weekStart, wee
                         </h4>
                         <div className="flex gap-6">
                             <div>
-                                <span className="text-2xl font-bold text-green-600">{workingCount}</span>
-                                <span className="ml-1 text-sm text-gray-600">件出勤</span>
+                                <span className="text-2xl font-bold text-green-600">
+                                    {workingCount}
+                                </span>
+                                <span className="ml-1 text-sm text-gray-600">
+                                    件出勤
+                                </span>
                             </div>
                             <div>
-                                <span className="text-2xl font-bold text-gray-500">{offCount}</span>
-                                <span className="ml-1 text-sm text-gray-600">件休日</span>
+                                <span className="text-2xl font-bold text-gray-500">
+                                    {offCount}
+                                </span>
+                                <span className="ml-1 text-sm text-gray-600">
+                                    件休日
+                                </span>
                             </div>
                         </div>
                     </div>

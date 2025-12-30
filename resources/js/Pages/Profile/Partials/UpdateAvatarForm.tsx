@@ -1,8 +1,8 @@
-import { useForm, usePage } from '@inertiajs/react';
-import { FormEventHandler, useRef, useState } from 'react';
 import InputError from '@/Components/InputError';
 import PrimaryButton from '@/Components/PrimaryButton';
 import { Transition } from '@headlessui/react';
+import { useForm, usePage } from '@inertiajs/react';
+import { FormEventHandler, useRef, useState } from 'react';
 
 export default function UpdateAvatarForm({
     avatarUrl,
@@ -15,10 +15,17 @@ export default function UpdateAvatarForm({
     const fileInput = useRef<HTMLInputElement>(null);
     const [preview, setPreview] = useState<string | null>(null);
 
-    const { data, setData, post, delete: destroy, processing, errors, recentlySuccessful } =
-        useForm<{ avatar: File | null }>({
-            avatar: null,
-        });
+    const {
+        data,
+        setData,
+        post,
+        delete: destroy,
+        processing,
+        errors,
+        recentlySuccessful,
+    } = useForm<{ avatar: File | null }>({
+        avatar: null,
+    });
 
     const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const file = e.target.files?.[0];

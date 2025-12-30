@@ -1,9 +1,13 @@
-import { BrowserProvider, Contract, parseUnits, formatUnits } from 'ethers';
+import { BrowserProvider, Contract, formatUnits, parseUnits } from 'ethers';
 
 // Configuration from Vite environment variables (with defaults matching config/services.php)
 export const JPYC_CONTRACT_ADDRESS =
-    import.meta.env.VITE_JPYC_CONTRACT_ADDRESS || '0x6AE7Dfc73E0dDE2aa99ac063DcF7e8A63265108c';
-export const POLYGON_CHAIN_ID = parseInt(import.meta.env.VITE_POLYGON_CHAIN_ID || '137', 10);
+    import.meta.env.VITE_JPYC_CONTRACT_ADDRESS ||
+    '0x6AE7Dfc73E0dDE2aa99ac063DcF7e8A63265108c';
+export const POLYGON_CHAIN_ID = parseInt(
+    import.meta.env.VITE_POLYGON_CHAIN_ID || '137',
+    10,
+);
 export const POLYGON_CHAIN_ID_HEX = '0x' + POLYGON_CHAIN_ID.toString(16);
 export const TIP_AMOUNT = import.meta.env.VITE_TIP_AMOUNT || '100';
 
@@ -96,9 +100,13 @@ export async function switchToPolygon(): Promise<boolean> {
  */
 export async function getJpycBalance(
     provider: BrowserProvider,
-    address: string
+    address: string,
 ): Promise<string> {
-    const jpycContract = new Contract(JPYC_CONTRACT_ADDRESS, ERC20_ABI, provider);
+    const jpycContract = new Contract(
+        JPYC_CONTRACT_ADDRESS,
+        ERC20_ABI,
+        provider,
+    );
     const balance = await jpycContract.balanceOf(address);
     return formatUnits(balance, 18);
 }
@@ -153,7 +161,11 @@ export async function sendJpycTip(toAddress: string): Promise<TipResult> {
         }
 
         // Create contract instance with signer
-        const jpycContract = new Contract(JPYC_CONTRACT_ADDRESS, ERC20_ABI, signer);
+        const jpycContract = new Contract(
+            JPYC_CONTRACT_ADDRESS,
+            ERC20_ABI,
+            signer,
+        );
 
         // Send transfer
         const amount = parseUnits(TIP_AMOUNT, 18);

@@ -1,14 +1,14 @@
-import { Head } from '@inertiajs/react';
 import { GuestPageData, GuestStaff } from '@/types';
-import axios from 'axios';
-import { useState } from 'react';
 import {
-    sendJpycTip,
-    isMetaMaskInstalled,
     getMetaMaskDownloadUrl,
     getPolygonscanUrl,
+    isMetaMaskInstalled,
+    sendJpycTip,
     TIP_AMOUNT,
 } from '@/utils/web3';
+import { Head } from '@inertiajs/react';
+import axios from 'axios';
+import { useState } from 'react';
 
 interface GuestShowProps {
     guestData: GuestPageData;
@@ -33,7 +33,9 @@ export default function Show({
     contactPhone,
 }: GuestShowProps) {
     const [reviewError, setReviewError] = useState<string | null>(null);
-    const [tipStatuses, setTipStatuses] = useState<Record<number, TipStatus>>({});
+    const [tipStatuses, setTipStatuses] = useState<Record<number, TipStatus>>(
+        {},
+    );
 
     const roleLabels: Record<string, string> = {
         cooking: '調理',
@@ -49,7 +51,7 @@ export default function Show({
             });
             window.open(
                 `https://search.google.com/local/writereview?placeid=${googlePlaceId}`,
-                '_blank'
+                '_blank',
             );
         } catch (error: unknown) {
             if (axios.isAxiosError(error) && error.response?.status === 410) {
@@ -57,14 +59,18 @@ export default function Show({
             } else {
                 window.open(
                     `https://search.google.com/local/writereview?placeid=${googlePlaceId}`,
-                    '_blank'
+                    '_blank',
                 );
             }
         }
     };
 
     // Map API reason codes to Japanese error messages
-    const getReasonMessage = (reason: string, message?: string, remainingTips?: number): string => {
+    const getReasonMessage = (
+        reason: string,
+        message?: string,
+        remainingTips?: number,
+    ): string => {
         switch (reason) {
             case 'guest_page_expired':
                 return 'このページは有効期限が切れています。';
@@ -85,7 +91,11 @@ export default function Show({
         // Check MetaMask first
         if (!isMetaMaskInstalled()) {
             const downloadUrl = getMetaMaskDownloadUrl();
-            if (confirm('MetaMaskがインストールされていません。ダウンロードページを開きますか？')) {
+            if (
+                confirm(
+                    'MetaMaskがインストールされていません。ダウンロードページを開きますか？',
+                )
+            ) {
                 window.open(downloadUrl, '_blank');
             }
             return;
@@ -101,7 +111,7 @@ export default function Show({
                 const errorMessage = getReasonMessage(
                     canTipResponse.data.reason,
                     canTipResponse.data.message,
-                    canTipResponse.data.remaining_tips
+                    canTipResponse.data.remaining_tips,
                 );
                 setTipStatuses((prev) => ({
                     ...prev,
@@ -230,7 +240,8 @@ export default function Show({
                         {guestData.guest_name}様
                     </h1>
                     <p className="mt-2 text-sm text-gray-600">
-                        {guestData.room_number && `お部屋: ${guestData.room_number} | `}
+                        {guestData.room_number &&
+                            `お部屋: ${guestData.room_number} | `}
                         {guestData.check_in_date} 〜 {guestData.check_out_date}
                     </p>
                 </div>
@@ -266,7 +277,8 @@ export default function Show({
                                                 {staff.name}
                                             </p>
                                             <p className="text-sm text-gray-500">
-                                                {roleLabels[staff.role] || staff.role}
+                                                {roleLabels[staff.role] ||
+                                                    staff.role}
                                             </p>
                                         </div>
                                     </div>
@@ -281,7 +293,7 @@ export default function Show({
                 <div className="mb-6">
                     <button
                         onClick={handleGoogleReviewClick}
-                        className="flex w-full items-center justify-center rounded-lg bg-white px-6 py-4 shadow-sm hover:bg-gray-50:bg-gray-700"
+                        className="hover:bg-gray-50:bg-gray-700 flex w-full items-center justify-center rounded-lg bg-white px-6 py-4 shadow-sm"
                     >
                         <svg className="mr-3 h-6 w-6" viewBox="0 0 24 24">
                             <path

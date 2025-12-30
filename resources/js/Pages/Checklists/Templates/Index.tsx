@@ -1,6 +1,6 @@
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
-import { Head, Link, router } from '@inertiajs/react';
 import { ChecklistTemplate, User } from '@/types';
+import { Head, Link, router } from '@inertiajs/react';
 import { useState } from 'react';
 
 interface Props {
@@ -42,7 +42,11 @@ export default function Index({ auth, templates }: Props) {
     };
 
     const handleDelete = (template: ChecklistTemplate) => {
-        if (confirm(`「${template.name}」を削除してもよろしいですか？\n\nこの操作は取り消せません。`)) {
+        if (
+            confirm(
+                `「${template.name}」を削除してもよろしいですか？\n\nこの操作は取り消せません。`,
+            )
+        ) {
             setProcessingId(template.id);
             router.delete(route('checklists.templates.destroy', template.id), {
                 onFinish: () => setProcessingId(null),
@@ -74,7 +78,7 @@ export default function Index({ auth, templates }: Props) {
                     <div className="mb-4">
                         <Link
                             href={route('checklists.index')}
-                            className="inline-flex items-center text-sm text-gray-600 hover:text-gray-900:text-gray-200"
+                            className="hover:text-gray-900:text-gray-200 inline-flex items-center text-sm text-gray-600"
                         >
                             <svg
                                 className="mr-1 h-4 w-4"
@@ -105,7 +109,9 @@ export default function Index({ auth, templates }: Props) {
                                     <div
                                         key={template.id}
                                         className={`flex items-center justify-between rounded-lg border border-gray-200 p-4 ${
-                                            processingId === template.id ? 'opacity-50' : ''
+                                            processingId === template.id
+                                                ? 'opacity-50'
+                                                : ''
                                         } ${!template.is_active ? 'bg-gray-50' : ''}`}
                                     >
                                         <div className="flex flex-1 items-center gap-4">
@@ -117,10 +123,12 @@ export default function Index({ auth, templates }: Props) {
                                                     </span>
                                                     <span
                                                         className={`inline-flex rounded-full px-2 py-1 text-xs font-medium ${getTypeBadgeColor(
-                                                            template.type
+                                                            template.type,
                                                         )}`}
                                                     >
-                                                        {getTypeLabel(template.type)}
+                                                        {getTypeLabel(
+                                                            template.type,
+                                                        )}
                                                     </span>
                                                     {!template.is_active && (
                                                         <span className="inline-flex rounded-full bg-red-100 px-2 py-1 text-xs font-medium text-red-800">
@@ -132,13 +140,15 @@ export default function Index({ auth, templates }: Props) {
                                                     <span>
                                                         拠点:{' '}
                                                         {template.location
-                                                            ? template.location.name
+                                                            ? template.location
+                                                                  .name
                                                             : '全拠点共通'}
                                                     </span>
                                                     <span>
                                                         項目数:{' '}
                                                         {template.items_count ??
-                                                            template.items?.length ??
+                                                            template.items
+                                                                ?.length ??
                                                             0}
                                                         件
                                                     </span>
@@ -161,7 +171,9 @@ export default function Index({ auth, templates }: Props) {
                                                                 : 'bg-gray-400'
                                                         }`}
                                                     ></span>
-                                                    {template.is_active ? '有効' : '無効'}
+                                                    {template.is_active
+                                                        ? '有効'
+                                                        : '無効'}
                                                 </span>
                                             </div>
                                         </div>
@@ -169,14 +181,21 @@ export default function Index({ auth, templates }: Props) {
                                         {/* Actions */}
                                         <div className="ml-4 flex items-center gap-2">
                                             <Link
-                                                href={route('checklists.templates.edit', template.id)}
-                                                className="rounded-md bg-gray-100 px-3 py-2 text-sm font-medium text-gray-700 hover:bg-gray-200:bg-gray-600"
+                                                href={route(
+                                                    'checklists.templates.edit',
+                                                    template.id,
+                                                )}
+                                                className="hover:bg-gray-200:bg-gray-600 rounded-md bg-gray-100 px-3 py-2 text-sm font-medium text-gray-700"
                                             >
                                                 編集
                                             </Link>
                                             <button
-                                                onClick={() => handleDelete(template)}
-                                                disabled={processingId === template.id}
+                                                onClick={() =>
+                                                    handleDelete(template)
+                                                }
+                                                disabled={
+                                                    processingId === template.id
+                                                }
                                                 className="rounded-md bg-red-100 px-3 py-2 text-sm font-medium text-red-700 hover:bg-red-200 disabled:opacity-50"
                                             >
                                                 削除
@@ -209,7 +228,9 @@ export default function Index({ auth, templates }: Props) {
                                     </p>
                                     <div className="mt-6">
                                         <Link
-                                            href={route('checklists.templates.create')}
+                                            href={route(
+                                                'checklists.templates.create',
+                                            )}
                                             className="inline-flex items-center rounded-md bg-blue-600 px-4 py-2 text-sm font-medium text-white hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
                                         >
                                             <svg

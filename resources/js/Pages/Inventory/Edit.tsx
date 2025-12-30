@@ -1,6 +1,6 @@
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
-import { Head, useForm, router } from '@inertiajs/react';
 import { InventoryItem, Location, User } from '@/types';
+import { Head, router, useForm } from '@inertiajs/react';
 import { FormEvent, useState } from 'react';
 
 interface Props {
@@ -23,16 +23,21 @@ export default function Edit({ auth, item, locations }: Props) {
     const initialAction = urlParams.get('action');
 
     const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
-    const [showRestockModal, setShowRestockModal] = useState(initialAction === 'restock');
-    const [showAdjustModal, setShowAdjustModal] = useState(initialAction === 'adjust');
+    const [showRestockModal, setShowRestockModal] = useState(
+        initialAction === 'restock',
+    );
+    const [showAdjustModal, setShowAdjustModal] = useState(
+        initialAction === 'adjust',
+    );
 
-    const { data, setData, put, processing, errors } = useForm<InventoryFormData>({
-        location_id: item.location_id,
-        name: item.name,
-        unit: item.unit,
-        reorder_point: item.reorder_point,
-        is_active: item.is_active,
-    });
+    const { data, setData, put, processing, errors } =
+        useForm<InventoryFormData>({
+            location_id: item.location_id,
+            name: item.name,
+            unit: item.unit,
+            reorder_point: item.reorder_point,
+            is_active: item.is_active,
+        });
 
     // Restock form
     const restockForm = useForm({
@@ -94,7 +99,10 @@ export default function Edit({ auth, item, locations }: Props) {
                                     現在の在庫数
                                 </p>
                                 <p className="text-3xl font-bold text-gray-900">
-                                    {item.current_stock} <span className="text-lg font-normal">{item.unit}</span>
+                                    {item.current_stock}{' '}
+                                    <span className="text-lg font-normal">
+                                        {item.unit}
+                                    </span>
                                 </p>
                             </div>
                             <div className="flex gap-2">
@@ -148,7 +156,7 @@ export default function Edit({ auth, item, locations }: Props) {
                     </div>
 
                     <form onSubmit={handleSubmit}>
-                        <div className="rounded-lg bg-white p-6 shadow-sm space-y-6">
+                        <div className="space-y-6 rounded-lg bg-white p-6 shadow-sm">
                             {/* 拠点 */}
                             <div>
                                 <label className="block text-sm font-medium text-gray-700">
@@ -159,37 +167,49 @@ export default function Edit({ auth, item, locations }: Props) {
                                     onChange={(e) =>
                                         setData(
                                             'location_id',
-                                            e.target.value ? Number(e.target.value) : ''
+                                            e.target.value
+                                                ? Number(e.target.value)
+                                                : '',
                                         )
                                     }
                                     className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
                                 >
                                     <option value="">選択してください</option>
                                     {locations.map((location) => (
-                                        <option key={location.id} value={location.id}>
+                                        <option
+                                            key={location.id}
+                                            value={location.id}
+                                        >
                                             {location.name}
                                         </option>
                                     ))}
                                 </select>
                                 {errors.location_id && (
-                                    <p className="mt-1 text-sm text-red-500">{errors.location_id}</p>
+                                    <p className="mt-1 text-sm text-red-500">
+                                        {errors.location_id}
+                                    </p>
                                 )}
                             </div>
 
                             {/* 品目名 */}
                             <div>
                                 <label className="block text-sm font-medium text-gray-700">
-                                    品目名 <span className="text-red-500">*</span>
+                                    品目名{' '}
+                                    <span className="text-red-500">*</span>
                                 </label>
                                 <input
                                     type="text"
                                     value={data.name}
-                                    onChange={(e) => setData('name', e.target.value)}
+                                    onChange={(e) =>
+                                        setData('name', e.target.value)
+                                    }
                                     className="mt-1 block w-full rounded-md border-gray-300 text-lg shadow-sm focus:border-blue-500 focus:ring-blue-500"
                                     placeholder="例: コーヒー豆"
                                 />
                                 {errors.name && (
-                                    <p className="mt-1 text-sm text-red-500">{errors.name}</p>
+                                    <p className="mt-1 text-sm text-red-500">
+                                        {errors.name}
+                                    </p>
                                 )}
                             </div>
 
@@ -201,25 +221,35 @@ export default function Edit({ auth, item, locations }: Props) {
                                 <input
                                     type="text"
                                     value={data.unit}
-                                    onChange={(e) => setData('unit', e.target.value)}
+                                    onChange={(e) =>
+                                        setData('unit', e.target.value)
+                                    }
                                     className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
                                     placeholder="例: kg, 個, 袋"
                                 />
                                 {errors.unit && (
-                                    <p className="mt-1 text-sm text-red-500">{errors.unit}</p>
+                                    <p className="mt-1 text-sm text-red-500">
+                                        {errors.unit}
+                                    </p>
                                 )}
                             </div>
 
                             {/* 発注点 */}
                             <div>
                                 <label className="block text-sm font-medium text-gray-700">
-                                    発注点 <span className="text-red-500">*</span>
+                                    発注点{' '}
+                                    <span className="text-red-500">*</span>
                                 </label>
                                 <input
                                     type="number"
                                     min="0"
                                     value={data.reorder_point}
-                                    onChange={(e) => setData('reorder_point', Number(e.target.value))}
+                                    onChange={(e) =>
+                                        setData(
+                                            'reorder_point',
+                                            Number(e.target.value),
+                                        )
+                                    }
                                     className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
                                     placeholder="在庫がこの数量以下になると通知"
                                 />
@@ -227,7 +257,9 @@ export default function Edit({ auth, item, locations }: Props) {
                                     在庫数がこの数量以下になると通知されます
                                 </p>
                                 {errors.reorder_point && (
-                                    <p className="mt-1 text-sm text-red-500">{errors.reorder_point}</p>
+                                    <p className="mt-1 text-sm text-red-500">
+                                        {errors.reorder_point}
+                                    </p>
                                 )}
                             </div>
 
@@ -237,7 +269,12 @@ export default function Edit({ auth, item, locations }: Props) {
                                     <input
                                         type="checkbox"
                                         checked={data.is_active}
-                                        onChange={(e) => setData('is_active', e.target.checked)}
+                                        onChange={(e) =>
+                                            setData(
+                                                'is_active',
+                                                e.target.checked,
+                                            )
+                                        }
                                         className="h-5 w-5 rounded border-gray-300 text-blue-600 focus:ring-blue-500"
                                     />
                                     <span className="text-lg font-medium text-gray-700">
@@ -259,9 +296,11 @@ export default function Edit({ auth, item, locations }: Props) {
                                     <button
                                         type="button"
                                         onClick={() =>
-                                            router.get(route('inventory.manage'))
+                                            router.get(
+                                                route('inventory.manage'),
+                                            )
                                         }
-                                        className="rounded-md bg-gray-200 px-6 py-3 text-sm font-medium text-gray-700 hover:bg-gray-300:bg-gray-600"
+                                        className="hover:bg-gray-300:bg-gray-600 rounded-md bg-gray-200 px-6 py-3 text-sm font-medium text-gray-700"
                                     >
                                         キャンセル
                                     </button>
@@ -294,7 +333,7 @@ export default function Edit({ auth, item, locations }: Props) {
                             <button
                                 type="button"
                                 onClick={() => setShowDeleteConfirm(false)}
-                                className="rounded-md bg-gray-200 px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-300:bg-gray-600"
+                                className="hover:bg-gray-300:bg-gray-600 rounded-md bg-gray-200 px-4 py-2 text-sm font-medium text-gray-700"
                             >
                                 キャンセル
                             </button>
@@ -323,7 +362,8 @@ export default function Edit({ auth, item, locations }: Props) {
                         <form onSubmit={handleRestock}>
                             <div className="mt-4">
                                 <label className="block text-sm font-medium text-gray-700">
-                                    補充数量 <span className="text-red-500">*</span>
+                                    補充数量{' '}
+                                    <span className="text-red-500">*</span>
                                 </label>
                                 <div className="mt-1 flex items-center gap-2">
                                     <input
@@ -331,7 +371,10 @@ export default function Edit({ auth, item, locations }: Props) {
                                         min="1"
                                         value={restockForm.data.quantity}
                                         onChange={(e) =>
-                                            restockForm.setData('quantity', Number(e.target.value))
+                                            restockForm.setData(
+                                                'quantity',
+                                                Number(e.target.value),
+                                            )
                                         }
                                         className="block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
                                         placeholder="数量を入力"
@@ -354,7 +397,7 @@ export default function Edit({ auth, item, locations }: Props) {
                                         setShowRestockModal(false);
                                         restockForm.reset();
                                     }}
-                                    className="rounded-md bg-gray-200 px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-300:bg-gray-600"
+                                    className="hover:bg-gray-300:bg-gray-600 rounded-md bg-gray-200 px-4 py-2 text-sm font-medium text-gray-700"
                                 >
                                     キャンセル
                                 </button>
@@ -363,7 +406,9 @@ export default function Edit({ auth, item, locations }: Props) {
                                     disabled={restockForm.processing}
                                     className="rounded-md bg-green-600 px-4 py-2 text-sm font-medium text-white hover:bg-green-700 disabled:opacity-50"
                                 >
-                                    {restockForm.processing ? '処理中...' : '補充する'}
+                                    {restockForm.processing
+                                        ? '処理中...'
+                                        : '補充する'}
                                 </button>
                             </div>
                         </form>
@@ -379,20 +424,25 @@ export default function Edit({ auth, item, locations }: Props) {
                             在庫調整
                         </h3>
                         <p className="mt-1 text-sm text-gray-500">
-                            {item.name}の調整数量を入力してください（マイナス可）
+                            {item.name}
+                            の調整数量を入力してください（マイナス可）
                         </p>
                         <form onSubmit={handleAdjust}>
                             <div className="mt-4 space-y-4">
                                 <div>
                                     <label className="block text-sm font-medium text-gray-700">
-                                        調整数量 <span className="text-red-500">*</span>
+                                        調整数量{' '}
+                                        <span className="text-red-500">*</span>
                                     </label>
                                     <div className="mt-1 flex items-center gap-2">
                                         <input
                                             type="number"
                                             value={adjustForm.data.quantity}
                                             onChange={(e) =>
-                                                adjustForm.setData('quantity', Number(e.target.value))
+                                                adjustForm.setData(
+                                                    'quantity',
+                                                    Number(e.target.value),
+                                                )
                                             }
                                             className="block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
                                             placeholder="数量を入力（-10, +5 など）"
@@ -403,8 +453,11 @@ export default function Edit({ auth, item, locations }: Props) {
                                         </span>
                                     </div>
                                     <p className="mt-1 text-sm text-gray-500">
-                                        現在: {item.current_stock} {item.unit} → 調整後:{' '}
-                                        {item.current_stock + adjustForm.data.quantity} {item.unit}
+                                        現在: {item.current_stock} {item.unit} →
+                                        調整後:{' '}
+                                        {item.current_stock +
+                                            adjustForm.data.quantity}{' '}
+                                        {item.unit}
                                     </p>
                                     {adjustForm.errors.quantity && (
                                         <p className="mt-1 text-sm text-red-500">
@@ -419,7 +472,10 @@ export default function Edit({ auth, item, locations }: Props) {
                                     <textarea
                                         value={adjustForm.data.notes}
                                         onChange={(e) =>
-                                            adjustForm.setData('notes', e.target.value)
+                                            adjustForm.setData(
+                                                'notes',
+                                                e.target.value,
+                                            )
                                         }
                                         rows={3}
                                         className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
@@ -439,7 +495,7 @@ export default function Edit({ auth, item, locations }: Props) {
                                         setShowAdjustModal(false);
                                         adjustForm.reset();
                                     }}
-                                    className="rounded-md bg-gray-200 px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-300:bg-gray-600"
+                                    className="hover:bg-gray-300:bg-gray-600 rounded-md bg-gray-200 px-4 py-2 text-sm font-medium text-gray-700"
                                 >
                                     キャンセル
                                 </button>
@@ -448,7 +504,9 @@ export default function Edit({ auth, item, locations }: Props) {
                                     disabled={adjustForm.processing}
                                     className="rounded-md bg-yellow-600 px-4 py-2 text-sm font-medium text-white hover:bg-yellow-700 disabled:opacity-50"
                                 >
-                                    {adjustForm.processing ? '処理中...' : '調整する'}
+                                    {adjustForm.processing
+                                        ? '処理中...'
+                                        : '調整する'}
                                 </button>
                             </div>
                         </form>

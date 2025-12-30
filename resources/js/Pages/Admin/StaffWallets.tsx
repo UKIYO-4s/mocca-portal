@@ -1,6 +1,6 @@
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
-import { Head } from '@inertiajs/react';
 import { PageProps } from '@/types';
+import { Head } from '@inertiajs/react';
 
 interface StaffWithWallet {
     id: number;
@@ -75,34 +75,47 @@ export default function StaffWallets({ staff }: StaffWalletsProps) {
                                                     </div>
                                                 </td>
                                                 <td className="whitespace-nowrap px-6 py-4 text-sm text-gray-500">
-                                                    {roleLabels[member.role] || member.role}
+                                                    {roleLabels[member.role] ||
+                                                        member.role}
                                                 </td>
                                                 <td className="whitespace-nowrap px-6 py-4">
                                                     {member.wallet ? (
                                                         <code className="rounded bg-gray-100 px-2 py-1 font-mono text-sm">
-                                                            {member.wallet.short_address}
+                                                            {
+                                                                member.wallet
+                                                                    .short_address
+                                                            }
                                                         </code>
                                                     ) : (
-                                                        <span className="text-sm text-gray-400">未登録</span>
+                                                        <span className="text-sm text-gray-400">
+                                                            未登録
+                                                        </span>
                                                     )}
                                                 </td>
                                                 <td className="whitespace-nowrap px-6 py-4">
                                                     {member.wallet ? (
                                                         <span
                                                             className={`inline-flex rounded-full px-2 text-xs font-semibold leading-5 ${
-                                                                member.wallet.is_verified
+                                                                member.wallet
+                                                                    .is_verified
                                                                     ? 'bg-green-100 text-green-800'
                                                                     : 'bg-yellow-100 text-yellow-800'
                                                             }`}
                                                         >
-                                                            {member.wallet.is_verified ? '検証済み' : '未検証'}
+                                                            {member.wallet
+                                                                .is_verified
+                                                                ? '検証済み'
+                                                                : '未検証'}
                                                         </span>
                                                     ) : (
-                                                        <span className="text-sm text-gray-400">-</span>
+                                                        <span className="text-sm text-gray-400">
+                                                            -
+                                                        </span>
                                                     )}
                                                 </td>
                                                 <td className="whitespace-nowrap px-6 py-4 text-sm text-gray-500">
-                                                    {member.wallet?.connected_at || '-'}
+                                                    {member.wallet
+                                                        ?.connected_at || '-'}
                                                 </td>
                                             </tr>
                                         ))}

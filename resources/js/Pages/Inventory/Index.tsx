@@ -1,6 +1,6 @@
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
-import { Head, Link, router } from '@inertiajs/react';
 import { InventoryItem, User } from '@/types';
+import { Head, Link, router } from '@inertiajs/react';
 import { useState } from 'react';
 
 interface Props {
@@ -18,7 +18,8 @@ export default function Index({ auth, items }: Props) {
     const [usageData, setUsageData] = useState<Record<number, number>>({});
     const [isSubmitting, setIsSubmitting] = useState(false);
 
-    const isAdminOrManager = auth.user.role === 'admin' || auth.user.role === 'manager';
+    const isAdminOrManager =
+        auth.user.role === 'admin' || auth.user.role === 'manager';
 
     const handleQuantityChange = (itemId: number, value: string) => {
         const quantity = parseInt(value, 10);
@@ -63,7 +64,7 @@ export default function Index({ auth, items }: Props) {
                 onFinish: () => {
                     setIsSubmitting(false);
                 },
-            }
+            },
         );
     };
 
@@ -142,10 +143,13 @@ export default function Index({ auth, items }: Props) {
                                                 step="1"
                                                 value={usageData[item.id] ?? ''}
                                                 onChange={(e) =>
-                                                    handleQuantityChange(item.id, e.target.value)
+                                                    handleQuantityChange(
+                                                        item.id,
+                                                        e.target.value,
+                                                    )
                                                 }
                                                 placeholder="0"
-                                                className="block w-24 rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 text-right"
+                                                className="block w-24 rounded-md border-gray-300 text-right shadow-sm focus:border-blue-500 focus:ring-blue-500"
                                             />
                                             <span className="text-sm text-gray-500">
                                                 {item.unit}
@@ -162,7 +166,7 @@ export default function Index({ auth, items }: Props) {
                                 <button
                                     type="submit"
                                     disabled={isSubmitting || !hasEntries}
-                                    className="inline-flex items-center rounded-md bg-blue-600 px-6 py-3 text-sm font-medium text-white hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed"
+                                    className="inline-flex items-center rounded-md bg-blue-600 px-6 py-3 text-sm font-medium text-white hover:bg-blue-700 disabled:cursor-not-allowed disabled:opacity-50"
                                 >
                                     {isSubmitting ? (
                                         <>

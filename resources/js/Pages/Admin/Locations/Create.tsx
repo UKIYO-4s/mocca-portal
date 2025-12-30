@@ -1,6 +1,6 @@
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
-import { Head, Link, useForm } from '@inertiajs/react';
 import { PageProps } from '@/types';
+import { Head, Link, useForm } from '@inertiajs/react';
 import { FormEventHandler } from 'react';
 
 export default function Create({}: PageProps) {
@@ -36,41 +36,64 @@ export default function Create({}: PageProps) {
 
             <div className="py-6">
                 <div className="mx-auto max-w-2xl px-4 sm:px-6 lg:px-8">
-                    <form onSubmit={handleSubmit} className="space-y-6 rounded-lg bg-white p-6 shadow-sm">
+                    <form
+                        onSubmit={handleSubmit}
+                        className="space-y-6 rounded-lg bg-white p-6 shadow-sm"
+                    >
                         <div>
-                            <label htmlFor="name" className="block text-base font-medium text-gray-900">
+                            <label
+                                htmlFor="name"
+                                className="block text-base font-medium text-gray-900"
+                            >
                                 拠点名 <span className="text-red-500">*</span>
                             </label>
                             <input
                                 type="text"
                                 id="name"
                                 value={data.name}
-                                onChange={(e) => setData('name', e.target.value)}
-                                className="mt-1 block w-full min-h-[44px] rounded-md border-gray-300 text-base shadow-sm focus:border-blue-500 focus:ring-blue-500"
+                                onChange={(e) =>
+                                    setData('name', e.target.value)
+                                }
+                                className="mt-1 block min-h-[44px] w-full rounded-md border-gray-300 text-base shadow-sm focus:border-blue-500 focus:ring-blue-500"
                                 placeholder="例: もっか"
                             />
                             {errors.name && (
-                                <p className="mt-1 text-sm text-red-600">{errors.name}</p>
+                                <p className="mt-1 text-sm text-red-600">
+                                    {errors.name}
+                                </p>
                             )}
                         </div>
 
                         <div>
-                            <label htmlFor="slug" className="block text-base font-medium text-gray-900">
-                                Slug（半角英数字・ハイフン） <span className="text-red-500">*</span>
+                            <label
+                                htmlFor="slug"
+                                className="block text-base font-medium text-gray-900"
+                            >
+                                Slug（半角英数字・ハイフン）{' '}
+                                <span className="text-red-500">*</span>
                             </label>
                             <input
                                 type="text"
                                 id="slug"
                                 value={data.slug}
-                                onChange={(e) => setData('slug', e.target.value.toLowerCase().replace(/[^a-z0-9-]/g, ''))}
-                                className="mt-1 block w-full min-h-[44px] rounded-md border-gray-300 font-mono text-base shadow-sm focus:border-blue-500 focus:ring-blue-500"
+                                onChange={(e) =>
+                                    setData(
+                                        'slug',
+                                        e.target.value
+                                            .toLowerCase()
+                                            .replace(/[^a-z0-9-]/g, ''),
+                                    )
+                                }
+                                className="mt-1 block min-h-[44px] w-full rounded-md border-gray-300 font-mono text-base shadow-sm focus:border-blue-500 focus:ring-blue-500"
                                 placeholder="例: mocca"
                             />
                             <p className="mt-1 text-sm text-gray-600">
                                 URLなどに使用されます。半角英数字とハイフンのみ。
                             </p>
                             {errors.slug && (
-                                <p className="mt-1 text-sm text-red-600">{errors.slug}</p>
+                                <p className="mt-1 text-sm text-red-600">
+                                    {errors.slug}
+                                </p>
                             )}
                         </div>
 
@@ -79,10 +102,15 @@ export default function Create({}: PageProps) {
                                 type="checkbox"
                                 id="is_active"
                                 checked={data.is_active}
-                                onChange={(e) => setData('is_active', e.target.checked)}
+                                onChange={(e) =>
+                                    setData('is_active', e.target.checked)
+                                }
                                 className="h-5 w-5 rounded border-gray-300 text-blue-600 focus:ring-blue-500"
                             />
-                            <label htmlFor="is_active" className="ml-3 text-base text-gray-900">
+                            <label
+                                htmlFor="is_active"
+                                className="ml-3 text-base text-gray-900"
+                            >
                                 有効にする
                             </label>
                         </div>

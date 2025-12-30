@@ -1,8 +1,8 @@
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
-import { Head, router } from '@inertiajs/react';
 import { PageProps } from '@/types';
-import { useState, FormEvent } from 'react';
 import { formatDateYmd } from '@/utils/date';
+import { Head, router } from '@inertiajs/react';
+import { FormEvent, useState } from 'react';
 
 interface BanshirouReservation {
     id: number;
@@ -29,9 +29,15 @@ interface MoccaFormData {
     banshirou_reservation_id: string;
 }
 
-export default function Create({ auth, banshirouReservations, linkedReservationId }: Props) {
+export default function Create({
+    auth,
+    banshirouReservations,
+    linkedReservationId,
+}: Props) {
     const linkedReservation = linkedReservationId
-        ? banshirouReservations.find(r => r.id === parseInt(linkedReservationId))
+        ? banshirouReservations.find(
+              (r) => r.id === parseInt(linkedReservationId),
+          )
         : null;
 
     const [formData, setFormData] = useState<MoccaFormData>({
@@ -48,17 +54,22 @@ export default function Create({ auth, banshirouReservations, linkedReservationI
     const [errors, setErrors] = useState<Record<string, string>>({});
     const [processing, setProcessing] = useState(false);
 
-    const updateField = <K extends keyof MoccaFormData>(field: K, value: MoccaFormData[K]) => {
-        setFormData(prev => ({ ...prev, [field]: value }));
-        setErrors(prev => ({ ...prev, [field]: '' }));
+    const updateField = <K extends keyof MoccaFormData>(
+        field: K,
+        value: MoccaFormData[K],
+    ) => {
+        setFormData((prev) => ({ ...prev, [field]: value }));
+        setErrors((prev) => ({ ...prev, [field]: '' }));
     };
 
     // 電話番号の自動フォーマット
     const formatPhone = (value: string) => {
         const digits = value.replace(/\D/g, '');
         if (digits.length <= 3) return digits;
-        if (digits.length <= 7) return `${digits.slice(0, 3)}-${digits.slice(3)}`;
-        if (digits.length <= 11) return `${digits.slice(0, 3)}-${digits.slice(3, 7)}-${digits.slice(7)}`;
+        if (digits.length <= 7)
+            return `${digits.slice(0, 3)}-${digits.slice(3)}`;
+        if (digits.length <= 11)
+            return `${digits.slice(0, 3)}-${digits.slice(3, 7)}-${digits.slice(7)}`;
         return `${digits.slice(0, 3)}-${digits.slice(3, 7)}-${digits.slice(7, 11)}`;
     };
 
@@ -70,7 +81,9 @@ export default function Create({ auth, banshirouReservations, linkedReservationI
     const handleBanshirouSelect = (id: string) => {
         updateField('banshirou_reservation_id', id);
         if (id) {
-            const selected = banshirouReservations.find(r => r.id === parseInt(id));
+            const selected = banshirouReservations.find(
+                (r) => r.id === parseInt(id),
+            );
             if (selected && !formData.name) {
                 updateField('name', selected.name);
             }
@@ -81,10 +94,13 @@ export default function Create({ auth, banshirouReservations, linkedReservationI
         e.preventDefault();
         const newErrors: Record<string, string> = {};
 
-        if (!formData.reservation_type) newErrors.reservation_type = '種別を選択してください';
-        if (!formData.reservation_date) newErrors.reservation_date = '日付を選択してください';
+        if (!formData.reservation_type)
+            newErrors.reservation_type = '種別を選択してください';
+        if (!formData.reservation_date)
+            newErrors.reservation_date = '日付を選択してください';
         if (!formData.name) newErrors.name = 'お名前を入力してください';
-        if (formData.guest_count < 1) newErrors.guest_count = '人数を入力してください';
+        if (formData.guest_count < 1)
+            newErrors.guest_count = '人数を入力してください';
 
         if (Object.keys(newErrors).length > 0) {
             setErrors(newErrors);
@@ -113,7 +129,7 @@ export default function Create({ auth, banshirouReservations, linkedReservationI
             <div className="py-6">
                 <div className="mx-auto max-w-2xl px-4 sm:px-6 lg:px-8">
                     <form onSubmit={handleSubmit}>
-                        <div className="rounded-lg bg-white p-6 shadow-sm space-y-6">
+                        <div className="space-y-6 rounded-lg bg-white p-6 shadow-sm">
                             {/* ばんしろう連携 */}
                             {banshirouReservations.length > 0 && (
                                 <div>
@@ -121,14 +137,28 @@ export default function Create({ auth, banshirouReservations, linkedReservationI
                                         ばんしろう予約と連携（任意）
                                     </label>
                                     <select
-                                        value={formData.banshirou_reservation_id}
-                                        onChange={(e) => handleBanshirouSelect(e.target.value)}
+                                        value={
+                                            formData.banshirou_reservation_id
+                                        }
+                                        onChange={(e) =>
+                                            handleBanshirouSelect(
+                                                e.target.value,
+                                            )
+                                        }
                                         className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
                                     >
                                         <option value="">連携しない</option>
                                         {banshirouReservations.map((res) => (
                                             <option key={res.id} value={res.id}>
-                                                {res.name}様（{formatDateYmd(res.checkin_date)}〜{formatDateYmd(res.checkout_date)}）
+                                                {res.name}様（
+                                                {formatDateYmd(
+                                                    res.checkin_date,
+                                                )}
+                                                〜
+                                                {formatDateYmd(
+                                                    res.checkout_date,
+                                                )}
+                                                ）
                                             </option>
                                         ))}
                                     </select>
@@ -137,19 +167,35 @@ export default function Create({ auth, banshirouReservations, linkedReservationI
 
                             {/* 種別選択 */}
                             <div>
-                                <label className="block text-sm font-medium text-gray-700 mb-2">
+                                <label className="mb-2 block text-sm font-medium text-gray-700">
                                     種別 <span className="text-red-500">*</span>
                                 </label>
                                 <div className="grid grid-cols-3 gap-3">
                                     {[
-                                        { value: 'breakfast', label: '朝食', selectedClass: 'border-yellow-500 bg-yellow-50' },
-                                        { value: 'lunch', label: '昼食', selectedClass: 'border-orange-500 bg-orange-50' },
-                                        { value: 'dinner', label: '夕食', selectedClass: 'border-purple-500 bg-purple-50' },
+                                        {
+                                            value: 'breakfast',
+                                            label: '朝食',
+                                            selectedClass:
+                                                'border-yellow-500 bg-yellow-50',
+                                        },
+                                        {
+                                            value: 'lunch',
+                                            label: '昼食',
+                                            selectedClass:
+                                                'border-orange-500 bg-orange-50',
+                                        },
+                                        {
+                                            value: 'dinner',
+                                            label: '夕食',
+                                            selectedClass:
+                                                'border-purple-500 bg-purple-50',
+                                        },
                                     ].map((option) => (
                                         <label
                                             key={option.value}
                                             className={`flex cursor-pointer items-center justify-center rounded-lg border-2 p-4 ${
-                                                formData.reservation_type === option.value
+                                                formData.reservation_type ===
+                                                option.value
                                                     ? option.selectedClass
                                                     : 'border-gray-200 hover:border-gray-300'
                                             }`}
@@ -158,15 +204,29 @@ export default function Create({ auth, banshirouReservations, linkedReservationI
                                                 type="radio"
                                                 name="reservation_type"
                                                 value={option.value}
-                                                checked={formData.reservation_type === option.value}
-                                                onChange={(e) => updateField('reservation_type', e.target.value)}
+                                                checked={
+                                                    formData.reservation_type ===
+                                                    option.value
+                                                }
+                                                onChange={(e) =>
+                                                    updateField(
+                                                        'reservation_type',
+                                                        e.target.value,
+                                                    )
+                                                }
                                                 className="sr-only"
                                             />
-                                            <span className="text-lg font-medium">{option.label}</span>
+                                            <span className="text-lg font-medium">
+                                                {option.label}
+                                            </span>
                                         </label>
                                     ))}
                                 </div>
-                                {errors.reservation_type && <p className="mt-1 text-sm text-red-500">{errors.reservation_type}</p>}
+                                {errors.reservation_type && (
+                                    <p className="mt-1 text-sm text-red-500">
+                                        {errors.reservation_type}
+                                    </p>
+                                )}
                             </div>
 
                             {/* 日付 */}
@@ -177,11 +237,20 @@ export default function Create({ auth, banshirouReservations, linkedReservationI
                                 <input
                                     type="date"
                                     value={formData.reservation_date}
-                                    onChange={(e) => updateField('reservation_date', e.target.value)}
+                                    onChange={(e) =>
+                                        updateField(
+                                            'reservation_date',
+                                            e.target.value,
+                                        )
+                                    }
                                     min={new Date().toISOString().split('T')[0]}
                                     className="mt-1 block w-full rounded-md border-gray-300 text-lg shadow-sm focus:border-blue-500 focus:ring-blue-500"
                                 />
-                                {errors.reservation_date && <p className="mt-1 text-sm text-red-500">{errors.reservation_date}</p>}
+                                {errors.reservation_date && (
+                                    <p className="mt-1 text-sm text-red-500">
+                                        {errors.reservation_date}
+                                    </p>
+                                )}
                             </div>
 
                             {/* 到着時間 */}
@@ -192,7 +261,12 @@ export default function Create({ auth, banshirouReservations, linkedReservationI
                                 <input
                                     type="time"
                                     value={formData.arrival_time}
-                                    onChange={(e) => updateField('arrival_time', e.target.value)}
+                                    onChange={(e) =>
+                                        updateField(
+                                            'arrival_time',
+                                            e.target.value,
+                                        )
+                                    }
                                     className="mt-1 block w-full rounded-md border-gray-300 text-lg shadow-sm focus:border-blue-500 focus:ring-blue-500"
                                 />
                             </div>
@@ -200,16 +274,23 @@ export default function Create({ auth, banshirouReservations, linkedReservationI
                             {/* お名前 */}
                             <div>
                                 <label className="block text-sm font-medium text-gray-700">
-                                    お名前 <span className="text-red-500">*</span>
+                                    お名前{' '}
+                                    <span className="text-red-500">*</span>
                                 </label>
                                 <input
                                     type="text"
                                     value={formData.name}
-                                    onChange={(e) => updateField('name', e.target.value)}
+                                    onChange={(e) =>
+                                        updateField('name', e.target.value)
+                                    }
                                     className="mt-1 block w-full rounded-md border-gray-300 text-lg shadow-sm focus:border-blue-500 focus:ring-blue-500"
                                     placeholder="山田 太郎"
                                 />
-                                {errors.name && <p className="mt-1 text-sm text-red-500">{errors.name}</p>}
+                                {errors.name && (
+                                    <p className="mt-1 text-sm text-red-500">
+                                        {errors.name}
+                                    </p>
+                                )}
                             </div>
 
                             {/* 人数 */}
@@ -220,7 +301,15 @@ export default function Create({ auth, banshirouReservations, linkedReservationI
                                 <div className="mt-1 flex items-center gap-3">
                                     <button
                                         type="button"
-                                        onClick={() => updateField('guest_count', Math.max(1, formData.guest_count - 1))}
+                                        onClick={() =>
+                                            updateField(
+                                                'guest_count',
+                                                Math.max(
+                                                    1,
+                                                    formData.guest_count - 1,
+                                                ),
+                                            )
+                                        }
                                         className="flex h-12 w-12 items-center justify-center rounded-full bg-gray-200 text-2xl font-bold hover:bg-gray-300"
                                     >
                                         −
@@ -230,14 +319,23 @@ export default function Create({ auth, banshirouReservations, linkedReservationI
                                     </span>
                                     <button
                                         type="button"
-                                        onClick={() => updateField('guest_count', formData.guest_count + 1)}
+                                        onClick={() =>
+                                            updateField(
+                                                'guest_count',
+                                                formData.guest_count + 1,
+                                            )
+                                        }
                                         className="flex h-12 w-12 items-center justify-center rounded-full bg-gray-200 text-2xl font-bold hover:bg-gray-300"
                                     >
                                         +
                                     </button>
                                     <span className="text-gray-500">名</span>
                                 </div>
-                                {errors.guest_count && <p className="mt-1 text-sm text-red-500">{errors.guest_count}</p>}
+                                {errors.guest_count && (
+                                    <p className="mt-1 text-sm text-red-500">
+                                        {errors.guest_count}
+                                    </p>
+                                )}
                             </div>
 
                             {/* 電話番号 */}
@@ -261,7 +359,12 @@ export default function Create({ auth, banshirouReservations, linkedReservationI
                                 </label>
                                 <textarea
                                     value={formData.advance_menu}
-                                    onChange={(e) => updateField('advance_menu', e.target.value)}
+                                    onChange={(e) =>
+                                        updateField(
+                                            'advance_menu',
+                                            e.target.value,
+                                        )
+                                    }
                                     rows={3}
                                     className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
                                     placeholder="先に出すメニューがあれば記載..."
@@ -275,7 +378,9 @@ export default function Create({ auth, banshirouReservations, linkedReservationI
                                 </label>
                                 <textarea
                                     value={formData.notes}
-                                    onChange={(e) => updateField('notes', e.target.value)}
+                                    onChange={(e) =>
+                                        updateField('notes', e.target.value)
+                                    }
                                     rows={3}
                                     className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
                                     placeholder="アレルギー、リクエストなど..."

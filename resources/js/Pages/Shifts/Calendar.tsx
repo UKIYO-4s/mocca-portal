@@ -1,6 +1,6 @@
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
+import { Shift, User } from '@/types';
 import { Head, router } from '@inertiajs/react';
-import { User, Shift } from '@/types';
 
 interface Props {
     auth: { user: User };
@@ -71,7 +71,11 @@ export default function Calendar({ auth, shifts, users, currentMonth }: Props) {
 
         for (let i = startDayOfWeek - 1; i >= 0; i--) {
             const dayNumber = lastDayOfPrevMonth - i;
-            const date = new Date(prevMonth.getFullYear(), prevMonth.getMonth(), dayNumber);
+            const date = new Date(
+                prevMonth.getFullYear(),
+                prevMonth.getMonth(),
+                dayNumber,
+            );
             days.push({
                 date,
                 dayNumber,
@@ -112,7 +116,7 @@ export default function Calendar({ auth, shifts, users, currentMonth }: Props) {
     // Get shifts for a specific date
     const getShiftsForDate = (date: Date): Shift[] => {
         const dateStr = formatDateToString(date);
-        return shifts.filter(shift => shift.date === dateStr);
+        return shifts.filter((shift) => shift.date === dateStr);
     };
 
     // Format date to YYYY-MM-DD string
@@ -129,8 +133,8 @@ export default function Calendar({ auth, shifts, users, currentMonth }: Props) {
     const MAX_VISIBLE_SHIFTS = 4;
 
     // Count summary
-    const workingShifts = shifts.filter(s => s.status === 'working');
-    const offShifts = shifts.filter(s => s.status === 'off');
+    const workingShifts = shifts.filter((s) => s.status === 'working');
+    const offShifts = shifts.filter((s) => s.status === 'off');
 
     return (
         <AuthenticatedLayout
@@ -150,8 +154,18 @@ export default function Calendar({ auth, shifts, users, currentMonth }: Props) {
                             onClick={() => navigateToMonth(getPrevMonth())}
                             className="inline-flex items-center rounded-md border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50"
                         >
-                            <svg className="mr-2 h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
+                            <svg
+                                className="mr-2 h-5 w-5"
+                                fill="none"
+                                stroke="currentColor"
+                                viewBox="0 0 24 24"
+                            >
+                                <path
+                                    strokeLinecap="round"
+                                    strokeLinejoin="round"
+                                    strokeWidth={2}
+                                    d="M15 19l-7-7 7-7"
+                                />
                             </svg>
                             前月
                         </button>
@@ -165,8 +179,18 @@ export default function Calendar({ auth, shifts, users, currentMonth }: Props) {
                             className="inline-flex items-center rounded-md border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50"
                         >
                             翌月
-                            <svg className="ml-2 h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                            <svg
+                                className="ml-2 h-5 w-5"
+                                fill="none"
+                                stroke="currentColor"
+                                viewBox="0 0 24 24"
+                            >
+                                <path
+                                    strokeLinecap="round"
+                                    strokeLinejoin="round"
+                                    strokeWidth={2}
+                                    d="M9 5l7 7-7 7"
+                                />
                             </svg>
                         </button>
                     </div>
@@ -182,8 +206,8 @@ export default function Calendar({ auth, shifts, users, currentMonth }: Props) {
                                         index === 5
                                             ? 'text-blue-600' // Saturday
                                             : index === 6
-                                            ? 'text-red-600' // Sunday
-                                            : 'text-gray-700'
+                                              ? 'text-red-600' // Sunday
+                                              : 'text-gray-700'
                                     }`}
                                 >
                                     {day}
@@ -197,10 +221,18 @@ export default function Calendar({ auth, shifts, users, currentMonth }: Props) {
                                 const dayOfWeek = index % 7;
                                 const isSaturday = dayOfWeek === 5;
                                 const isSunday = dayOfWeek === 6;
-                                const workingUsers = day.shifts.filter(s => s.status === 'working');
-                                const offUsers = day.shifts.filter(s => s.status === 'off');
-                                const visibleWorking = workingUsers.slice(0, MAX_VISIBLE_SHIFTS);
-                                const remainingCount = workingUsers.length - MAX_VISIBLE_SHIFTS;
+                                const workingUsers = day.shifts.filter(
+                                    (s) => s.status === 'working',
+                                );
+                                const offUsers = day.shifts.filter(
+                                    (s) => s.status === 'off',
+                                );
+                                const visibleWorking = workingUsers.slice(
+                                    0,
+                                    MAX_VISIBLE_SHIFTS,
+                                );
+                                const remainingCount =
+                                    workingUsers.length - MAX_VISIBLE_SHIFTS;
 
                                 return (
                                     <div
@@ -217,10 +249,10 @@ export default function Calendar({ auth, shifts, users, currentMonth }: Props) {
                                                 !day.isCurrentMonth
                                                     ? 'text-gray-400'
                                                     : isSaturday
-                                                    ? 'text-blue-600'
-                                                    : isSunday
-                                                    ? 'text-red-600'
-                                                    : 'text-gray-900'
+                                                      ? 'text-blue-600'
+                                                      : isSunday
+                                                        ? 'text-red-600'
+                                                        : 'text-gray-900'
                                             } ${day.isToday ? 'inline-flex h-6 w-6 items-center justify-center rounded-full bg-blue-600 text-white' : ''}`}
                                         >
                                             {day.dayNumber}
@@ -238,7 +270,8 @@ export default function Calendar({ auth, shifts, users, currentMonth }: Props) {
                                                     }`}
                                                     title={`${shift.user?.name || 'Unknown'}: 出勤`}
                                                 >
-                                                    {shift.user?.name || 'Unknown'}
+                                                    {shift.user?.name ||
+                                                        'Unknown'}
                                                 </div>
                                             ))}
                                             {remainingCount > 0 && (
@@ -252,11 +285,12 @@ export default function Calendar({ auth, shifts, users, currentMonth }: Props) {
                                                     +{remainingCount}名出勤
                                                 </div>
                                             )}
-                                            {offUsers.length > 0 && day.isCurrentMonth && (
-                                                <div className="text-center text-xs text-gray-400">
-                                                    {offUsers.length}名休日
-                                                </div>
-                                            )}
+                                            {offUsers.length > 0 &&
+                                                day.isCurrentMonth && (
+                                                    <div className="text-center text-xs text-gray-400">
+                                                        {offUsers.length}名休日
+                                                    </div>
+                                                )}
                                         </div>
                                     </div>
                                 );
@@ -278,12 +312,20 @@ export default function Calendar({ auth, shifts, users, currentMonth }: Props) {
                         </div>
                         <div className="flex gap-6 text-sm">
                             <div>
-                                <span className="font-bold text-green-600">{workingShifts.length}</span>
-                                <span className="ml-1 text-gray-600">件出勤</span>
+                                <span className="font-bold text-green-600">
+                                    {workingShifts.length}
+                                </span>
+                                <span className="ml-1 text-gray-600">
+                                    件出勤
+                                </span>
                             </div>
                             <div>
-                                <span className="font-bold text-gray-500">{offShifts.length}</span>
-                                <span className="ml-1 text-gray-600">件休日</span>
+                                <span className="font-bold text-gray-500">
+                                    {offShifts.length}
+                                </span>
+                                <span className="ml-1 text-gray-600">
+                                    件休日
+                                </span>
                             </div>
                         </div>
                     </div>

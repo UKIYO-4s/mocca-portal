@@ -1,7 +1,7 @@
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
+import { User } from '@/types';
 import { Head, useForm, usePage } from '@inertiajs/react';
 import { FormEventHandler, useState } from 'react';
-import { User } from '@/types';
 
 interface Props {
     auth: { user: User };
@@ -11,9 +11,13 @@ interface Props {
 }
 
 export default function Setup({ auth, qrCodeSvg, secret, enabled }: Props) {
-    const { flash } = usePage().props as { flash?: { success?: string; recoveryCodes?: string[] } };
+    const { flash } = usePage().props as {
+        flash?: { success?: string; recoveryCodes?: string[] };
+    };
     const [showSecret, setShowSecret] = useState(false);
-    const [showRecoveryCodes, setShowRecoveryCodes] = useState(!!flash?.recoveryCodes);
+    const [showRecoveryCodes, setShowRecoveryCodes] = useState(
+        !!flash?.recoveryCodes,
+    );
 
     const enableForm = useForm({
         code: '',
@@ -40,7 +44,11 @@ export default function Setup({ auth, qrCodeSvg, secret, enabled }: Props) {
 
     const handleDisable: FormEventHandler = (e) => {
         e.preventDefault();
-        if (confirm('二要素認証を無効にしますか？アカウントのセキュリティが低下します。')) {
+        if (
+            confirm(
+                '二要素認証を無効にしますか？アカウントのセキュリティが低下します。',
+            )
+        ) {
             disableForm.post(route('two-factor.disable'), {
                 preserveScroll: true,
                 onSuccess: () => disableForm.reset(),
@@ -50,7 +58,11 @@ export default function Setup({ auth, qrCodeSvg, secret, enabled }: Props) {
 
     const handleRegenerate: FormEventHandler = (e) => {
         e.preventDefault();
-        if (confirm('新しいリカバリーコードを生成しますか？古いコードは使用できなくなります。')) {
+        if (
+            confirm(
+                '新しいリカバリーコードを生成しますか？古いコードは使用できなくなります。',
+            )
+        ) {
             regenerateForm.post(route('two-factor.regenerate'), {
                 preserveScroll: true,
                 onSuccess: () => {
@@ -60,7 +72,6 @@ export default function Setup({ auth, qrCodeSvg, secret, enabled }: Props) {
             });
         }
     };
-
 
     return (
         <AuthenticatedLayout
@@ -116,10 +127,12 @@ export default function Setup({ auth, qrCodeSvg, secret, enabled }: Props) {
 
                                 <div className="mb-6">
                                     <p className="mb-4 text-sm text-gray-600">
-                                        1. Google Authenticator、Authy、または他の認証アプリをスマートフォンにインストールしてください。
+                                        1. Google
+                                        Authenticator、Authy、または他の認証アプリをスマートフォンにインストールしてください。
                                     </p>
                                     <p className="mb-4 text-sm text-gray-600">
-                                        2. アプリで以下のQRコードをスキャンしてください。
+                                        2.
+                                        アプリで以下のQRコードをスキャンしてください。
                                     </p>
                                 </div>
 
@@ -127,7 +140,9 @@ export default function Setup({ auth, qrCodeSvg, secret, enabled }: Props) {
                                 <div className="mb-6 flex justify-center">
                                     <div
                                         className="rounded-lg bg-white p-4"
-                                        dangerouslySetInnerHTML={{ __html: qrCodeSvg }}
+                                        dangerouslySetInnerHTML={{
+                                            __html: qrCodeSvg,
+                                        }}
                                     />
                                 </div>
 
@@ -135,10 +150,14 @@ export default function Setup({ auth, qrCodeSvg, secret, enabled }: Props) {
                                 <div className="mb-6">
                                     <button
                                         type="button"
-                                        onClick={() => setShowSecret(!showSecret)}
+                                        onClick={() =>
+                                            setShowSecret(!showSecret)
+                                        }
                                         className="text-sm text-blue-600 hover:text-blue-500"
                                     >
-                                        {showSecret ? 'シークレットキーを隠す' : 'QRコードをスキャンできない場合'}
+                                        {showSecret
+                                            ? 'シークレットキーを隠す'
+                                            : 'QRコードをスキャンできない場合'}
                                     </button>
                                     {showSecret && (
                                         <div className="mt-2 rounded-md bg-gray-100 p-3">
@@ -167,7 +186,12 @@ export default function Setup({ auth, qrCodeSvg, secret, enabled }: Props) {
                                             inputMode="numeric"
                                             autoComplete="one-time-code"
                                             value={enableForm.data.code}
-                                            onChange={(e) => enableForm.setData('code', e.target.value)}
+                                            onChange={(e) =>
+                                                enableForm.setData(
+                                                    'code',
+                                                    e.target.value,
+                                                )
+                                            }
                                             className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
                                             placeholder="6桁のコードを入力"
                                             maxLength={6}
@@ -182,9 +206,11 @@ export default function Setup({ auth, qrCodeSvg, secret, enabled }: Props) {
                                     <button
                                         type="submit"
                                         disabled={enableForm.processing}
-                                        className="w-full rounded-md bg-blue-600 px-4 py-2 text-sm font-medium text-white hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 disabled:opacity-50:ring-offset-gray-800"
+                                        className="disabled:opacity-50:ring-offset-gray-800 w-full rounded-md bg-blue-600 px-4 py-2 text-sm font-medium text-white hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
                                     >
-                                        {enableForm.processing ? '確認中...' : '二要素認証を有効にする'}
+                                        {enableForm.processing
+                                            ? '確認中...'
+                                            : '二要素認証を有効にする'}
                                     </button>
                                 </form>
                             </div>
@@ -193,7 +219,7 @@ export default function Setup({ auth, qrCodeSvg, secret, enabled }: Props) {
                         /* Enabled Card */
                         <div className="space-y-6">
                             {/* Recovery Codes */}
-                            {(showRecoveryCodes && flash?.recoveryCodes) && (
+                            {showRecoveryCodes && flash?.recoveryCodes && (
                                 <div className="overflow-hidden rounded-lg bg-yellow-50 shadow-sm">
                                     <div className="p-6">
                                         <h3 className="mb-2 text-lg font-medium text-yellow-800">
@@ -203,15 +229,22 @@ export default function Setup({ auth, qrCodeSvg, secret, enabled }: Props) {
                                             これらのコードは安全な場所に保管してください。認証アプリにアクセスできなくなった場合に使用できます。各コードは1回のみ使用できます。
                                         </p>
                                         <div className="grid grid-cols-2 gap-2 rounded-md bg-white p-4 font-mono text-sm">
-                                            {flash.recoveryCodes.map((code, index) => (
-                                                <div key={index} className="text-gray-900">
-                                                    {code}
-                                                </div>
-                                            ))}
+                                            {flash.recoveryCodes.map(
+                                                (code, index) => (
+                                                    <div
+                                                        key={index}
+                                                        className="text-gray-900"
+                                                    >
+                                                        {code}
+                                                    </div>
+                                                ),
+                                            )}
                                         </div>
                                         <button
                                             type="button"
-                                            onClick={() => setShowRecoveryCodes(false)}
+                                            onClick={() =>
+                                                setShowRecoveryCodes(false)
+                                            }
                                             className="mt-4 text-sm text-yellow-700 hover:text-yellow-600"
                                         >
                                             コードを非表示にする
@@ -240,22 +273,34 @@ export default function Setup({ auth, qrCodeSvg, secret, enabled }: Props) {
                                             <input
                                                 id="regenerate-password"
                                                 type="password"
-                                                value={regenerateForm.data.password}
-                                                onChange={(e) => regenerateForm.setData('password', e.target.value)}
+                                                value={
+                                                    regenerateForm.data.password
+                                                }
+                                                onChange={(e) =>
+                                                    regenerateForm.setData(
+                                                        'password',
+                                                        e.target.value,
+                                                    )
+                                                }
                                                 className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
                                             />
                                             {regenerateForm.errors.password && (
                                                 <p className="mt-1 text-sm text-red-600">
-                                                    {regenerateForm.errors.password}
+                                                    {
+                                                        regenerateForm.errors
+                                                            .password
+                                                    }
                                                 </p>
                                             )}
                                         </div>
                                         <button
                                             type="submit"
                                             disabled={regenerateForm.processing}
-                                            className="rounded-md bg-gray-600 px-4 py-2 text-sm font-medium text-white hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-offset-2 disabled:opacity-50:ring-offset-gray-800"
+                                            className="disabled:opacity-50:ring-offset-gray-800 rounded-md bg-gray-600 px-4 py-2 text-sm font-medium text-white hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-offset-2"
                                         >
-                                            {regenerateForm.processing ? '生成中...' : 'リカバリーコードを再生成'}
+                                            {regenerateForm.processing
+                                                ? '生成中...'
+                                                : 'リカバリーコードを再生成'}
                                         </button>
                                     </form>
                                 </div>
@@ -281,22 +326,34 @@ export default function Setup({ auth, qrCodeSvg, secret, enabled }: Props) {
                                             <input
                                                 id="disable-password"
                                                 type="password"
-                                                value={disableForm.data.password}
-                                                onChange={(e) => disableForm.setData('password', e.target.value)}
+                                                value={
+                                                    disableForm.data.password
+                                                }
+                                                onChange={(e) =>
+                                                    disableForm.setData(
+                                                        'password',
+                                                        e.target.value,
+                                                    )
+                                                }
                                                 className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-red-500 focus:ring-red-500"
                                             />
                                             {disableForm.errors.password && (
                                                 <p className="mt-1 text-sm text-red-600">
-                                                    {disableForm.errors.password}
+                                                    {
+                                                        disableForm.errors
+                                                            .password
+                                                    }
                                                 </p>
                                             )}
                                         </div>
                                         <button
                                             type="submit"
                                             disabled={disableForm.processing}
-                                            className="rounded-md bg-red-600 px-4 py-2 text-sm font-medium text-white hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2 disabled:opacity-50:ring-offset-gray-800"
+                                            className="disabled:opacity-50:ring-offset-gray-800 rounded-md bg-red-600 px-4 py-2 text-sm font-medium text-white hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2"
                                         >
-                                            {disableForm.processing ? '処理中...' : '二要素認証を無効にする'}
+                                            {disableForm.processing
+                                                ? '処理中...'
+                                                : '二要素認証を無効にする'}
                                         </button>
                                     </form>
                                 </div>
