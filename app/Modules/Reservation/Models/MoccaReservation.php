@@ -32,6 +32,17 @@ class MoccaReservation extends Model
     ];
 
     /**
+     * The accessors to append to the model's array form.
+     */
+    protected $appends = [
+        'type_label',
+        'status_label',
+        'formatted_phone',
+        'phone_link',
+        'formatted_arrival_time',
+    ];
+
+    /**
      * Get the user who created this reservation.
      */
     public function creator(): BelongsTo

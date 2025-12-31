@@ -83,24 +83,38 @@ class GuestPage extends Model
 
     /**
      * Get the associated Banshirou reservation.
+     * Note: Only use when reservation_type === 'banshirou'
      */
     public function banshirouReservation(): BelongsTo
     {
         return $this->belongsTo(
             \App\Modules\Reservation\Models\BanshirouReservation::class,
             'reservation_id'
-        )->where('reservation_type', 'banshirou');
+        );
     }
 
     /**
      * Get the associated Mocca reservation.
+     * Note: Only use when reservation_type === 'mocca'
      */
     public function moccaReservation(): BelongsTo
     {
         return $this->belongsTo(
             \App\Modules\Reservation\Models\MoccaReservation::class,
             'reservation_id'
-        )->where('reservation_type', 'mocca');
+        );
+    }
+
+    /**
+     * Get the reservation based on type.
+     */
+    public function getReservationAttribute()
+    {
+        return match($this->reservation_type) {
+            'banshirou' => $this->banshirouReservation,
+            'mocca' => $this->moccaReservation,
+            default => null,
+        };
     }
 
     /**

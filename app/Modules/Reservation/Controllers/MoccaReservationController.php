@@ -26,8 +26,11 @@ class MoccaReservationController extends Controller
             ->orderBy('reservation_date', 'desc')
             ->orderBy('reservation_type');
 
-        // Filter by date
-        if ($request->filled('date')) {
+        // Filter by date range (from/to)
+        if ($request->filled('from') && $request->filled('to')) {
+            $query->betweenDates($request->from, $request->to);
+        } elseif ($request->filled('date')) {
+            // Fallback to single date filter
             $query->forDate($request->date);
         }
 
@@ -45,7 +48,7 @@ class MoccaReservationController extends Controller
 
         return Inertia::render('Reservations/Mocca/Index', [
             'reservations' => $reservations,
-            'filters' => $request->only(['date', 'type', 'status']),
+            'filters' => $request->only(['date', 'from', 'to', 'view', 'type', 'status']),
         ]);
     }
 

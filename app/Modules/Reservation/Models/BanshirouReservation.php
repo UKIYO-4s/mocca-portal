@@ -41,6 +41,19 @@ class BanshirouReservation extends Model
     ];
 
     /**
+     * The accessors to append to the model's array form.
+     */
+    protected $appends = [
+        'formatted_phone',
+        'phone_link',
+        'status_label',
+        'meal_option_label',
+        'payment_method_label',
+        'total_guests',
+        'nights',
+    ];
+
+    /**
      * Get the user who created this reservation.
      */
     public function creator(): BelongsTo
