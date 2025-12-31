@@ -116,14 +116,16 @@ class InviteController extends Controller
 
         event(new Registered($user));
 
-        // ログインしてからアクティビティログを記録（Auth::id()が必要なため）
+        // ログインしてからアクティビティログを記録
         Auth::login($user);
 
+        // 明示的にuser->idを渡す（Auth::login直後はAuth::id()がnullを返す場合があるため）
         $this->activityLog->log(
             'user',
             'registered_via_invite',
             $user,
-            "招待から登録: {$user->name} ({$invite->role_label})"
+            "招待から登録: {$user->name} ({$invite->role_label})",
+            $user->id
         );
 
         return redirect()->route('dashboard')->with('success', '登録が完了しました。ようこそ！');

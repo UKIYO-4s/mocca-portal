@@ -63,6 +63,11 @@ class DailyChecklistController extends Controller
             'entries.completedBy',
         ]);
 
+        // 防御的プログラミング: templateが存在しない場合は404
+        if (!$dailyChecklist->template) {
+            abort(404, 'チェックリストのテンプレートが見つかりません。');
+        }
+
         // Build a map of item_id => entry for easy lookup
         $entriesMap = $dailyChecklist->entries->keyBy('checklist_item_id');
 

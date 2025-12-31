@@ -11,15 +11,22 @@ class ActivityLogService
 {
     /**
      * Log an activity.
+     *
+     * @param string $module
+     * @param string $action
+     * @param Model|null $target
+     * @param string|null $description
+     * @param int|null $userId Optional user ID (uses Auth::id() if not provided)
      */
     public function log(
         string $module,
         string $action,
         ?Model $target = null,
-        ?string $description = null
+        ?string $description = null,
+        ?int $userId = null
     ): ActivityLog {
         return ActivityLog::create([
-            'user_id' => Auth::id(),
+            'user_id' => $userId ?? Auth::id(),
             'module' => $module,
             'action' => $action,
             'target_type' => $target ? get_class($target) : null,

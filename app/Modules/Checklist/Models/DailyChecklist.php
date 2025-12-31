@@ -38,7 +38,8 @@ class DailyChecklist extends Model
 
     public function getCompletionRateAttribute(): float
     {
-        $totalItems = $this->template->items()->count();
+        // 防御的プログラミング: templateがnullの場合は100%を返す
+        $totalItems = $this->template?->items()->count() ?? 0;
         if ($totalItems === 0) {
             return 100.0;
         }
@@ -54,7 +55,8 @@ class DailyChecklist extends Model
 
     public function checkCompletion(): void
     {
-        $totalItems = $this->template->items()->count();
+        // 防御的プログラミング: templateがnullの場合は何もしない
+        $totalItems = $this->template?->items()->count() ?? 0;
         $completedItems = $this->entries()->whereNotNull('completed_at')->count();
 
         if ($totalItems > 0 && $completedItems === $totalItems) {
