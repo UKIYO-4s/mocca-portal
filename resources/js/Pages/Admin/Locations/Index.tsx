@@ -8,7 +8,6 @@ interface Location {
     slug: string;
     is_active: boolean;
     inventory_items_count: number;
-    shifts_count: number;
     created_at: string;
 }
 
@@ -18,9 +17,9 @@ interface Props extends PageProps {
 
 export default function Index({ locations }: Props) {
     const handleDelete = (location: Location) => {
-        if (location.inventory_items_count > 0 || location.shifts_count > 0) {
+        if (location.inventory_items_count > 0) {
             alert(
-                `この拠点には関連データがあるため削除できません（備品: ${location.inventory_items_count}件、シフト: ${location.shifts_count}件）`,
+                `この拠点には関連データがあるため削除できません（備品: ${location.inventory_items_count}件）`,
             );
             return;
         }
@@ -93,8 +92,7 @@ export default function Index({ locations }: Props) {
                                             <p className="mt-1 text-sm text-gray-600">
                                                 備品:{' '}
                                                 {location.inventory_items_count}
-                                                件 / シフト:{' '}
-                                                {location.shifts_count}件
+                                                件
                                             </p>
                                         </div>
                                         <div className="flex gap-2">
@@ -113,13 +111,11 @@ export default function Index({ locations }: Props) {
                                                 }
                                                 disabled={
                                                     location.inventory_items_count >
-                                                        0 ||
-                                                    location.shifts_count > 0
+                                                    0
                                                 }
                                                 className={`inline-flex min-h-[44px] items-center justify-center rounded-md px-4 py-2 text-base font-medium ${
                                                     location.inventory_items_count >
-                                                        0 ||
-                                                    location.shifts_count > 0
+                                                    0
                                                         ? 'cursor-not-allowed bg-gray-100 text-gray-400'
                                                         : 'bg-red-100 text-red-700 hover:bg-red-200'
                                                 }`}

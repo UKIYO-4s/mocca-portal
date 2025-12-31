@@ -28,13 +28,8 @@ class Location extends Model
         return $this->hasMany(\App\Modules\Inventory\Models\InventoryItem::class);
     }
 
-    /**
-     * Get shifts for this location.
-     */
-    public function shifts(): HasMany
-    {
-        return $this->hasMany(\App\Modules\Shift\Models\Shift::class);
-    }
+    // Note: shifts() relationship removed - shifts table no longer has location_id
+    // as of migration 2025_12_30_020405_simplify_shifts_table
 
     /**
      * Scope to get only active locations.

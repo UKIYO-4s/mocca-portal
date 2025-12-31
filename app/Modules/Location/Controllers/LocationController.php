@@ -21,7 +21,8 @@ class LocationController extends Controller
      */
     public function index(): Response
     {
-        $locations = Location::withCount(['inventoryItems', 'shifts'])
+        // Note: shifts count removed - shifts table no longer has location_id
+        $locations = Location::withCount(['inventoryItems'])
             ->orderBy('name')
             ->get();
 
@@ -114,13 +115,13 @@ class LocationController extends Controller
     public function destroy(Location $location)
     {
         // Check if location has related items
+        // Note: shifts count removed - shifts table no longer has location_id
         $inventoryCount = $location->inventoryItems()->count();
-        $shiftCount = $location->shifts()->count();
 
-        if ($inventoryCount > 0 || $shiftCount > 0) {
+        if ($inventoryCount > 0) {
             return redirect()
                 ->back()
-                ->with('error', "この拠点には関連データがあるため削除できません（備品: {$inventoryCount}件、シフト: {$shiftCount}件）。");
+                ->with('error', "この拠点には関連データがあるため削除できません（備品: {$inventoryCount}件）。");
         }
 
         $locationName = $location->name;
