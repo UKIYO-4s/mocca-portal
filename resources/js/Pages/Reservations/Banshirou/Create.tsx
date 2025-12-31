@@ -484,9 +484,9 @@ export default function Create({ banshirouReservations = [] }: Props) {
         return 'banshirou';
     };
 
-    // 予約タイプ（宿泊/食事）
+    // 予約タイプ（宿泊/食事）- デフォルトは食事予約
     const [reservationType, setReservationType] =
-        useState<ReservationType>('banshirou');
+        useState<ReservationType>('mocca');
 
     // 宿泊予約用state
     const [formData, setFormData] =
@@ -635,6 +635,17 @@ export default function Create({ banshirouReservations = [] }: Props) {
                     <div className="flex border-b border-gray-200">
                         <button
                             type="button"
+                            onClick={() => handleReservationTypeChange('mocca')}
+                            className={`flex-1 border-b-2 py-3 text-center text-sm font-medium transition-colors ${
+                                reservationType === 'mocca'
+                                    ? 'border-orange-600 text-orange-600'
+                                    : 'border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700'
+                            }`}
+                        >
+                            食事予約
+                        </button>
+                        <button
+                            type="button"
                             onClick={() =>
                                 handleReservationTypeChange('banshirou')
                             }
@@ -645,17 +656,6 @@ export default function Create({ banshirouReservations = [] }: Props) {
                             }`}
                         >
                             宿泊予約
-                        </button>
-                        <button
-                            type="button"
-                            onClick={() => handleReservationTypeChange('mocca')}
-                            className={`flex-1 border-b-2 py-3 text-center text-sm font-medium transition-colors ${
-                                reservationType === 'mocca'
-                                    ? 'border-orange-600 text-orange-600'
-                                    : 'border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700'
-                            }`}
-                        >
-                            食事予約
                         </button>
                     </div>
                 </div>
