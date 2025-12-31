@@ -21,6 +21,7 @@ export default function Wallet({ wallet }: WalletProps) {
         errors,
     } = useForm({
         wallet_address: wallet?.wallet_address || '',
+        connected_via_metamask: false,
     });
 
     // Metamask接続処理
@@ -41,9 +42,13 @@ export default function Wallet({ wallet }: WalletProps) {
             const accounts = await provider.send('eth_requestAccounts', []);
 
             if (accounts && accounts.length > 0) {
-                // アドレスを取得してフォームに設定
+                // アドレスを取得してフォームに設定（Metamask経由フラグも立てる）
                 const address = accounts[0] as string;
-                setData('wallet_address', address);
+                setData((prev) => ({
+                    ...prev,
+                    wallet_address: address,
+                    connected_via_metamask: true,
+                }));
             } else {
                 throw new Error('アカウントが選択されませんでした');
             }
@@ -183,10 +188,11 @@ export default function Wallet({ wallet }: WalletProps) {
                                         id="wallet_address"
                                         value={data.wallet_address}
                                         onChange={(e) =>
-                                            setData(
-                                                'wallet_address',
-                                                e.target.value,
-                                            )
+                                            setData((prev) => ({
+                                                ...prev,
+                                                wallet_address: e.target.value,
+                                                connected_via_metamask: false,
+                                            }))
                                         }
                                         placeholder="0x..."
                                         className="mt-1 block w-full rounded-md border-gray-300 font-mono text-sm shadow-sm focus:border-indigo-500 focus:ring-indigo-500"

@@ -29,7 +29,7 @@ class StaffWalletController extends Controller
                 'wallet_address' => $wallet->wallet_address,
                 'short_address' => $wallet->short_address,
                 'is_verified' => $wallet->is_verified,
-                'connected_at' => $wallet->connected_at?->format('Y-m-d H:i'),
+                'connected_at' => $wallet->connected_at?->timezone('Asia/Tokyo')->format('Y-m-d H:i'),
             ] : null,
         ]);
     }
@@ -47,7 +47,7 @@ class StaffWalletController extends Controller
                 'wallet_address' => $wallet->wallet_address,
                 'short_address' => $wallet->short_address,
                 'is_verified' => $wallet->is_verified,
-                'connected_at' => $wallet->connected_at?->format('Y-m-d H:i'),
+                'connected_at' => $wallet->connected_at?->timezone('Asia/Tokyo')->format('Y-m-d H:i'),
             ] : null,
         ]);
     }
@@ -72,6 +72,7 @@ class StaffWalletController extends Controller
                     }
                 },
             ],
+            'connected_via_metamask' => ['nullable', 'boolean'],
         ], [
             'wallet_address.required' => 'ウォレットアドレスを入力してください。',
             'wallet_address.size' => 'ウォレットアドレスは42文字である必要があります。',
@@ -80,11 +81,14 @@ class StaffWalletController extends Controller
 
         $user = Auth::user();
 
+        // Metamask経由で接続した場合は自動的に検証済みとする
+        $isVerified = $request->boolean('connected_via_metamask');
+
         $wallet = StaffWallet::updateOrCreate(
             ['user_id' => $user->id],
             [
                 'wallet_address' => strtolower($validated['wallet_address']),
-                'is_verified' => false,
+                'is_verified' => $isVerified,
                 'connected_at' => now(),
             ]
         );
@@ -129,7 +133,7 @@ class StaffWalletController extends Controller
                         'wallet_address' => $user->wallet->wallet_address,
                         'short_address' => $user->wallet->short_address,
                         'is_verified' => $user->wallet->is_verified,
-                        'connected_at' => $user->wallet->connected_at?->format('Y-m-d H:i'),
+                        'connected_at' => $user->wallet->connected_at?->timezone('Asia/Tokyo')->format('Y-m-d H:i'),
                     ] : null,
                 ];
             });
