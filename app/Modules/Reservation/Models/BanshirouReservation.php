@@ -20,6 +20,7 @@ class BanshirouReservation extends Model
         'email',
         'address',
         'checkin_date',
+        'checkin_time',
         'checkout_date',
         'guest_count_adults',
         'guest_count_children',

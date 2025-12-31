@@ -50,6 +50,7 @@ interface ReservationFormData {
     email: string;
     address: string;
     checkin_date: string;
+    checkin_time: string;
     checkout_date: string;
     guest_count_adults: number;
     guest_count_children: number;
@@ -66,6 +67,7 @@ const initialFormData: ReservationFormData = {
     email: '',
     address: '',
     checkin_date: '',
+    checkin_time: '',
     checkout_date: '',
     guest_count_adults: 1,
     guest_count_children: 0,
@@ -189,10 +191,10 @@ function StayInfoFields({
         <div className="space-y-4">
             <h3 className="text-lg font-medium text-gray-900">宿泊情報</h3>
 
-            <div className="grid gap-4 sm:grid-cols-2">
+            <div className="grid gap-4 sm:grid-cols-3">
                 <div>
                     <label className="block text-sm font-medium text-gray-700">
-                        チェックイン <span className="text-red-500">*</span>
+                        チェックイン日 <span className="text-red-500">*</span>
                     </label>
                     <input
                         type="date"
@@ -212,7 +214,24 @@ function StayInfoFields({
 
                 <div>
                     <label className="block text-sm font-medium text-gray-700">
-                        チェックアウト <span className="text-red-500">*</span>
+                        チェックイン時間
+                    </label>
+                    <input
+                        type="time"
+                        value={formData.checkin_time}
+                        onChange={(e) =>
+                            updateField('checkin_time', e.target.value)
+                        }
+                        className="mt-1 block w-full rounded-md border-gray-300 text-lg shadow-sm focus:border-blue-500 focus:ring-blue-500"
+                    />
+                    <p className="mt-1 text-xs text-gray-500">
+                        前の予約状況を確認して設定
+                    </p>
+                </div>
+
+                <div>
+                    <label className="block text-sm font-medium text-gray-700">
+                        チェックアウト日 <span className="text-red-500">*</span>
                     </label>
                     <input
                         type="date"

@@ -39,6 +39,7 @@ interface Reservation {
     email: string | null;
     address: string;
     checkin_date: string;
+    checkin_time: string | null;
     checkout_date: string;
     guest_count_adults: number;
     guest_count_children: number;
@@ -208,10 +209,10 @@ export default function Show({ auth, reservation }: Props) {
                                 宿泊情報
                             </h3>
                             <dl className="space-y-4">
-                                <div className="grid grid-cols-2 gap-4">
+                                <div className="grid grid-cols-2 gap-4 sm:grid-cols-3">
                                     <div>
                                         <dt className="text-sm font-medium text-gray-600">
-                                            チェックイン
+                                            チェックイン日
                                         </dt>
                                         <dd className="mt-1 text-lg font-semibold text-gray-900">
                                             {formatDateYmd(
@@ -221,7 +222,17 @@ export default function Show({ auth, reservation }: Props) {
                                     </div>
                                     <div>
                                         <dt className="text-sm font-medium text-gray-600">
-                                            チェックアウト
+                                            チェックイン時間
+                                        </dt>
+                                        <dd className="mt-1 text-lg font-semibold text-gray-900">
+                                            {reservation.checkin_time
+                                                ? reservation.checkin_time.slice(0, 5)
+                                                : '未設定'}
+                                        </dd>
+                                    </div>
+                                    <div>
+                                        <dt className="text-sm font-medium text-gray-600">
+                                            チェックアウト日
                                         </dt>
                                         <dd className="mt-1 text-lg font-semibold text-gray-900">
                                             {formatDateYmd(
