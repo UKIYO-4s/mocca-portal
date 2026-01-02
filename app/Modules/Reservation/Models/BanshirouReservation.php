@@ -13,6 +13,11 @@ class BanshirouReservation extends Model
 {
     use HasFactory;
 
+    protected static function newFactory()
+    {
+        return \Database\Factories\BanshirouReservationFactory::new();
+    }
+
     protected $fillable = [
         'name',
         'name_kana',

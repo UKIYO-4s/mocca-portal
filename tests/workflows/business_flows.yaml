@@ -1,0 +1,1769 @@
+# mocca-portal 業務フローテスト定義
+# このファイルは実際の業務シナリオをテスト可能な形式で記述します
+# Version 2.0 - 仕様書準拠版
+
+meta:
+  name: mocca-portal業務フローテスト
+  version: "2.0.0"
+  description: レストラン管理ポータル（もっか/ばんしろう）の業務フロー定義
+  last_updated: "2026-01-03"
+  roles:
+    admin: 管理者（全権限）
+    manager: マネージャー（スタッフ管理・予約管理）
+    staff: スタッフ（基本操作のみ）
+  locations:
+    - id: 1
+      name: アジト
+      description: 寮・スタッフ関連
+    - id: 2
+      name: ばんしろう
+      description: 宿泊施設
+
+# ========================================
+# 1. 認証・初期セットアップフロー
+# ========================================
+flows:
+  auth:
+    name: 認証フロー
+    description: ログイン・ログアウト・招待によるユーザー登録
+
+    scenarios:
+      # --- 正常系 ---
+      - id: AUTH-001
+        name: 管理者ログイン
+        actor: admin
+        steps:
+          - action: visit
+            url: /login
+            expect:
+              status: 200
+              element: form[action*="login"]
+          - action: fill
+            fields:
+              email: admin@mocca-portal.local
+              password: Smskso0311
+          - action: submit
+            expect:
+              redirect: /dashboard
+          - action: verify
+            checks:
+              - authenticated: true
+              - role: admin
+
+      - id: AUTH-002
+        name: マネージャーログイン
+        actor: manager
+        steps:
+          - action: fill
+            fields:
+              email: manager@mocca-portal.local
+              password: Smskso0311
+          - action: submit
+            expect:
+              redirect: /dashboard
+          - action: verify
+            checks:
+              - role: manager
+
+      - id: AUTH-003
+        name: スタッフログイン
+        actor: staff
+        steps:
+          - action: fill
+            fields:
+              email: staff@mocca-portal.local
+              password: Smskso0311
+          - action: submit
+            expect:
+              redirect: /dashboard
+          - action: verify
+            checks:
+              - role: staff
+
+      - id: AUTH-004
+        name: スタッフ招待・登録フロー（正常系）
+        actor: admin
+        preconditions:
+          - logged_in_as: admin
+        steps:
+          - action: visit
+            url: /admin/invites
+            expect:
+              status: 200
+          - action: fill
+            fields:
+              invitee_name: 新規スタッフ
+              email: newstaff@example.com
+              role: staff
+              expires_in: "7"  # 7日間有効
+          - action: submit
+            endpoint: POST /admin/invites
+            expect:
+              status: 302
+              flash: success
+              invite_created: true
+          - action: logout
+          # 招待されたユーザーとして登録
+          - action: visit
+            url: /invite/{token}
+            expect:
+              status: 200
+              page: Auth/InviteRegister
+          - action: fill
+            fields:
+              name: 新規スタッフ
+              password: Password123!
+              password_confirmation: Password123!
+          - action: submit
+            endpoint: POST /invite/{token}
+            expect:
+              redirect: /dashboard
+              user_created: true
+              flash: success
+
+      - id: AUTH-005
+        name: ログアウト
+        actor: any
+        preconditions:
+          - logged_in: true
+        steps:
+          - action: submit
+            endpoint: POST /logout
+            expect:
+              redirect: /
+              authenticated: false
+
+      # --- 異常系（招待） ---
+      - id: AUTH-ERR-001
+        name: 期限切れ招待トークンでアクセス
+        actor: guest
+        preconditions:
+          - exists: expired_invite
+        steps:
+          - action: visit
+            url: /invite/{expired_token}
+            expect:
+              status: 200
+              page: Auth/InviteExpired
+              contains: 期限切れ
+
+      - id: AUTH-ERR-002
+        name: 使用済み招待トークンでアクセス
+        actor: guest
+        preconditions:
+          - exists: used_invite
+        steps:
+          - action: visit
+            url: /invite/{used_token}
+            expect:
+              status: 200
+              page: Auth/InviteExpired
+              contains: 既に使用されています
+
+      - id: AUTH-ERR-003
+        name: 無効な招待トークンでアクセス
+        actor: guest
+        steps:
+          - action: visit
+            url: /invite/invalid-token-12345
+            expect:
+              status: 200
+              page: Auth/InviteExpired
+              contains: 見つかりません
+
+      - id: AUTH-ERR-004
+        name: 既存メールアドレスで招待登録を試行
+        actor: guest
+        preconditions:
+          - exists: valid_invite_without_email
+        steps:
+          - action: visit
+            url: /invite/{token}
+          - action: fill
+            fields:
+              name: テストユーザー
+              email: admin@mocca-portal.local  # 既存メール
+              password: Password123!
+              password_confirmation: Password123!
+          - action: submit
+            expect:
+              status: 422
+              error: このメールアドレスは既に登録されています
+
+  # ========================================
+  # 2. 日次業務フロー（スタッフ）
+  # ========================================
+  daily_staff:
+    name: スタッフ日次業務
+    description: スタッフの1日の基本的な業務フロー
+
+    scenarios:
+      - id: DAILY-001
+        name: 出勤から退勤までの一連の流れ
+        actor: staff
+        preconditions:
+          - logged_in_as: staff
+          - no_timecard_today: true
+        steps:
+          # 出勤打刻
+          - action: visit
+            url: /timecard
+            expect:
+              status: 200
+          - action: submit
+            endpoint: POST /timecard/clock-in
+            expect:
+              status: 302
+              flash: success
+
+          # お知らせ確認
+          - action: visit
+            url: /announcements
+            expect:
+              status: 200
+
+          # 本日のシフト確認
+          - action: visit
+            url: /shifts/my
+            expect:
+              status: 200
+
+          # チェックリスト実行
+          - action: visit
+            url: /checklists
+            expect:
+              status: 200
+
+          # 休憩開始
+          - action: submit
+            endpoint: POST /timecard/break-start
+            expect:
+              status: 302
+              flash: success
+
+          # 休憩終了
+          - action: submit
+            endpoint: POST /timecard/break-end
+            expect:
+              status: 302
+              flash: success
+
+          # 備品使用記録（在庫数は見えない）
+          - action: visit
+            url: /inventory
+            expect:
+              status: 200
+              not_contains: current_stock  # スタッフは在庫数非表示
+          - action: submit
+            endpoint: POST /inventory/usage
+            data:
+              usages:
+                - item_id: 1
+                  quantity: 3
+            expect:
+              status: 302
+              flash: success
+
+          # 退勤打刻
+          - action: submit
+            endpoint: POST /timecard/clock-out
+            expect:
+              status: 302
+              flash: success
+
+  # ========================================
+  # 3. 予約管理フロー（ばんしろう）
+  # ========================================
+  reservation_banshirou:
+    name: ばんしろう予約管理
+    description: 宿泊予約の作成・編集・担当割り当て（ステップ形式）
+
+    scenarios:
+      # --- 正常系 ---
+      - id: RES-BAN-001
+        name: ばんしろう新規予約作成（全ステップ）
+        actor: staff
+        preconditions:
+          - logged_in_as: staff
+        steps:
+          - action: visit
+            url: /reservations/banshirou/create
+            expect:
+              status: 200
+          # Step 1: お客様情報
+          - action: fill
+            fields:
+              name: 山田太郎
+              name_kana: ヤマダタロウ
+              phone: "09012345678"
+              email: yamada@example.com
+              address: 東京都渋谷区1-2-3
+          # Step 2: 宿泊情報
+          - action: fill
+            fields:
+              checkin_date: "+7days"  # 1週間後
+              checkout_date: "+9days"  # 2泊3日
+              guest_count_adults: 2
+              guest_count_children: 1
+          # Step 3: お食事・オプション
+          - action: fill
+            fields:
+              meal_option: with_meals  # 食事付き / seat_only / no_meals
+              pickup_required: true
+              options: []
+          # Step 4: お支払い・備考
+          - action: fill
+            fields:
+              payment_method: cash  # cash / credit / bank_transfer
+              notes: 窓側の部屋希望
+          - action: submit
+            endpoint: POST /reservations/banshirou
+            expect:
+              status: 302
+              flash: success
+              redirect: /reservations/banshirou/{id}
+
+      - id: RES-BAN-002
+        name: ばんしろう予約編集
+        actor: staff
+        preconditions:
+          - logged_in_as: staff
+          - exists: banshirou_reservation
+        steps:
+          - action: visit
+            url: /reservations/banshirou/{reservation_id}/edit
+            expect:
+              status: 200
+          - action: fill
+            fields:
+              guest_count_adults: 3
+              notes: 人数変更しました
+          - action: submit
+            endpoint: PUT /reservations/banshirou/{reservation_id}
+            expect:
+              status: 302
+              flash: success
+
+      - id: RES-BAN-003
+        name: ばんしろう予約キャンセル（ステータス変更）
+        actor: manager
+        preconditions:
+          - logged_in_as: manager
+          - exists: banshirou_reservation
+        steps:
+          - action: submit
+            endpoint: PUT /reservations/banshirou/{reservation_id}
+            data:
+              status: cancelled
+            expect:
+              status: 302
+              flash: success
+
+      - id: RES-BAN-004
+        name: 担当者割り当て（掃除担当）
+        actor: manager
+        preconditions:
+          - logged_in_as: manager
+          - exists: banshirou_reservation
+          - exists: staff_user
+        steps:
+          - action: submit
+            endpoint: POST /reservations/assignments/{reservation_id}
+            data:
+              assignment_type: cleaning
+              user_id: "{staff_id}"
+            expect:
+              status: 302
+              flash: success
+
+      - id: RES-BAN-005
+        name: 担当者割り当て（セット担当）
+        actor: manager
+        preconditions:
+          - logged_in_as: manager
+          - exists: banshirou_reservation
+        steps:
+          - action: submit
+            endpoint: POST /reservations/assignments/{reservation_id}
+            data:
+              assignment_type: setup
+              user_id: "{staff_id}"
+            expect:
+              status: 302
+              flash: success
+
+      - id: RES-BAN-006
+        name: 予約削除（マネージャー以上）
+        actor: manager
+        preconditions:
+          - logged_in_as: manager
+          - exists: banshirou_reservation
+        steps:
+          - action: submit
+            endpoint: DELETE /reservations/banshirou/{reservation_id}
+            expect:
+              status: 302
+              flash: success
+
+      # --- 異常系（権限） ---
+      - id: RES-BAN-ERR-001
+        name: スタッフは予約削除不可
+        actor: staff
+        preconditions:
+          - logged_in_as: staff
+          - exists: banshirou_reservation
+        steps:
+          - action: submit
+            endpoint: DELETE /reservations/banshirou/{reservation_id}
+            expect:
+              status: 403
+
+      - id: RES-BAN-ERR-002
+        name: スタッフは担当者割り当て不可
+        actor: staff
+        preconditions:
+          - logged_in_as: staff
+          - exists: banshirou_reservation
+        steps:
+          - action: submit
+            endpoint: POST /reservations/assignments/{reservation_id}
+            data:
+              assignment_type: cleaning
+              user_id: 1
+            expect:
+              status: 403
+
+      # --- 異常系（バリデーション） ---
+      - id: RES-BAN-ERR-003
+        name: 必須項目未入力で予約作成失敗
+        actor: staff
+        preconditions:
+          - logged_in_as: staff
+        steps:
+          - action: submit
+            endpoint: POST /reservations/banshirou
+            data:
+              name: ""  # 必須項目が空
+            expect:
+              status: 422
+              errors:
+                - name
+                - name_kana
+                - phone
+                - address
+                - checkin_date
+                - checkout_date
+                - guest_count_adults
+                - meal_option
+                - payment_method
+
+      - id: RES-BAN-ERR-004
+        name: チェックアウト日がチェックイン日より前
+        actor: staff
+        preconditions:
+          - logged_in_as: staff
+        steps:
+          - action: submit
+            endpoint: POST /reservations/banshirou
+            data:
+              name: テスト
+              name_kana: テスト
+              phone: "09012345678"
+              address: テスト住所
+              checkin_date: "+7days"
+              checkout_date: "+5days"  # チェックインより前
+              guest_count_adults: 1
+              meal_option: no_meals
+              payment_method: cash
+            expect:
+              status: 422
+              errors:
+                - checkout_date
+
+  # ========================================
+  # 4. 予約管理フロー（もっか）
+  # ========================================
+  reservation_mocca:
+    name: もっか予約管理
+    description: 食事予約の作成・編集
+
+    scenarios:
+      - id: RES-MOC-001
+        name: もっか新規予約作成
+        actor: staff
+        preconditions:
+          - logged_in_as: staff
+        steps:
+          - action: visit
+            url: /reservations/mocca/create
+            expect:
+              status: 200
+          - action: fill
+            fields:
+              reservation_type:
+                - lunch  # breakfast / lunch / dinner（複数選択可）
+              reservation_date: "+1days"
+              name: 佐藤花子
+              guest_count: 4
+              arrival_time: "12:00"
+              phone: "08056781234"
+              advance_menu: 前菜3種盛り
+              notes: アレルギー：卵
+              banshirou_reservation_id: null  # ばんしろう連携なし
+          - action: submit
+            endpoint: POST /reservations/mocca
+            expect:
+              status: 302
+              flash: success
+
+      - id: RES-MOC-002
+        name: もっか予約（ばんしろう連携あり）
+        actor: staff
+        preconditions:
+          - logged_in_as: staff
+          - exists: banshirou_reservation
+        steps:
+          - action: fill
+            fields:
+              reservation_type:
+                - dinner
+              reservation_date: "{banshirou_checkin_date}"
+              name: "{banshirou_guest_name}"
+              guest_count: "{banshirou_total_guests}"
+              banshirou_reservation_id: "{banshirou_id}"
+          - action: submit
+            endpoint: POST /reservations/mocca
+            expect:
+              status: 302
+              flash: success
+
+      - id: RES-MOC-003
+        name: もっか予約編集
+        actor: staff
+        preconditions:
+          - logged_in_as: staff
+          - exists: mocca_reservation
+        steps:
+          - action: submit
+            endpoint: PUT /reservations/mocca/{reservation_id}
+            data:
+              guest_count: 6
+              notes: 人数増加
+            expect:
+              status: 302
+              flash: success
+
+      - id: RES-MOC-004
+        name: もっか予約キャンセル
+        actor: manager
+        preconditions:
+          - logged_in_as: manager
+          - exists: mocca_reservation
+        steps:
+          - action: submit
+            endpoint: PUT /reservations/mocca/{reservation_id}
+            data:
+              status: cancelled
+            expect:
+              status: 302
+              flash: success
+
+      # --- 異常系 ---
+      - id: RES-MOC-ERR-001
+        name: スタッフはもっか予約削除不可
+        actor: staff
+        preconditions:
+          - logged_in_as: staff
+          - exists: mocca_reservation
+        steps:
+          - action: submit
+            endpoint: DELETE /reservations/mocca/{reservation_id}
+            expect:
+              status: 403
+
+  # ========================================
+  # 5. 空室カレンダー
+  # ========================================
+  availability:
+    name: 空室カレンダー
+    description: 空室状況の確認
+
+    scenarios:
+      - id: AVAIL-001
+        name: 空室カレンダー表示
+        actor: any
+        preconditions:
+          - logged_in: true
+        steps:
+          - action: visit
+            url: /reservations/availability
+            expect:
+              status: 200
+          - action: fetch
+            endpoint: GET /reservations/availability/data
+            params:
+              month: current
+            expect:
+              status: 200
+              json: true
+
+      - id: AVAIL-002
+        name: キャッシュ更新（マネージャー以上）
+        actor: manager
+        preconditions:
+          - logged_in_as: manager
+        steps:
+          - action: submit
+            endpoint: POST /reservations/availability/refresh
+            expect:
+              status: 302
+
+      - id: AVAIL-ERR-001
+        name: スタッフはキャッシュ更新不可
+        actor: staff
+        preconditions:
+          - logged_in_as: staff
+        steps:
+          - action: submit
+            endpoint: POST /reservations/availability/refresh
+            expect:
+              status: 403
+
+  # ========================================
+  # 6. タイムカード
+  # ========================================
+  timecard:
+    name: タイムカード
+    description: 出退勤打刻・休憩・履歴・管理
+
+    scenarios:
+      # --- 正常系 ---
+      - id: TIME-001
+        name: 出勤打刻
+        actor: staff
+        preconditions:
+          - logged_in_as: staff
+          - no_timecard_today: true
+        steps:
+          - action: submit
+            endpoint: POST /timecard/clock-in
+            expect:
+              status: 302
+              flash: success
+
+      - id: TIME-002
+        name: 退勤打刻
+        actor: staff
+        preconditions:
+          - logged_in_as: staff
+          - clocked_in_today: true
+        steps:
+          - action: submit
+            endpoint: POST /timecard/clock-out
+            expect:
+              status: 302
+              flash: success
+
+      - id: TIME-003
+        name: 休憩開始・終了
+        actor: staff
+        preconditions:
+          - logged_in_as: staff
+          - clocked_in_today: true
+          - not_on_break: true
+        steps:
+          - action: submit
+            endpoint: POST /timecard/break-start
+            expect:
+              status: 302
+              flash: success
+          - action: submit
+            endpoint: POST /timecard/break-end
+            expect:
+              status: 302
+              flash: success
+
+      - id: TIME-004
+        name: 勤怠履歴確認
+        actor: staff
+        preconditions:
+          - logged_in_as: staff
+        steps:
+          - action: visit
+            url: /timecard/history
+            expect:
+              status: 200
+          - action: visit
+            url: /timecard/history?month=2026-01
+            expect:
+              status: 200
+
+      - id: TIME-005
+        name: 勤怠管理画面（マネージャー）
+        actor: manager
+        preconditions:
+          - logged_in_as: manager
+        steps:
+          - action: visit
+            url: /timecard/manage
+            expect:
+              status: 200
+
+      - id: TIME-006
+        name: 勤怠記録修正（マネージャー）
+        actor: manager
+        preconditions:
+          - logged_in_as: manager
+          - exists: time_record
+        steps:
+          - action: submit
+            endpoint: PUT /timecard/records/{time_record_id}
+            data:
+              clock_in: "09:00"
+              clock_out: "18:00"
+              break_minutes: 60
+              notes: 打刻忘れ修正
+            expect:
+              status: 302
+              flash: success
+
+      - id: TIME-007
+        name: 月次レポート表示（マネージャー）
+        actor: manager
+        preconditions:
+          - logged_in_as: manager
+        steps:
+          - action: visit
+            url: /timecard/reports
+            expect:
+              status: 200
+          - action: visit
+            url: /timecard/reports?month=2026-01
+            expect:
+              status: 200
+
+      # --- 異常系（境界条件） ---
+      - id: TIME-ERR-001
+        name: 二重出勤打刻は不可
+        actor: staff
+        preconditions:
+          - logged_in_as: staff
+          - clocked_in_today: true
+        steps:
+          - action: submit
+            endpoint: POST /timecard/clock-in
+            expect:
+              status: 422
+              error: 本日は既に出勤打刻済みです
+
+      - id: TIME-ERR-002
+        name: 出勤前に退勤は不可
+        actor: staff
+        preconditions:
+          - logged_in_as: staff
+          - no_timecard_today: true
+        steps:
+          - action: submit
+            endpoint: POST /timecard/clock-out
+            expect:
+              status: 422
+              error: 出勤打刻がされていません
+
+      - id: TIME-ERR-003
+        name: 出勤前に休憩開始は不可
+        actor: staff
+        preconditions:
+          - logged_in_as: staff
+          - no_timecard_today: true
+        steps:
+          - action: submit
+            endpoint: POST /timecard/break-start
+            expect:
+              status: 422
+              error: 出勤打刻がされていません
+
+      - id: TIME-ERR-004
+        name: 休憩中に再度休憩開始は不可
+        actor: staff
+        preconditions:
+          - logged_in_as: staff
+          - on_break: true
+        steps:
+          - action: submit
+            endpoint: POST /timecard/break-start
+            expect:
+              status: 422
+              error: 既に休憩中です
+
+      - id: TIME-ERR-005
+        name: 休憩開始前に休憩終了は不可
+        actor: staff
+        preconditions:
+          - logged_in_as: staff
+          - clocked_in_today: true
+          - not_on_break: true
+        steps:
+          - action: submit
+            endpoint: POST /timecard/break-end
+            expect:
+              status: 422
+              error: 休憩開始が記録されていません
+
+      - id: TIME-ERR-006
+        name: 1日1回のみ休憩可能
+        actor: staff
+        preconditions:
+          - logged_in_as: staff
+          - break_completed_today: true
+        steps:
+          - action: submit
+            endpoint: POST /timecard/break-start
+            expect:
+              status: 422
+              error: 本日は既に休憩を取得済みです
+
+      - id: TIME-ERR-007
+        name: 二重退勤打刻は不可
+        actor: staff
+        preconditions:
+          - logged_in_as: staff
+          - clocked_out_today: true
+        steps:
+          - action: submit
+            endpoint: POST /timecard/clock-out
+            expect:
+              status: 422
+              error: 本日は既に退勤打刻済みです
+
+      # --- 異常系（権限） ---
+      - id: TIME-ERR-008
+        name: スタッフは勤怠管理画面アクセス不可
+        actor: staff
+        preconditions:
+          - logged_in_as: staff
+        steps:
+          - action: visit
+            url: /timecard/manage
+            expect:
+              status: 403
+
+      - id: TIME-ERR-009
+        name: スタッフは勤怠記録修正不可
+        actor: staff
+        preconditions:
+          - logged_in_as: staff
+          - exists: time_record
+        steps:
+          - action: submit
+            endpoint: PUT /timecard/records/{time_record_id}
+            data:
+              clock_in: "09:00"
+            expect:
+              status: 403
+
+      - id: TIME-ERR-010
+        name: スタッフは月次レポートアクセス不可
+        actor: staff
+        preconditions:
+          - logged_in_as: staff
+        steps:
+          - action: visit
+            url: /timecard/reports
+            expect:
+              status: 403
+
+  # ========================================
+  # 7. シフト管理
+  # ========================================
+  shift:
+    name: シフト管理
+    description: シフトの閲覧・編集
+
+    scenarios:
+      - id: SHIFT-001
+        name: シフト一覧表示
+        actor: any
+        preconditions:
+          - logged_in: true
+        steps:
+          - action: visit
+            url: /shifts
+            expect:
+              status: 200
+
+      - id: SHIFT-002
+        name: シフトカレンダー表示
+        actor: any
+        preconditions:
+          - logged_in: true
+        steps:
+          - action: visit
+            url: /shifts/calendar
+            expect:
+              status: 200
+
+      - id: SHIFT-003
+        name: マイシフト確認
+        actor: staff
+        preconditions:
+          - logged_in_as: staff
+        steps:
+          - action: visit
+            url: /shifts/my
+            expect:
+              status: 200
+
+      - id: SHIFT-004
+        name: シフト管理画面（マネージャー）
+        actor: manager
+        preconditions:
+          - logged_in_as: manager
+        steps:
+          - action: visit
+            url: /shifts/manage
+            expect:
+              status: 200
+
+      - id: SHIFT-005
+        name: シフト一括更新（マネージャー）
+        actor: manager
+        preconditions:
+          - logged_in_as: manager
+          - exists: staff_user
+        steps:
+          - action: submit
+            endpoint: POST /shifts/bulk-update
+            data:
+              shifts:
+                - user_id: "{staff_id}"
+                  date: "+1days"
+                  start_time: "09:00"
+                  end_time: "18:00"
+            expect:
+              status: 302
+              flash: success
+
+      # --- 異常系（権限） ---
+      - id: SHIFT-ERR-001
+        name: スタッフはシフト管理画面アクセス不可
+        actor: staff
+        preconditions:
+          - logged_in_as: staff
+        steps:
+          - action: visit
+            url: /shifts/manage
+            expect:
+              status: 403
+
+      - id: SHIFT-ERR-002
+        name: スタッフはシフト一括更新不可
+        actor: staff
+        preconditions:
+          - logged_in_as: staff
+        steps:
+          - action: submit
+            endpoint: POST /shifts/bulk-update
+            data:
+              shifts: []
+            expect:
+              status: 403
+
+  # ========================================
+  # 8. 備品管理
+  # ========================================
+  inventory:
+    name: 備品管理
+    description: 備品の使用記録・補充・調整（拠点別）
+
+    scenarios:
+      # --- 正常系 ---
+      - id: INV-001
+        name: 備品使用記録（スタッフ）
+        actor: staff
+        preconditions:
+          - logged_in_as: staff
+          - exists: inventory_item
+        steps:
+          - action: visit
+            url: /inventory
+            expect:
+              status: 200
+              # スタッフは在庫数が見えない
+              not_contains: current_stock
+          - action: submit
+            endpoint: POST /inventory/usage
+            data:
+              usages:
+                - item_id: 1
+                  quantity: 3
+            expect:
+              status: 302
+              flash: success
+
+      - id: INV-002
+        name: 備品管理画面（マネージャー）- 在庫数表示
+        actor: manager
+        preconditions:
+          - logged_in_as: manager
+        steps:
+          - action: visit
+            url: /inventory/manage
+            expect:
+              status: 200
+              contains: current_stock
+
+      - id: INV-003
+        name: 新規備品登録（マネージャー）
+        actor: manager
+        preconditions:
+          - logged_in_as: manager
+        steps:
+          - action: visit
+            url: /inventory/items/create
+            expect:
+              status: 200
+          - action: fill
+            fields:
+              location_id: 1  # アジト
+              name: ペーパータオル
+              unit: パック
+              current_stock: 50
+              reorder_point: 10
+              is_active: true
+          - action: submit
+            endpoint: POST /inventory/items
+            expect:
+              status: 302
+              flash: success
+
+      - id: INV-004
+        name: 備品補充（マネージャー）
+        actor: manager
+        preconditions:
+          - logged_in_as: manager
+          - exists: inventory_item
+        steps:
+          - action: submit
+            endpoint: POST /inventory/items/{item_id}/restock
+            data:
+              quantity: 100
+              notes: 定期発注分
+            expect:
+              status: 302
+              flash: success
+
+      - id: INV-005
+        name: 在庫調整（マネージャー）
+        actor: manager
+        preconditions:
+          - logged_in_as: manager
+          - exists: inventory_item
+        steps:
+          - action: submit
+            endpoint: POST /inventory/items/{item_id}/adjust
+            data:
+              quantity: -5
+              notes: 棚卸し調整
+            expect:
+              status: 302
+              flash: success
+
+      - id: INV-006
+        name: 備品履歴確認（マネージャー）
+        actor: manager
+        preconditions:
+          - logged_in_as: manager
+        steps:
+          - action: visit
+            url: /inventory/logs
+            expect:
+              status: 200
+
+      - id: INV-007
+        name: 拠点別フィルタリング
+        actor: manager
+        preconditions:
+          - logged_in_as: manager
+        steps:
+          - action: visit
+            url: /inventory/manage?location_id=1
+            expect:
+              status: 200
+          - action: visit
+            url: /inventory/manage?location_id=2
+            expect:
+              status: 200
+
+      - id: INV-008
+        name: 発注点アラート（低在庫フィルタ）
+        actor: manager
+        preconditions:
+          - logged_in_as: manager
+        steps:
+          - action: visit
+            url: /inventory/manage?low_stock=1
+            expect:
+              status: 200
+
+      # --- 異常系（権限） ---
+      - id: INV-ERR-001
+        name: スタッフは備品管理画面アクセス不可
+        actor: staff
+        preconditions:
+          - logged_in_as: staff
+        steps:
+          - action: visit
+            url: /inventory/manage
+            expect:
+              status: 403
+
+      - id: INV-ERR-002
+        name: スタッフは備品登録不可
+        actor: staff
+        preconditions:
+          - logged_in_as: staff
+        steps:
+          - action: submit
+            endpoint: POST /inventory/items
+            data:
+              name: テスト
+              unit: 個
+            expect:
+              status: 403
+
+      - id: INV-ERR-003
+        name: スタッフは備品補充不可
+        actor: staff
+        preconditions:
+          - logged_in_as: staff
+          - exists: inventory_item
+        steps:
+          - action: submit
+            endpoint: POST /inventory/items/{item_id}/restock
+            data:
+              quantity: 10
+            expect:
+              status: 403
+
+      - id: INV-ERR-004
+        name: スタッフは在庫調整不可
+        actor: staff
+        preconditions:
+          - logged_in_as: staff
+          - exists: inventory_item
+        steps:
+          - action: submit
+            endpoint: POST /inventory/items/{item_id}/adjust
+            data:
+              quantity: 5
+              notes: テスト
+            expect:
+              status: 403
+
+      - id: INV-ERR-005
+        name: スタッフは備品履歴閲覧不可
+        actor: staff
+        preconditions:
+          - logged_in_as: staff
+        steps:
+          - action: visit
+            url: /inventory/logs
+            expect:
+              status: 403
+
+  # ========================================
+  # 9. チェックリスト管理
+  # ========================================
+  checklist:
+    name: チェックリスト管理
+    description: テンプレート作成・日次チェックリスト実行
+
+    scenarios:
+      # --- 正常系 ---
+      - id: CHECK-001
+        name: チェックリストテンプレート作成（ランチ仕込み）
+        actor: manager
+        preconditions:
+          - logged_in_as: manager
+        steps:
+          - action: visit
+            url: /checklists/templates/create
+            expect:
+              status: 200
+          - action: fill
+            fields:
+              name: ランチ仕込みチェックリスト
+              type: lunch_prep  # lunch_prep / dinner_prep / cleaning / other
+              location_id: null  # 全拠点共通
+              is_active: true
+              items:
+                - 野菜のカット
+                - スープの仕込み
+                - 調味料の補充確認
+          - action: submit
+            endpoint: POST /checklists/templates
+            expect:
+              status: 302
+              flash: success
+
+      - id: CHECK-002
+        name: チェックリストテンプレート作成（ディナー仕込み）
+        actor: manager
+        preconditions:
+          - logged_in_as: manager
+        steps:
+          - action: fill
+            fields:
+              name: ディナー仕込みチェックリスト
+              type: dinner_prep
+          - action: submit
+            endpoint: POST /checklists/templates
+            expect:
+              status: 302
+              flash: success
+
+      - id: CHECK-003
+        name: チェックリストテンプレート作成（掃除）
+        actor: manager
+        preconditions:
+          - logged_in_as: manager
+        steps:
+          - action: fill
+            fields:
+              name: 閉店後掃除チェックリスト
+              type: cleaning
+              items:
+                - 床掃除
+                - テーブル拭き
+                - トイレ清掃
+          - action: submit
+            endpoint: POST /checklists/templates
+            expect:
+              status: 302
+              flash: success
+
+      - id: CHECK-004
+        name: チェックリストテンプレート作成（その他）
+        actor: manager
+        preconditions:
+          - logged_in_as: manager
+        steps:
+          - action: fill
+            fields:
+              name: 月次点検チェックリスト
+              type: other
+          - action: submit
+            endpoint: POST /checklists/templates
+            expect:
+              status: 302
+              flash: success
+
+      - id: CHECK-005
+        name: 日次チェックリスト生成
+        actor: any
+        preconditions:
+          - logged_in: true
+          - exists: checklist_template
+        steps:
+          - action: submit
+            endpoint: POST /checklists/generate
+            data:
+              template_id: 1
+              date: today
+            expect:
+              status: 302
+
+      - id: CHECK-006
+        name: チェックリスト項目のチェック
+        actor: staff
+        preconditions:
+          - logged_in_as: staff
+          - exists: daily_checklist
+        steps:
+          - action: visit
+            url: /checklists/{checklist_id}
+            expect:
+              status: 200
+          - action: submit
+            endpoint: POST /checklists/{checklist_id}/entries/{item_id}/toggle
+            expect:
+              status: 200
+
+      # --- 異常系（権限） ---
+      - id: CHECK-ERR-001
+        name: スタッフはテンプレート作成不可
+        actor: staff
+        preconditions:
+          - logged_in_as: staff
+        steps:
+          - action: visit
+            url: /checklists/templates/create
+            expect:
+              status: 403
+
+      - id: CHECK-ERR-002
+        name: スタッフはテンプレート編集不可
+        actor: staff
+        preconditions:
+          - logged_in_as: staff
+          - exists: checklist_template
+        steps:
+          - action: visit
+            url: /checklists/templates/{template_id}/edit
+            expect:
+              status: 403
+
+      - id: CHECK-ERR-003
+        name: スタッフはテンプレート削除不可
+        actor: staff
+        preconditions:
+          - logged_in_as: staff
+          - exists: checklist_template
+        steps:
+          - action: submit
+            endpoint: DELETE /checklists/templates/{template_id}
+            expect:
+              status: 403
+
+  # ========================================
+  # 10. お知らせ管理
+  # ========================================
+  announcement:
+    name: お知らせ管理
+    description: お知らせの作成・閲覧・既読管理
+
+    scenarios:
+      - id: ANN-001
+        name: お知らせ作成
+        actor: manager
+        preconditions:
+          - logged_in_as: manager
+        steps:
+          - action: visit
+            url: /announcements/create
+            expect:
+              status: 200
+          - action: fill
+            fields:
+              title: 年末年始の営業について
+              content: |
+                12月31日から1月3日まで休業とさせていただきます。
+                1月4日より通常営業を再開いたします。
+              priority: important  # normal / important
+              published_at: now
+          - action: submit
+            endpoint: POST /announcements
+            expect:
+              status: 302
+              flash: success
+
+      - id: ANN-002
+        name: お知らせ既読マーク
+        actor: staff
+        preconditions:
+          - logged_in_as: staff
+          - exists: announcement
+        steps:
+          - action: visit
+            url: /announcements/{announcement_id}
+            expect:
+              status: 200
+          - action: submit
+            endpoint: POST /announcements/{announcement_id}/read
+            expect:
+              status: 302
+
+      # --- 異常系（権限） ---
+      - id: ANN-ERR-001
+        name: スタッフはお知らせ作成不可
+        actor: staff
+        preconditions:
+          - logged_in_as: staff
+        steps:
+          - action: visit
+            url: /announcements/create
+            expect:
+              status: 403
+
+      - id: ANN-ERR-002
+        name: スタッフはお知らせ編集不可
+        actor: staff
+        preconditions:
+          - logged_in_as: staff
+          - exists: announcement
+        steps:
+          - action: visit
+            url: /announcements/{announcement_id}/edit
+            expect:
+              status: 403
+
+      - id: ANN-ERR-003
+        name: スタッフはお知らせ削除不可
+        actor: staff
+        preconditions:
+          - logged_in_as: staff
+          - exists: announcement
+        steps:
+          - action: submit
+            endpoint: DELETE /announcements/{announcement_id}
+            expect:
+              status: 403
+
+  # ========================================
+  # 11. ウォレット・チップ管理
+  # ========================================
+  wallet:
+    name: ウォレット・チップ管理
+    description: Metamaskウォレット接続とチップ受け取り
+
+    scenarios:
+      - id: WALLET-001
+        name: ウォレットアドレス登録
+        actor: staff
+        preconditions:
+          - logged_in_as: staff
+        steps:
+          - action: visit
+            url: /profile/wallet
+            expect:
+              status: 200
+          - action: submit
+            endpoint: POST /profile/wallet
+            data:
+              wallet_address: "0x1234567890abcdef1234567890abcdef12345678"
+            expect:
+              status: 302
+              flash: success
+
+      - id: WALLET-002
+        name: ウォレットアドレス削除
+        actor: staff
+        preconditions:
+          - logged_in_as: staff
+          - has_wallet: true
+        steps:
+          - action: submit
+            endpoint: DELETE /profile/wallet
+            expect:
+              status: 302
+              flash: success
+
+      - id: WALLET-003
+        name: マイウォレット確認
+        actor: staff
+        preconditions:
+          - logged_in_as: staff
+        steps:
+          - action: visit
+            url: /my-wallet
+            expect:
+              status: 200
+
+      - id: WALLET-004
+        name: ゲストページからのチップ可否確認
+        actor: guest
+        preconditions:
+          - exists: guest_page
+        steps:
+          - action: visit
+            url: /guest/{uuid}
+            expect:
+              status: 200
+          - action: submit
+            endpoint: POST /api/tip/can-tip
+            data:
+              uuid: "{uuid}"
+            expect:
+              status: 200
+              json: true
+
+      - id: WALLET-005
+        name: ゲストページからのチップ記録
+        actor: guest
+        preconditions:
+          - exists: guest_page
+          - can_tip: true
+        steps:
+          - action: submit
+            endpoint: POST /api/tip/record
+            data:
+              uuid: "{uuid}"
+              amount: 500
+              transaction_hash: "0xabc123..."
+            expect:
+              status: 200
+
+      - id: WALLET-006
+        name: チップ統計確認（管理者）
+        actor: admin
+        preconditions:
+          - logged_in_as: admin
+        steps:
+          - action: visit
+            url: /admin/tips
+            expect:
+              status: 200
+
+      - id: WALLET-007
+        name: スタッフウォレット一覧（管理者）
+        actor: admin
+        preconditions:
+          - logged_in_as: admin
+        steps:
+          - action: visit
+            url: /admin/staff-wallets
+            expect:
+              status: 200
+
+      # --- 異常系 ---
+      - id: WALLET-ERR-001
+        name: 無効なウォレットアドレス
+        actor: staff
+        preconditions:
+          - logged_in_as: staff
+        steps:
+          - action: submit
+            endpoint: POST /profile/wallet
+            data:
+              wallet_address: "invalid-address"
+            expect:
+              status: 422
+
+      - id: WALLET-ERR-002
+        name: スタッフはチップ統計アクセス不可
+        actor: staff
+        preconditions:
+          - logged_in_as: staff
+        steps:
+          - action: visit
+            url: /admin/tips
+            expect:
+              status: 403
+
+  # ========================================
+  # 12. ユーザー管理（管理者）
+  # ========================================
+  user_management:
+    name: ユーザー管理
+    description: ユーザーの一覧・ロール変更・削除
+
+    scenarios:
+      - id: USER-001
+        name: ユーザー一覧表示
+        actor: admin
+        preconditions:
+          - logged_in_as: admin
+        steps:
+          - action: visit
+            url: /users
+            expect:
+              status: 200
+
+      - id: USER-002
+        name: ユーザーロール変更
+        actor: admin
+        preconditions:
+          - logged_in_as: admin
+          - exists: staff_user
+        steps:
+          - action: submit
+            endpoint: PATCH /users/{user_id}/role
+            data:
+              role: manager
+            expect:
+              status: 302
+              flash: success
+
+      - id: USER-003
+        name: ユーザー削除
+        actor: admin
+        preconditions:
+          - logged_in_as: admin
+          - exists: deletable_user
+        steps:
+          - action: submit
+            endpoint: DELETE /users/{user_id}
+            expect:
+              status: 302
+              flash: success
+
+      # --- 異常系（権限） ---
+      - id: USER-ERR-001
+        name: マネージャーはユーザー管理アクセス不可
+        actor: manager
+        preconditions:
+          - logged_in_as: manager
+        steps:
+          - action: visit
+            url: /users
+            expect:
+              status: 403
+
+      - id: USER-ERR-002
+        name: スタッフはユーザー管理アクセス不可
+        actor: staff
+        preconditions:
+          - logged_in_as: staff
+        steps:
+          - action: visit
+            url: /users
+            expect:
+              status: 403
+
+  # ========================================
+  # 13. 拠点管理（管理者専用）
+  # ========================================
+  location:
+    name: 拠点管理
+    description: 店舗拠点の管理
+
+    scenarios:
+      - id: LOC-001
+        name: 拠点一覧表示
+        actor: admin
+        preconditions:
+          - logged_in_as: admin
+        steps:
+          - action: visit
+            url: /admin/locations
+            expect:
+              status: 200
+
+      - id: LOC-002
+        name: 新規拠点作成
+        actor: admin
+        preconditions:
+          - logged_in_as: admin
+        steps:
+          - action: visit
+            url: /admin/locations/create
+            expect:
+              status: 200
+          - action: fill
+            fields:
+              name: もっか新宿店
+              slug: mocca-shinjuku
+              is_active: true
+          - action: submit
+            endpoint: POST /admin/locations
+            expect:
+              status: 302
+              flash: success
+
+      # --- 異常系（権限） ---
+      - id: LOC-ERR-001
+        name: マネージャーは拠点管理アクセス不可
+        actor: manager
+        preconditions:
+          - logged_in_as: manager
+        steps:
+          - action: visit
+            url: /admin/locations
+            expect:
+              status: 403
+
+      - id: LOC-ERR-002
+        name: スタッフは拠点管理アクセス不可
+        actor: staff
+        preconditions:
+          - logged_in_as: staff
+        steps:
+          - action: visit
+            url: /admin/locations
+            expect:
+              status: 403
+
+# ========================================
+# テスト実行設定
+# ========================================
+test_config:
+  base_url: http://localhost:8000
+  database:
+    refresh_before_suite: true
+    seed_before_suite: true
+    transaction_per_test: true
+    seeders:
+      - AdminUserSeeder
+      - LocationSeeder
+
+  users:
+    admin:
+      email: admin@mocca-portal.local
+      password: Smskso0311
+    manager:
+      email: manager@mocca-portal.local
+      password: Smskso0311
+    staff:
+      email: staff@mocca-portal.local
+      password: Smskso0311
+
+  timeouts:
+    page_load: 5000
+    api_request: 3000
+
+  assertions:
+    check_flash_messages: true
+    check_database_changes: true
+    check_activity_log: true
+
+# ========================================
+# テストデータファクトリ定義
+# ========================================
+factories:
+  banshirou_reservation:
+    model: App\Modules\Reservation\Models\BanshirouReservation
+    fields:
+      name: テストゲスト
+      name_kana: テストゲスト
+      phone: "09012345678"
+      email: test@example.com
+      address: 東京都テスト区1-2-3
+      checkin_date: "+7days"
+      checkout_date: "+9days"
+      guest_count_adults: 2
+      guest_count_children: 0
+      meal_option: with_meals
+      pickup_required: false
+      payment_method: cash
+      status: confirmed
+
+  mocca_reservation:
+    model: App\Modules\Reservation\Models\MoccaReservation
+    fields:
+      reservation_type:
+        - lunch
+      reservation_date: "+1days"
+      name: テストゲスト
+      guest_count: 2
+      status: confirmed
+
+  inventory_item:
+    model: App\Modules\Inventory\Models\InventoryItem
+    fields:
+      location_id: 1
+      name: テスト備品
+      unit: 個
+      current_stock: 100
+      reorder_point: 10
+      is_active: true
+
+  checklist_template:
+    model: App\Modules\Checklist\Models\ChecklistTemplate
+    fields:
+      name: テストチェックリスト
+      type: lunch_prep
+      is_active: true
+
+  announcement:
+    model: App\Modules\Announcement\Models\Announcement
+    fields:
+      title: テストお知らせ
+      content: これはテストです
+      priority: normal
+      published_at: now
+
+  time_record:
+    model: App\Modules\TimeCard\Models\TimeRecord
+    fields:
+      date: today
+      clock_in: "09:00"

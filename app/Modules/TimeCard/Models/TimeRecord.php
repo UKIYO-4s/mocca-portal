@@ -3,12 +3,20 @@
 namespace App\Modules\TimeCard\Models;
 
 use App\Models\User;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Carbon\Carbon;
 
 class TimeRecord extends Model
 {
+    use HasFactory;
+
+    protected static function newFactory()
+    {
+        return \Database\Factories\TimeRecordFactory::new();
+    }
+
     protected $fillable = [
         'user_id',
         'date',

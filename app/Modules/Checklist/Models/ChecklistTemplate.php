@@ -3,12 +3,19 @@
 namespace App\Modules\Checklist\Models;
 
 use App\Models\Location;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class ChecklistTemplate extends Model
 {
+    use HasFactory;
+
+    protected static function newFactory()
+    {
+        return \Database\Factories\ChecklistTemplateFactory::new();
+    }
     protected $fillable = [
         'name',
         'type',

@@ -11,6 +11,11 @@ class MoccaReservation extends Model
 {
     use HasFactory;
 
+    protected static function newFactory()
+    {
+        return \Database\Factories\MoccaReservationFactory::new();
+    }
+
     protected $fillable = [
         'reservation_type',
         'reservation_date',
